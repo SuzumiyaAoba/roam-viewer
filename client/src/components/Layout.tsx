@@ -42,32 +42,8 @@ export function Layout({ children, title }: LayoutProps) {
       <Footer
         variant="minimal"
         size="sm"
-        sections={
-          <>
-            <FooterSection title="Roam Web">
-              <FooterLink href="/nodes">My Nodes</FooterLink>
-              <FooterLink href="/search">Search</FooterLink>
-              <FooterLink href="/help">Help</FooterLink>
-            </FooterSection>
-            
-            <FooterSection title="Account">
-              <FooterLink href="/profile">Profile</FooterLink>
-              <FooterLink href="/settings">Settings</FooterLink>
-              <FooterLink href="/export">Export Data</FooterLink>
-            </FooterSection>
-          </>
-        }
         bottom={
-          <FooterBottom
-            copyright="© 2024 Roam Web. All rights reserved."
-            links={
-              <>
-                <FooterLink href="/privacy">Privacy</FooterLink>
-                <FooterLink href="/terms">Terms</FooterLink>
-                <FooterLink href="/contact">Contact</FooterLink>
-              </>
-            }
-          />
+          <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
         }
       />
     </div>
