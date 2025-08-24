@@ -1,0 +1,261 @@
+import type { Meta, StoryObj } from '@storybook/react'
+import { Input } from './Input'
+
+const meta = {
+  title: 'Design System/Input',
+  component: Input,
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: 'A flexible input component with support for labels, helper text, error states, and icons. Designed with accessibility and user experience in mind.'
+      }
+    }
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: { type: 'select' },
+      options: ['default', 'error', 'success'],
+      description: 'The visual variant of the input'
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['sm', 'default', 'lg'],
+      description: 'The size of the input'
+    },
+    label: {
+      control: 'text',
+      description: 'The label for the input'
+    },
+    helperText: {
+      control: 'text',
+      description: 'Helper text displayed below the input'
+    },
+    errorMessage: {
+      control: 'text',
+      description: 'Error message displayed below the input'
+    },
+    placeholder: {
+      control: 'text',
+      description: 'Placeholder text for the input'
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the input is disabled'
+    },
+    type: {
+      control: { type: 'select' },
+      options: ['text', 'email', 'password', 'search', 'tel', 'url', 'number'],
+      description: 'The HTML input type'
+    },
+  },
+} satisfies Meta<typeof Input>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+// Basic stories
+export const Default: Story = {
+  args: {
+    placeholder: 'Enter text...',
+  },
+}
+
+export const WithLabel: Story = {
+  args: {
+    label: 'Email Address',
+    placeholder: 'Enter your email...',
+    type: 'email',
+  },
+}
+
+export const WithHelperText: Story = {
+  args: {
+    label: 'Username',
+    placeholder: 'Choose a username',
+    helperText: 'This will be displayed publicly',
+  },
+}
+
+export const WithError: Story = {
+  args: {
+    label: 'Password',
+    placeholder: 'Enter password',
+    type: 'password',
+    errorMessage: 'Password must be at least 8 characters long',
+  },
+}
+
+export const Success: Story = {
+  args: {
+    label: 'Email',
+    placeholder: 'Enter your email',
+    type: 'email',
+    variant: 'success',
+    helperText: 'Email address verified ✓',
+  },
+}
+
+// Size variations
+export const Small: Story = {
+  args: {
+    size: 'sm',
+    label: 'Small Input',
+    placeholder: 'Small size...',
+  },
+}
+
+export const Large: Story = {
+  args: {
+    size: 'lg',
+    label: 'Large Input',
+    placeholder: 'Large size...',
+  },
+}
+
+// State variations
+export const Disabled: Story = {
+  args: {
+    label: 'Disabled Input',
+    placeholder: 'This input is disabled',
+    disabled: true,
+    helperText: 'This input cannot be edited',
+  },
+}
+
+// Icon variations
+export const WithLeftIcon: Story = {
+  args: {
+    label: 'Search',
+    placeholder: 'Search...',
+    leftIcon: '🔍',
+  },
+}
+
+export const WithRightIcon: Story = {
+  args: {
+    label: 'Password',
+    type: 'password',
+    placeholder: 'Enter password',
+    rightIcon: '👁',
+  },
+}
+
+export const WithBothIcons: Story = {
+  args: {
+    label: 'Username',
+    placeholder: 'Enter username',
+    leftIcon: '👤',
+    rightIcon: '✓',
+  },
+}
+
+// Input types
+export const EmailInput: Story = {
+  args: {
+    label: 'Email Address',
+    type: 'email',
+    placeholder: 'example@domain.com',
+    helperText: 'We\'ll never share your email',
+  },
+}
+
+export const PasswordInput: Story = {
+  args: {
+    label: 'Password',
+    type: 'password',
+    placeholder: 'Enter your password',
+    helperText: 'Must be at least 8 characters',
+  },
+}
+
+export const NumberInput: Story = {
+  args: {
+    label: 'Age',
+    type: 'number',
+    placeholder: '25',
+    helperText: 'Enter your age in years',
+  },
+}
+
+export const SearchInput: Story = {
+  args: {
+    type: 'search',
+    placeholder: 'Search nodes...',
+    leftIcon: '🔍',
+  },
+}
+
+// Form examples
+export const FormExample: Story = {
+  render: () => ({
+    template: `
+      <div class="w-80 space-y-4 p-6">
+        <Input label="First Name" placeholder="John" />
+        <Input label="Last Name" placeholder="Doe" />
+        <Input 
+          label="Email" 
+          type="email" 
+          placeholder="john.doe@example.com"
+          leftIcon="📧"
+        />
+        <Input 
+          label="Phone" 
+          type="tel" 
+          placeholder="+1 (555) 123-4567"
+          leftIcon="📞"
+        />
+        <Input 
+          label="Password" 
+          type="password" 
+          placeholder="Enter password"
+          helperText="Must be at least 8 characters"
+        />
+      </div>
+    `
+  }),
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story: 'Example of how inputs might be used in a form'
+      }
+    }
+  },
+}
+
+// Error states showcase
+export const ErrorStatesShowcase: Story = {
+  render: () => ({
+    template: `
+      <div class="w-80 space-y-4 p-6">
+        <Input 
+          label="Email" 
+          type="email" 
+          placeholder="invalid-email"
+          errorMessage="Please enter a valid email address"
+        />
+        <Input 
+          label="Password" 
+          type="password" 
+          placeholder="123"
+          errorMessage="Password must be at least 8 characters"
+        />
+        <Input 
+          label="Username" 
+          placeholder="user@domain"
+          errorMessage="Username cannot contain special characters"
+        />
+      </div>
+    `
+  }),
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story: 'Examples of various error states'
+      }
+    }
+  },
+}

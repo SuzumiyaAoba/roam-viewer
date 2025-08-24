@@ -1,0 +1,270 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/blocks';
+import { tokens } from './tokens';
+
+<Meta title="Design System/Overview" />
+
+# Roam Web Design System
+
+Welcome to the Roam Web Design System! This comprehensive system provides a consistent, accessible, and beautiful foundation for building user interfaces.
+
+## Philosophy
+
+Our design system is built on the following principles:
+
+- **Consistency**: Every component follows the same patterns and behaviors
+- **Accessibility**: WCAG compliant components that work for everyone
+- **Flexibility**: Variants and customization options for different use cases
+- **Developer Experience**: Easy to use, well-documented, and type-safe
+- **Performance**: Optimized for both bundle size and runtime performance
+
+## Design Tokens
+
+Design tokens are the foundation of our design system, defining colors, spacing, typography, and other design properties.
+
+### Colors
+
+Our color system provides semantic meaning and ensures consistent application across all components.
+
+#### Primary Colors
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="Main brand color"
+    colors={{
+      50: tokens.colors.primary[50],
+      100: tokens.colors.primary[100],
+      200: tokens.colors.primary[200],
+      300: tokens.colors.primary[300],
+      400: tokens.colors.primary[400],
+      500: tokens.colors.primary[500],
+      600: tokens.colors.primary[600],
+      700: tokens.colors.primary[700],
+      800: tokens.colors.primary[800],
+      900: tokens.colors.primary[900],
+    }}
+  />
+</ColorPalette>
+
+#### Semantic Colors
+
+<ColorPalette>
+  <ColorItem
+    title="Success"
+    subtitle="Positive actions and states"
+    colors={{
+      50: tokens.colors.success[50],
+      100: tokens.colors.success[100],
+      200: tokens.colors.success[200],
+      300: tokens.colors.success[300],
+      400: tokens.colors.success[400],
+      500: tokens.colors.success[500],
+      600: tokens.colors.success[600],
+      700: tokens.colors.success[700],
+      800: tokens.colors.success[800],
+      900: tokens.colors.success[900],
+    }}
+  />
+  <ColorItem
+    title="Warning"
+    subtitle="Caution and attention"
+    colors={{
+      50: tokens.colors.warning[50],
+      100: tokens.colors.warning[100],
+      200: tokens.colors.warning[200],
+      300: tokens.colors.warning[300],
+      400: tokens.colors.warning[400],
+      500: tokens.colors.warning[500],
+      600: tokens.colors.warning[600],
+      700: tokens.colors.warning[700],
+      800: tokens.colors.warning[800],
+      900: tokens.colors.warning[900],
+    }}
+  />
+  <ColorItem
+    title="Error"
+    subtitle="Destructive actions and errors"
+    colors={{
+      50: tokens.colors.error[50],
+      100: tokens.colors.error[100],
+      200: tokens.colors.error[200],
+      300: tokens.colors.error[300],
+      400: tokens.colors.error[400],
+      500: tokens.colors.error[500],
+      600: tokens.colors.error[600],
+      700: tokens.colors.error[700],
+      800: tokens.colors.error[800],
+      900: tokens.colors.error[900],
+    }}
+  />
+</ColorPalette>
+
+#### Neutral Colors
+
+<ColorPalette>
+  <ColorItem
+    title="Gray"
+    subtitle="Text, backgrounds, and borders"
+    colors={{
+      50: tokens.colors.gray[50],
+      100: tokens.colors.gray[100],
+      200: tokens.colors.gray[200],
+      300: tokens.colors.gray[300],
+      400: tokens.colors.gray[400],
+      500: tokens.colors.gray[500],
+      600: tokens.colors.gray[600],
+      700: tokens.colors.gray[700],
+      800: tokens.colors.gray[800],
+      900: tokens.colors.gray[900],
+    }}
+  />
+</ColorPalette>
+
+### Typography
+
+Our typography system ensures consistent and readable text across all components.
+
+<Typeset
+  fontSizes={[
+    Number(tokens.typography.fontSize.xs.replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize.sm.replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize.base.replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize.lg.replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize.xl.replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize['2xl'].replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize['3xl'].replace('rem', '')) * 16,
+    Number(tokens.typography.fontSize['4xl'].replace('rem', '')) * 16,
+  ]}
+  fontFamily={tokens.typography.fontFamily.sans.join(', ')}
+  sampleText="The quick brown fox jumps over the lazy dog"
+/>
+
+### Spacing
+
+Our spacing system provides consistent layout and visual hierarchy:
+
+| Token | Value | Pixels |
+|-------|-------|--------|
+| 1 | 0.25rem | 4px |
+| 2 | 0.5rem | 8px |
+| 3 | 0.75rem | 12px |
+| 4 | 1rem | 16px |
+| 5 | 1.25rem | 20px |
+| 6 | 1.5rem | 24px |
+| 8 | 2rem | 32px |
+| 10 | 2.5rem | 40px |
+| 12 | 3rem | 48px |
+| 16 | 4rem | 64px |
+| 20 | 5rem | 80px |
+| 24 | 6rem | 96px |
+
+### Shadows
+
+Elevation and depth are created using our shadow system:
+
+| Name | Value |
+|------|-------|
+| sm | 0 1px 2px 0 rgb(0 0 0 / 0.05) |
+| base | 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) |
+| md | 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) |
+| lg | 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) |
+| xl | 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) |
+
+## Component Architecture
+
+### Design Principles
+
+1. **Composable**: Components can be combined to create more complex interfaces
+2. **Consistent API**: Similar props and behaviors across all components
+3. **Accessible**: ARIA compliant and keyboard navigable
+4. **Customizable**: Support for variants, sizes, and custom styling
+5. **Type Safe**: Full TypeScript support with proper prop validation
+
+### Variant System
+
+We use a consistent variant system across all components:
+
+```tsx
+// All components support these common patterns:
+<Button variant="default" size="md" />
+<Input variant="error" size="lg" />
+<Card variant="elevated" padding="md" />
+```
+
+### Styling Utilities
+
+The `cn()` utility function combines `clsx` and `tailwind-merge` for optimal class handling:
+
+```tsx
+import { cn } from './utils'
+
+// Merges classes with proper Tailwind override behavior
+const className = cn(
+  'base-classes',
+  variant && 'variant-classes',
+  size === 'large' && 'size-classes',
+  props.className // User overrides
+)
+```
+
+## Usage Guidelines
+
+### Getting Started
+
+Import components from the design system:
+
+```tsx
+import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '@/components/design-system'
+```
+
+### Best Practices
+
+1. **Use semantic variants**: Choose variants that match the intent (e.g., `destructive` for delete actions)
+2. **Consistent sizing**: Stick to the provided size options for visual harmony
+3. **Accessibility first**: Always include proper labels, descriptions, and ARIA attributes
+4. **Progressive enhancement**: Ensure components work without JavaScript when possible
+5. **Performance**: Import only what you need to keep bundle sizes small
+
+### Customization
+
+While the design system provides comprehensive defaults, you can customize components:
+
+```tsx
+// Using className prop for one-off customizations
+<Button className="w-full bg-purple-600 hover:bg-purple-700">
+  Custom Button
+</Button>
+
+// Using CSS custom properties for theme-wide changes
+:root {
+  --color-primary-500: #8b5cf6; /* Override primary color */
+}
+```
+
+## Component Library
+
+Our component library includes:
+
+- **Button**: Primary interaction element with multiple variants
+- **Input**: Form input with validation states and icons
+- **Card**: Content container with flexible layout options
+
+Each component is fully documented with usage examples, props API, and accessibility notes in their respective stories.
+
+## Contributing
+
+When creating new components:
+
+1. Follow the established patterns and conventions
+2. Include comprehensive Storybook documentation
+3. Add TypeScript types and prop validation
+4. Ensure accessibility compliance
+5. Write tests for critical functionality
+6. Update this documentation
+
+## Resources
+
+- [Storybook Documentation](https://storybook.js.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
+- [Web Content Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
