@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, HeaderLogo, HeaderNav, HeaderNavItem, HeaderActions } from './design-system'
+import { Header, HeaderLogo, HeaderNav, HeaderNavItem, HeaderActions, Footer, FooterSection, FooterLink, FooterBottom } from './design-system'
 import { Button } from './design-system'
 
 interface LayoutProps {
@@ -10,7 +10,7 @@ interface LayoutProps {
 
 export function Layout({ children, title }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header
         logo={
           <HeaderLogo href="/nodes">
@@ -26,13 +26,11 @@ export function Layout({ children, title }: LayoutProps) {
         }
         actions={
           <HeaderActions>
-            <Button variant="outline" size="sm">Sign In</Button>
-            <Button size="sm">Sign Up</Button>
           </HeaderActions>
         }
       />
       
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
         {title && (
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
@@ -40,6 +38,38 @@ export function Layout({ children, title }: LayoutProps) {
         )}
         {children}
       </main>
+
+      <Footer
+        variant="minimal"
+        size="sm"
+        sections={
+          <>
+            <FooterSection title="Roam Web">
+              <FooterLink href="/nodes">My Nodes</FooterLink>
+              <FooterLink href="/search">Search</FooterLink>
+              <FooterLink href="/help">Help</FooterLink>
+            </FooterSection>
+            
+            <FooterSection title="Account">
+              <FooterLink href="/profile">Profile</FooterLink>
+              <FooterLink href="/settings">Settings</FooterLink>
+              <FooterLink href="/export">Export Data</FooterLink>
+            </FooterSection>
+          </>
+        }
+        bottom={
+          <FooterBottom
+            copyright="© 2024 Roam Web. All rights reserved."
+            links={
+              <>
+                <FooterLink href="/privacy">Privacy</FooterLink>
+                <FooterLink href="/terms">Terms</FooterLink>
+                <FooterLink href="/contact">Contact</FooterLink>
+              </>
+            }
+          />
+        }
+      />
     </div>
   )
 }

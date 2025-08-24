@@ -58,6 +58,18 @@ export {
 } from './Header'
 export type { HeaderProps } from './Header'
 
+export { 
+  Footer, 
+  FooterSection, 
+  FooterLink, 
+  FooterSocial, 
+  FooterSocialLink, 
+  FooterBottom, 
+  FooterCTA, 
+  footerVariants 
+} from './Footer'
+export type { FooterProps } from './Footer'
+
 // Utilities
 export { cn } from './utils'
 

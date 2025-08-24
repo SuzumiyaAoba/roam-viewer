@@ -63,8 +63,6 @@ export const Default: Story = {
       }
       actions={
         <HeaderActions>
-          <Button variant="outline" size="sm">Sign In</Button>
-          <Button size="sm">Sign Up</Button>
         </HeaderActions>
       }
     />
@@ -91,8 +89,6 @@ export const Elevated: Story = {
       }
       actions={
         <HeaderActions>
-          <Button variant="outline" size="sm">Sign In</Button>
-          <Button size="sm">Sign Up</Button>
         </HeaderActions>
       }
     />
@@ -117,7 +113,6 @@ export const Minimal: Story = {
       }
       actions={
         <HeaderActions>
-          <Button variant="ghost" size="sm">Sign In</Button>
         </HeaderActions>
       }
     />
@@ -144,9 +139,6 @@ export const Transparent: Story = {
         }
         actions={
           <HeaderActions>
-            <Button variant="outline" size="sm" className="border-white text-white hover:bg-white hover:text-gray-900">
-              Sign In
-            </Button>
           </HeaderActions>
         }
       />
@@ -185,7 +177,6 @@ export const Small: Story = {
       }
       actions={
         <HeaderActions>
-          <Button variant="outline" size="sm">Sign In</Button>
         </HeaderActions>
       }
     />
@@ -212,8 +203,6 @@ export const Large: Story = {
       }
       actions={
         <HeaderActions>
-          <Button variant="outline">Sign In</Button>
-          <Button>Sign Up</Button>
         </HeaderActions>
       }
     />
@@ -241,7 +230,6 @@ export const Sticky: Story = {
         }
         actions={
           <HeaderActions>
-            <Button variant="outline" size="sm">Sign In</Button>
           </HeaderActions>
         }
       />
@@ -344,8 +332,6 @@ export const MobileResponsive: Story = {
         }
         actions={
           <HeaderActions>
-            <Button variant="outline" size="sm" className="hidden sm:inline-flex">Sign In</Button>
-            <Button size="sm" className="hidden sm:inline-flex">Sign Up</Button>
           </HeaderActions>
         }
         isMobileMenuOpen={isMobileMenuOpen}
