@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"bun run dev:server\" \"bun run dev:client\"",
+    "dev": "node scripts/dev.js",
+    "dev:simple": "concurrently \"bun run dev:server\" \"bun run dev:client\"",
     "dev:server": "bun --watch server.ts",
     "dev:client": "vite",
     "start": "bun server.ts",
@@ -47,6 +48,7 @@
     "@types/react-dom": "^19.1.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "get-port-please": "^3.2.0",
     "hono": "^4.9.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

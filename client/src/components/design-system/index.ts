@@ -61,8 +61,7 @@ export {
   SearchForm, 
   QuickSearch, 
   SearchWithSuggestions, 
-  searchFormVariants, 
-  searchInputVariants 
+  searchFormVariants 
 } from './SearchForm'
 export type { SearchFormProps, SearchSuggestion, SearchWithSuggestionsProps } from './SearchForm'
 

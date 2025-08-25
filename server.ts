@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { getPort } from 'get-port-please'
 import { apiClient } from './src/lib/api-client'
 import type { CreateNodeRequest, UpdateNodeRequest } from './src/types/api'
 
@@ -112,7 +113,12 @@ app.delete('/api/nodes/:id', async (c) => {
   }
 })
 
+const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001;
+const port = await getPort({ port: preferredPort, portRange: [3001, 3011] });
+
+console.log(`🔥 Bun server starting on port ${port}`);
+
 export default {
-  port: 3001,
+  port: port,
   fetch: app.fetch,
 }
