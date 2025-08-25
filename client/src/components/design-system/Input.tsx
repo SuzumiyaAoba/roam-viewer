@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from './utils'
+import { cn } from '@/lib/utils'
+import { Input as ShadcnInput } from '@/components/ui/input'
 
 const inputVariants = cva(
   [
@@ -74,7 +75,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {leftIcon}
             </div>
           )}
-          <input
+          <ShadcnInput
             id={inputId}
             className={cn(
               inputVariants({ variant: finalVariant, size, className }),

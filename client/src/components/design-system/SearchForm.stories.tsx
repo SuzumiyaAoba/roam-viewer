@@ -488,3 +488,133 @@ export const AllVariants: Story = {
     }
   },
 }
+
+// Height alignment test - to verify button and input alignment
+export const HeightAlignmentTest: Story = {
+  render: () => (
+    <div className="space-y-8 w-full max-w-4xl">
+      <h3 className="text-lg font-semibold">Height Alignment Test</h3>
+      <div className="text-sm text-gray-600 mb-6">
+        This story tests the alignment between input fields and buttons across all size and variant combinations.
+      </div>
+      
+      {/* Size variations with default input variant */}
+      <div className="space-y-6">
+        <div>
+          <h4 className="font-medium mb-4">Default Input Variant - All Sizes</h4>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Small (38px height)</label>
+              <SearchForm
+                size="sm"
+                inputVariant="default"
+                placeholder="Small search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Default (50px height)</label>
+              <SearchForm
+                size="default"
+                inputVariant="default"
+                placeholder="Default search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Large (62px height)</label>
+              <SearchForm
+                size="lg"
+                inputVariant="default"
+                placeholder="Large search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Outlined variant with thicker borders */}
+        <div>
+          <h4 className="font-medium mb-4">Outlined Input Variant - All Sizes (Thicker Border)</h4>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Small Outlined (38px height + 2px border)</label>
+              <SearchForm
+                size="sm"
+                inputVariant="outlined"
+                placeholder="Small outlined search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Default Outlined (50px height + 2px border)</label>
+              <SearchForm
+                size="default"
+                inputVariant="outlined"
+                placeholder="Default outlined search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Large Outlined (62px height + 2px border)</label>
+              <SearchForm
+                size="lg"
+                inputVariant="outlined"
+                placeholder="Large outlined search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Filled variant */}
+        <div>
+          <h4 className="font-medium mb-4">Filled Input Variant</h4>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Small Filled</label>
+              <SearchForm
+                size="sm"
+                inputVariant="filled"
+                placeholder="Small filled search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Default Filled</label>
+              <SearchForm
+                size="default"
+                inputVariant="filled"
+                placeholder="Default filled search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Large Filled</label>
+              <SearchForm
+                size="lg"
+                inputVariant="filled"
+                placeholder="Large filled search..."
+                onSubmit={(query) => alert(`Search: ${query}`)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story: 'Test story to verify proper height alignment between input fields and buttons across all variants and sizes.'
+      }
+    }
+  },
+}

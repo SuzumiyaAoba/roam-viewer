@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { Header, HeaderLogo, HeaderNav, HeaderNavItem, HeaderActions } from './Header'
 import { Button } from './Button'
-import { Avatar } from './Avatar'
 import { Badge } from './Badge'
 
 const meta = {
@@ -289,12 +288,9 @@ export const WithUserMenu: Story = {
               </Badge>
             </span>
           </Button>
-          <Avatar
-            size="sm"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-            alt="User"
-            status="online"
-          />
+          <Button variant="ghost" size="sm" className="rounded-full w-8 h-8 p-0">
+            <span className="text-xs font-medium">JD</span>
+          </Button>
         </HeaderActions>
       }
     />
@@ -369,11 +365,9 @@ export const WithBreadcrumbs: Story = {
             </span>
           </Button>
           <Button variant="ghost" size="sm">⚙️</Button>
-          <Avatar
-            size="sm"
-            name="John Doe"
-            status="online"
-          />
+          <Button variant="ghost" size="sm" className="rounded-full w-8 h-8 p-0">
+            <span className="text-xs font-medium">JD</span>
+          </Button>
         </HeaderActions>
       }
     >
@@ -424,11 +418,9 @@ export const WithSearch: Story = {
       actions={
         <HeaderActions>
           <Button variant="ghost" size="sm">Create</Button>
-          <Avatar
-            size="sm"
-            name="Jane Smith"
-            status="away"
-          />
+          <Button variant="ghost" size="sm" className="rounded-full w-8 h-8 p-0">
+            <span className="text-xs font-medium">JS</span>
+          </Button>
         </HeaderActions>
       }
     />

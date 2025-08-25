@@ -1,7 +1,8 @@
 import React, { forwardRef, useState } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from './utils'
-import { Button } from './Button'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 const searchFormVariants = cva(
   'relative w-full',
@@ -13,38 +14,9 @@ const searchFormVariants = cva(
         minimal: '',
         prominent: 'bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100',
       },
-      size: {
-        sm: '',
-        default: '',
-        lg: '',
-      },
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default',
-    },
-  }
-)
-
-const searchInputVariants = cva(
-  'w-full border rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
-  {
-    variants: {
-      variant: {
-        default: 'border-gray-300 bg-white text-gray-900 placeholder-gray-500',
-        filled: 'border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-500 focus:bg-white',
-        outlined: 'border-2 border-gray-300 bg-white text-gray-900 placeholder-gray-500',
-        minimal: 'border-0 border-b-2 border-gray-200 rounded-none bg-transparent text-gray-900 placeholder-gray-500 focus:ring-0 focus:border-blue-500',
-      },
-      size: {
-        sm: 'px-3 py-2 text-sm',
-        default: 'px-4 py-3 text-base',
-        lg: 'px-5 py-4 text-lg',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
     },
   }
 )
@@ -55,7 +27,7 @@ export interface SearchFormProps
   /**
    * Input variant style
    */
-  inputVariant?: 'default' | 'filled' | 'outlined' | 'minimal'
+  inputVariant?: 'default' | 'outline'
   /**
    * Placeholder text for the search input
    */
@@ -89,10 +61,6 @@ export interface SearchFormProps
    */
   icon?: React.ReactNode
   /**
-   * Whether to show clear button when input has value
-   */
-  showClearButton?: boolean
-  /**
    * Loading state
    */
   loading?: boolean
@@ -106,7 +74,6 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
   ({
     className,
     variant,
-    size,
     inputVariant = 'default',
     placeholder = 'Search...',
     buttonText = 'Search',
@@ -116,7 +83,6 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
     onSubmit,
     onChange,
     icon,
-    showClearButton = true,
     loading = false,
     disabled = false,
     ...props
@@ -140,24 +106,14 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
       }
     }
 
-    const handleClear = () => {
-      const newValue = ''
-      if (!isControlled) {
-        setInternalValue(newValue)
-      }
-      onChange?.(newValue)
-    }
-
-    const hasValue = searchValue.length > 0
-
     return (
       <form
         ref={ref}
-        className={cn(searchFormVariants({ variant, size }), className)}
+        className={cn(searchFormVariants({ variant }), className)}
         onSubmit={handleSubmit}
         {...props}
       >
-        <div className="relative flex items-center">
+        <div className="flex w-full items-center">
           {/* Search Icon */}
           {icon && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">
@@ -165,34 +121,18 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
             </div>
           )}
 
-          {/* Search Input */}
-          <input
+          {/* Search Input using shadcn/ui Input */}
+          <Input
             type="search"
             value={searchValue}
             onChange={handleInputChange}
             placeholder={placeholder}
             disabled={disabled || loading}
             className={cn(
-              searchInputVariants({ variant: inputVariant, size }),
               icon && 'pl-10',
-              (showClearButton && hasValue && !loading) && 'pr-10',
               showButton && 'rounded-r-none border-r-0'
             )}
           />
-
-          {/* Clear Button */}
-          {showClearButton && hasValue && !loading && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors z-10"
-              aria-label="Clear search"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
 
           {/* Loading Spinner */}
           {loading && (
@@ -204,20 +144,15 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
             </div>
           )}
 
-          {/* Search Button */}
+          {/* Search Button using shadcn/ui Button */}
           {showButton && (
             <Button
               type="submit"
               disabled={disabled || loading || !searchValue.trim()}
-              loading={loading}
-              className={cn(
-                'rounded-l-none border-l-0',
-                size === 'sm' && 'px-3 py-2',
-                size === 'default' && 'px-4 py-3',
-                size === 'lg' && 'px-5 py-4'
-              )}
+              className="rounded-l-none border-l-0"
+              variant="default"
             >
-              {buttonText}
+              {loading ? 'Searching...' : buttonText}
             </Button>
           )}
         </div>
@@ -390,7 +325,6 @@ export {
   QuickSearch,
   SearchWithSuggestions,
   searchFormVariants,
-  searchInputVariants,
 }
 
 export type { SearchSuggestion, SearchWithSuggestionsProps }
