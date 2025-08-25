@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNodes, useSearchNodes, useDeleteNode } from '../hooks/useNodes'
-import { Layout } from '../components/Layout.simple'
+import { Layout } from '../components/Layout'
 import type { Node } from '../types/api'
 
 function NodeCard({ node, onDelete }: { node: Node; onDelete: (id: string) => void }) {

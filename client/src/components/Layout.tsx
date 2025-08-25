@@ -1,7 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, HeaderLogo, HeaderNav, HeaderNavItem, HeaderActions, Footer, FooterSection, FooterLink, FooterBottom } from './design-system'
-import { Button } from './design-system'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -11,24 +9,20 @@ interface LayoutProps {
 export function Layout({ children, title }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header
-        logo={
-          <HeaderLogo href="/nodes">
-            <span className="text-blue-600">🌐</span>
-            <span className="ml-2">Roam Web</span>
-          </HeaderLogo>
-        }
-        navigation={
-          <HeaderNav>
-            <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
-            <HeaderNavItem href="/nodes/new">Create</HeaderNavItem>
-          </HeaderNav>
-        }
-        actions={
-          <HeaderActions>
-          </HeaderActions>
-        }
-      />
+      <header className="bg-white shadow">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link to="/nodes" className="flex items-center text-xl font-bold text-gray-900">
+              <span className="text-blue-600 mr-2">🌐</span>
+              Roam Web
+            </Link>
+            <nav className="flex space-x-4">
+              <Link to="/nodes" className="text-gray-600 hover:text-gray-900">Nodes</Link>
+              <Link to="/nodes/new" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">Create</Link>
+            </nav>
+          </div>
+        </div>
+      </header>
       
       <main className="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
         {title && (
@@ -39,13 +33,13 @@ export function Layout({ children, title }: LayoutProps) {
         {children}
       </main>
 
-      <Footer
-        variant="minimal"
-        size="sm"
-        bottom={
-          <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-        }
-      />
+      <footer className="bg-white border-t">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <p className="text-sm text-gray-500 text-center">
+            © 2024 Roam Web. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
