@@ -14,7 +14,10 @@
       "Bash(find:*)",
       "Bash(curl:*)",
       "Bash(npm run dev:*)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(BACKEND_PORT=3001 bun run dev:server)",
+      "Bash(VITE_PORT=3000 VITE_API_URL=http://localhost:3001 bun run dev:client)",
+      "Read(//Users/suzumiyaaoba/org-roam/**)"
     ],
     "deny": [],
     "ask": []

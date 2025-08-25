@@ -1,33 +1,81 @@
 import React from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import rehypeRaw from 'rehype-raw'
 import { useNode, useBacklinks, useForwardLinks, useDeleteNode } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
 import type { BacklinkNode } from '../types/api'
 
+// Simple function to remove frontmatter
+function removeFrontmatter(content: string): string {
+  const lines = content.split('\n')
+  if (lines[0] === '---') {
+    const endIndex = lines.findIndex((line, index) => index > 0 && line === '---')
+    if (endIndex > 0) {
+      return lines.slice(endIndex + 1).join('\n')
+    }
+  }
+  return content
+}
+
 function BacklinkCard({ link }: { link: BacklinkNode }) {
   return (
-    <div className="border-l-4 border-blue-200 pl-4">
+    <div className="border-l-4 border-blue-200 pl-4 space-y-2">
       <Link 
         to={`/nodes/${encodeURIComponent(link.id)}`}
-        className="text-blue-600 hover:text-blue-800 font-medium"
+        className="text-blue-600 hover:text-blue-800 font-medium block"
       >
         {link.title}
       </Link>
       <p className="text-sm text-gray-500">{link.file}</p>
+      {(link.source || link.dest) && (
+        <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+          {link.source && (
+            <div className="flex">
+              <span className="font-medium text-gray-700 mr-2">Source:</span>
+              <span className="font-mono">{link.source}</span>
+            </div>
+          )}
+          {link.dest && (
+            <div className="flex mt-1">
+              <span className="font-medium text-gray-700 mr-2">Dest:</span>
+              <span className="font-mono">{link.dest}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
 function ForwardLinkCard({ link }: { link: BacklinkNode }) {
   return (
-    <div className="border-l-4 border-green-200 pl-4">
+    <div className="border-l-4 border-green-200 pl-4 space-y-2">
       <Link 
         to={`/nodes/${encodeURIComponent(link.id)}`}
-        className="text-green-600 hover:text-green-800 font-medium"
+        className="text-green-600 hover:text-green-800 font-medium block"
       >
         {link.title}
       </Link>
       <p className="text-sm text-gray-500">{link.file}</p>
+      {(link.source || link.dest) && (
+        <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+          {link.source && (
+            <div className="flex">
+              <span className="font-medium text-gray-700 mr-2">Source:</span>
+              <span className="font-mono">{link.source}</span>
+            </div>
+          )}
+          {link.dest && (
+            <div className="flex mt-1">
+              <span className="font-medium text-gray-700 mr-2">Dest:</span>
+              <span className="font-mono">{link.dest}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -35,6 +83,7 @@ function ForwardLinkCard({ link }: { link: BacklinkNode }) {
 export function NodeDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [showRaw, setShowRaw] = React.useState(false)
   
   const { data: node, isLoading: nodeLoading, error: nodeError } = useNode(id!)
   const { data: backlinks } = useBacklinks(id!)
@@ -89,7 +138,6 @@ export function NodeDetailPage() {
           >
             ← Back to Nodes
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">{node.title}</h1>
         </div>
         <div className="flex space-x-2">
           <Link 
@@ -112,16 +160,63 @@ export function NodeDetailPage() {
         {/* Main Content */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Content</h2>
-            <div className="prose max-w-none">
-              <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-md text-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Content</h2>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setShowRaw(!showRaw)}
+                  className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded border"
+                >
+                  {showRaw ? 'Rendered' : 'Raw'}
+                </button>
+              </div>
+            </div>
+            
+            {showRaw ? (
+              <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-md text-sm font-mono">
                 {node.content || 'No content available.'}
               </pre>
-            </div>
+            ) : (
+              <div className="markdown-content max-w-none">
+                {node.content ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeHighlight, rehypeRaw]}
+                    components={{
+                      // Custom link rendering for internal node links
+                      a: ({ href, children, ...props }) => {
+                        // Check if it's an internal node reference (you can customize this logic)
+                        if (href?.startsWith('#') || href?.match(/^\[\[.*\]\]$/)) {
+                          return (
+                            <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
+                              {children}
+                            </span>
+                          );
+                        }
+                        return (
+                          <a
+                            href={href}
+                            target={href?.startsWith('http') ? '_blank' : undefined}
+                            rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      }
+                    }}
+                  >
+                    {removeFrontmatter(node.content)}
+                  </ReactMarkdown>
+                ) : (
+                  <div className="text-gray-500 italic">No content available.</div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Backlinks */}
-          {backlinks && backlinks.length > 0 && (
+          {(backlinks && backlinks.length > 0) && (
             <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Backlinks ({backlinks.length})
@@ -135,7 +230,7 @@ export function NodeDetailPage() {
           )}
 
           {/* Forward Links */}
-          {forwardLinks && forwardLinks.length > 0 && (
+          {(forwardLinks && forwardLinks.length > 0) && (
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Forward Links ({forwardLinks.length})
@@ -210,26 +305,18 @@ export function NodeDetailPage() {
           {/* References */}
           {node.refs && node.refs.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">References</h2>
-              <div className="space-y-2">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">References ({node.refs.length})</h2>
+              <div className="space-y-3">
                 {node.refs.map((ref, index) => (
-                  <div key={index} className="text-sm text-gray-600">{ref}</div>
+                  <div key={index} className="bg-gray-50 p-3 rounded-md">
+                    <div className="text-sm font-mono text-gray-700 break-all">{ref}</div>
+                    <div className="text-xs text-gray-500 mt-1">Reference #{index + 1}</div>
+                  </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Roam References */}
-          {node.roam_refs && node.roam_refs.length > 0 && (
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Roam References</h2>
-              <div className="space-y-2">
-                {node.roam_refs.map((ref, index) => (
-                  <div key={index} className="text-sm text-gray-600">{ref}</div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </Layout>

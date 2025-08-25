@@ -1,27 +1,16 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(dirname, "./client/src"),
-    },
-  },
-  css: {
-    postcss: {
-      plugins: [tailwindcss, autoprefixer]
+      '@': path.resolve(__dirname, './client/src')
     }
   },
   server: {
-    port: 3000,
-    strictPort: false,
+    port: parseInt(process.env.VITE_PORT) || 3000,
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:3001',
@@ -32,4 +21,4 @@ export default defineConfig({
   build: {
     outDir: 'dist/client'
   }
-});
+})

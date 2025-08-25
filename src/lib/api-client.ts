@@ -102,7 +102,7 @@ export class MdRoamApiClient {
   }
 
   async getNode(id: string): Promise<NodeDetail> {
-    return this.request<NodeDetail>(`/nodes/${encodeURIComponent(id)}`)
+    return this.request<NodeDetail>(`/nodes/${encodeURIComponent(id)}/content`)
   }
 
   async createNode(nodeData: CreateNodeRequest): Promise<NodeDetail> {
@@ -148,11 +148,33 @@ export class MdRoamApiClient {
 
   // Relationships
   async getBacklinks(id: string): Promise<BacklinkNode[]> {
-    return this.request<BacklinkNode[]>(`/nodes/${encodeURIComponent(id)}/backlinks`)
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/backlinks`)
+    
+    // Handle different response formats
+    if (Array.isArray(result)) {
+      return result
+    } else if (result && Array.isArray(result.backlinks)) {
+      return result.backlinks
+    } else if (result && Array.isArray(result.data)) {
+      return result.data
+    }
+    
+    return []
   }
 
   async getForwardLinks(id: string): Promise<BacklinkNode[]> {
-    return this.request<BacklinkNode[]>(`/nodes/${encodeURIComponent(id)}/links`)
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/links`)
+    
+    // Handle different response formats
+    if (Array.isArray(result)) {
+      return result
+    } else if (result && Array.isArray(result.links)) {
+      return result.links
+    } else if (result && Array.isArray(result.data)) {
+      return result.data
+    }
+    
+    return []
   }
 
   async getNodeAliases(id: string): Promise<string[]> {

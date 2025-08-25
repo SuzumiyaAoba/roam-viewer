@@ -33,7 +33,56 @@ app.get('/api/nodes/:id', async (c) => {
   try {
     const id = c.req.param('id')
     const node = await apiClient.getNode(id)
-    return c.json(node)
+    
+    // Try to get refs from the API
+    let refs: string[] = []
+    
+    try {
+      refs = await apiClient.getNodeRefs(id)
+      console.log('Successfully got refs from API for node:', id, refs)
+    } catch (error) {
+      console.log('No refs API available, trying to extract from content for node:', id)
+      
+      // Fallback: extract refs from frontmatter if API is not available
+      if (node.content) {
+        console.log('Node has content, looking for frontmatter...')
+        const frontmatterMatch = node.content.match(/^---\s*\n([\s\S]*?)\n---/)
+        if (frontmatterMatch) {
+          const frontmatterText = frontmatterMatch[1]
+          console.log('Found frontmatter:', frontmatterText.substring(0, 200))
+          const refsMatch = frontmatterText.match(/refs?\s*:\s*(.+)/i)
+          if (refsMatch) {
+            console.log('Found refs match:', refsMatch[1])
+            try {
+              const refsValue = refsMatch[1].trim()
+              if (refsValue.startsWith('[')) {
+                refs = JSON.parse(refsValue)
+                console.log('Parsed refs as JSON array:', refs)
+              } else {
+                refs = [refsValue.replace(/['"]/g, '')]
+                console.log('Parsed refs as single string:', refs)
+              }
+            } catch (e) {
+              console.log('Could not parse refs from frontmatter for node:', id, e)
+            }
+          } else {
+            console.log('No refs field found in frontmatter')
+          }
+        } else {
+          console.log('No frontmatter found in content')
+        }
+      } else {
+        console.log('Node has no content')
+      }
+    }
+    
+    // Merge the additional data with the node response
+    const enrichedNode = {
+      ...node,
+      refs: refs.length > 0 ? refs : undefined
+    }
+    
+    return c.json(enrichedNode)
   } catch (error) {
     console.error('Error fetching node:', error)
     return c.json({ error: 'Node not found' }, 404)

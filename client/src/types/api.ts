@@ -16,7 +16,6 @@ export interface NodeDetail extends Node {
   content?: string
   aliases?: string[]
   refs?: string[]
-  roam_refs?: string[]
 }
 
 export interface FileInfo {
@@ -45,6 +44,9 @@ export interface BacklinkNode {
   file: string
   pos?: number
   properties?: Record<string, any>
+  source?: string
+  dest?: string
+  type?: 'backlink' | 'forwardlink'
 }
 
 export interface ApiResponse<T> {
@@ -59,7 +61,6 @@ export interface CreateNodeRequest {
   tags?: string[]
   aliases?: string[]
   refs?: string[]
-  roam_refs?: string[]
 }
 
 export interface UpdateNodeRequest {
@@ -68,5 +69,4 @@ export interface UpdateNodeRequest {
   tags?: string[]
   aliases?: string[]
   refs?: string[]
-  roam_refs?: string[]
 }
