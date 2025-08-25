@@ -70,6 +70,15 @@ export {
 } from './Footer'
 export type { FooterProps } from './Footer'
 
+export { 
+  SearchForm, 
+  QuickSearch, 
+  SearchWithSuggestions, 
+  searchFormVariants, 
+  searchInputVariants 
+} from './SearchForm'
+export type { SearchFormProps, SearchSuggestion, SearchWithSuggestionsProps } from './SearchForm'
+
 // Utilities
 export { cn } from './utils'
 
