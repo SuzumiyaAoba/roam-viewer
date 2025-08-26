@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useLocalStorage } from 'react-use'
 import { useNodes, useSearchNodes, useDeleteNode } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
 import { NodeCard, NodeCardCompact } from '../components/design-system/NodeCard'
 import { Button } from '../components/design-system/Button'
+import { cn } from '../components/design-system/utils'
 import type { Node } from '../types/api'
 
 type ViewMode = 'grid' | 'list' | 'table'
 
 
 export function NodeListPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [viewMode, setViewMode] = useLocalStorage<ViewMode>('node-list-view-mode', 'grid')
   const navigate = useNavigate()
   
@@ -21,8 +24,24 @@ export function NodeListPage() {
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery)
   const deleteNodeMutation = useDeleteNode()
 
+  // Initialize state from URL parameters
+  useEffect(() => {
+    const tagFromUrl = searchParams.get('tag')
+    const searchFromUrl = searchParams.get('search')
+    
+    if (tagFromUrl) {
+      setSelectedTag(decodeURIComponent(tagFromUrl))
+    }
+    
+    if (searchFromUrl) {
+      const decodedSearch = decodeURIComponent(searchFromUrl)
+      setSearchQuery(decodedSearch)
+      setDebouncedQuery(decodedSearch)
+    }
+  }, []) // Run only on mount
+
   // Debounce search query
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery)
     }, 300)
@@ -30,9 +49,54 @@ export function NodeListPage() {
     return () => clearTimeout(timer)
   }, [searchQuery])
 
-  const displayNodes = debouncedQuery 
-    ? (searchResults?.nodes || []) 
-    : (nodes || [])
+  // Update URL when debounced query changes (but not on initial load)
+  useEffect(() => {
+    const isInitialLoad = searchParams.get('search') && debouncedQuery === decodeURIComponent(searchParams.get('search')!)
+    if (!isInitialLoad) {
+      updateURLParams(undefined, debouncedQuery)
+    }
+  }, [debouncedQuery])
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const tagFromUrl = searchParams.get('tag')
+    const searchFromUrl = searchParams.get('search')
+    
+    // Update selectedTag if URL parameter changed
+    if (tagFromUrl && tagFromUrl !== selectedTag) {
+      setSelectedTag(decodeURIComponent(tagFromUrl))
+    } else if (!tagFromUrl && selectedTag) {
+      setSelectedTag(null)
+    }
+    
+    // Update searchQuery if URL parameter changed
+    if (searchFromUrl) {
+      const decodedSearch = decodeURIComponent(searchFromUrl)
+      if (decodedSearch !== searchQuery) {
+        setSearchQuery(decodedSearch)
+      }
+    } else if (!searchFromUrl && searchQuery) {
+      setSearchQuery('')
+    }
+  }, [searchParams])
+
+  // Filter nodes based on search query and selected tag
+  const getFilteredNodes = (): Node[] => {
+    let filteredNodes = debouncedQuery 
+      ? (searchResults?.nodes || []) 
+      : (nodes || [])
+    
+    // Apply tag filter if a tag is selected
+    if (selectedTag) {
+      filteredNodes = filteredNodes.filter(node => 
+        node.tags?.includes(selectedTag)
+      )
+    }
+    
+    return filteredNodes
+  }
+  
+  const displayNodes = getFilteredNodes()
 
   const isLoading = nodesLoading || searchLoading
   const error = nodesError
@@ -44,6 +108,49 @@ export function NodeListPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     // Search is handled by debounced effect
+  }
+
+  // Update URL parameters helper
+  const updateURLParams = (newTag?: string | null, newSearch?: string) => {
+    const newParams = new URLSearchParams(searchParams)
+    
+    if (newTag !== undefined) {
+      if (newTag === null) {
+        newParams.delete('tag')
+      } else {
+        newParams.set('tag', encodeURIComponent(newTag))
+      }
+    }
+    
+    if (newSearch !== undefined) {
+      if (newSearch === '') {
+        newParams.delete('search')
+      } else {
+        newParams.set('search', encodeURIComponent(newSearch))
+      }
+    }
+    
+    setSearchParams(newParams, { replace: true })
+  }
+
+  const handleTagClick = (tag: string) => {
+    if (selectedTag === tag) {
+      // If clicking the same tag, clear the filter
+      setSelectedTag(null)
+      updateURLParams(null)
+    } else {
+      // Set new tag filter
+      setSelectedTag(tag)
+      updateURLParams(tag)
+    }
+  }
+
+  const clearFilters = () => {
+    setSelectedTag(null)
+    setSearchQuery('')
+    setDebouncedQuery('')
+    // Clear all URL parameters
+    setSearchParams({}, { replace: true })
   }
 
   const renderNodes = () => {
@@ -67,6 +174,7 @@ export function NodeListPage() {
                     handleDelete(node.id)
                   }
                 }}
+                onTagClick={handleTagClick}
               />
             ))}
           </div>
@@ -89,6 +197,7 @@ export function NodeListPage() {
                     handleDelete(node.id)
                   }
                 }}
+                onTagClick={handleTagClick}
               />
             ))}
           </div>
@@ -123,12 +232,21 @@ export function NodeListPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-wrap gap-1">
                         {node.tags?.slice(0, 3).map((tag) => (
-                          <span
+                          <button
                             key={tag}
-                            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleTagClick(tag)
+                            }}
+                            className={cn(
+                              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium transition-colors hover:bg-blue-200",
+                              selectedTag === tag 
+                                ? "bg-blue-600 text-white" 
+                                : "bg-blue-100 text-blue-800"
+                            )}
                           >
                             {tag}
-                          </span>
+                          </button>
                         ))}
                         {node.tags && node.tags.length > 3 && (
                           <span className="text-xs text-gray-400">+{node.tags.length - 3}</span>
@@ -235,6 +353,50 @@ export function NodeListPage() {
             </button>
           </div>
         </form>
+
+        {/* Active Filters */}
+        {(selectedTag || debouncedQuery) && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-medium text-gray-700">Active filters:</span>
+              {selectedTag && (
+                <div className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                  <span>Tag: {selectedTag}</span>
+                  <button
+                    onClick={() => {
+                      setSelectedTag(null)
+                      updateURLParams(null)
+                    }}
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <Icon icon="lucide:x" width={14} height={14} />
+                  </button>
+                </div>
+              )}
+              {debouncedQuery && (
+                <div className="flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                  <span>Search: "{debouncedQuery}"</span>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('')
+                      setDebouncedQuery('')
+                      updateURLParams(undefined, '')
+                    }}
+                    className="ml-2 text-gray-600 hover:text-gray-800"
+                  >
+                    <Icon icon="lucide:x" width={14} height={14} />
+                  </button>
+                </div>
+              )}
+              <button
+                onClick={clearFilters}
+                className="text-sm text-red-600 hover:text-red-800 underline"
+              >
+                Clear all
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -256,6 +418,15 @@ export function NodeListPage() {
           <div className="text-center py-12 text-gray-500">
             <p className="text-lg">No nodes found.</p>
             {debouncedQuery && <p className="mt-2">Try a different search term.</p>}
+            {selectedTag && <p className="mt-2">No nodes found with tag "{selectedTag}".</p>}
+            {(debouncedQuery || selectedTag) && (
+              <button
+                onClick={clearFilters}
+                className="mt-4 text-blue-600 hover:text-blue-800 underline"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         )}
 

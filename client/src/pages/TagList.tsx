@@ -6,25 +6,42 @@ import { Layout } from '../components/Layout'
 
 function TagCard({ tag, count }: { tag: string; count: number }) {
   return (
-    <Link
-      to={`/tags/${encodeURIComponent(tag)}`}
-      className="block bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow"
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Icon icon="lucide:hash" className="text-blue-600" width={20} height={20} />
+    <div className="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow">
+      <Link
+        to={`/tags/${encodeURIComponent(tag)}`}
+        className="block"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Icon icon="lucide:hash" className="text-blue-600" width={20} height={20} />
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">#{tag}</h3>
+              <p className="text-sm text-gray-500">{count} node{count !== 1 ? 's' : ''}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-medium text-gray-900">#{tag}</h3>
-            <p className="text-sm text-gray-500">{count} node{count !== 1 ? 's' : ''}</p>
+          <div className="text-gray-400">
+            <Icon icon="lucide:chevron-right" width={20} height={20} />
           </div>
         </div>
-        <div className="text-gray-400">
-          <Icon icon="lucide:chevron-right" width={20} height={20} />
-        </div>
+      </Link>
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+        <Link
+          to={`/nodes?tag=${encodeURIComponent(tag)}`}
+          className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center space-x-1"
+        >
+          <Icon icon="lucide:filter" width={14} height={14} />
+          <span>Filter nodes</span>
+        </Link>
+        <Link
+          to={`/tags/${encodeURIComponent(tag)}`}
+          className="text-sm text-gray-600 hover:text-gray-800"
+        >
+          View details →
+        </Link>
       </div>
-    </Link>
+    </div>
   )
 }
 
@@ -89,8 +106,7 @@ export function TagListPage() {
     <Layout title="Tags">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tags</h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600">
             Browse {tags.length} tag{tags.length !== 1 ? 's' : ''} across your knowledge base
           </p>
         </div>

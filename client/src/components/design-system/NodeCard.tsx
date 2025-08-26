@@ -77,6 +77,10 @@ export interface NodeCardProps
    */
   onDelete?: () => void
   /**
+   * Tag click handler
+   */
+  onTagClick?: (tag: string) => void
+  /**
    * Show action buttons
    */
   showActions?: boolean
@@ -110,6 +114,7 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
     onCardClick,
     onEdit,
     onDelete,
+    onTagClick,
     showActions = true,
     actions,
     maxTags = 5,
@@ -241,7 +246,16 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
                 key={index}
                 variant="secondary"
                 size="sm"
-                className="text-xs"
+                className={cn(
+                  "text-xs",
+                  onTagClick && "cursor-pointer hover:bg-blue-200 transition-colors"
+                )}
+                onClick={(e) => {
+                  if (onTagClick) {
+                    e.stopPropagation()
+                    onTagClick(tag)
+                  }
+                }}
               >
                 {tag}
               </Badge>

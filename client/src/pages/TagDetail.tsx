@@ -101,13 +101,22 @@ export function TagDetailPage() {
             {nodes.length} node{nodes.length !== 1 ? 's' : ''} tagged with #{tag}
           </p>
         </div>
-        <Link
-          to="/nodes/new"
-          className="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
-        >
-          <Icon icon="lucide:plus" width={16} height={16} />
-          <span>Create Node</span>
-        </Link>
+        <div className="flex items-center space-x-3">
+          <Link
+            to={`/nodes?tag=${encodeURIComponent(tag!)}`}
+            className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-800 border border-gray-300 hover:border-gray-400 px-4 py-2 rounded-md transition-colors"
+          >
+            <Icon icon="lucide:list" width={16} height={16} />
+            <span>View All Nodes</span>
+          </Link>
+          <Link
+            to="/nodes/new"
+            className="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            <Icon icon="lucide:plus" width={16} height={16} />
+            <span>Create Node</span>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
