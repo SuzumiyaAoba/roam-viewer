@@ -34,45 +34,56 @@ app.get('/api/nodes/:id', async (c) => {
     const id = c.req.param('id')
     const node = await apiClient.getNode(id)
     
-    // Try to get refs from the API
+    // Try to get refs from the API first
     let refs: string[] = []
     
     try {
-      refs = await apiClient.getNodeRefs(id)
-      console.log('Successfully got refs from API for node:', id, refs)
-    } catch (error) {
-      console.log('No refs API available, trying to extract from content for node:', id)
+      const apiRefs = await apiClient.getNodeRefs(id)
+      console.log('Got refs from API:', apiRefs)
       
-      // Fallback: extract refs from frontmatter if API is not available
+      // Normalize refs format - handle both string and object formats
+      if (apiRefs && apiRefs.length > 0) {
+        refs = apiRefs.map(refItem => {
+          if (typeof refItem === 'string') {
+            return refItem
+          } else if (typeof refItem === 'object' && refItem.ref && refItem.type) {
+            return `${refItem.type}:${refItem.ref}`
+          } else if (typeof refItem === 'object' && refItem.ref) {
+            return refItem.ref
+          } else {
+            return String(refItem)
+          }
+        })
+        console.log('Normalized refs:', refs)
+      }
+      
+      // If API returns empty refs, try fallback
+      if (refs.length === 0) {
+        console.log('API returned empty refs, trying fallback for node:', id);
+        throw new Error('Empty refs, using fallback')
+      }
+    } catch (error) {
+      console.log('API refs call failed or empty, using fallback for node:', id);
+      // Fallback: extract refs from frontmatter if API fails
       if (node.content) {
-        console.log('Node has content, looking for frontmatter...')
         const frontmatterMatch = node.content.match(/^---\s*\n([\s\S]*?)\n---/)
         if (frontmatterMatch) {
           const frontmatterText = frontmatterMatch[1]
-          console.log('Found frontmatter:', frontmatterText.substring(0, 200))
           const refsMatch = frontmatterText.match(/refs?\s*:\s*(.+)/i)
           if (refsMatch) {
-            console.log('Found refs match:', refsMatch[1])
             try {
               const refsValue = refsMatch[1].trim()
               if (refsValue.startsWith('[')) {
                 refs = JSON.parse(refsValue)
-                console.log('Parsed refs as JSON array:', refs)
               } else {
                 refs = [refsValue.replace(/['"]/g, '')]
-                console.log('Parsed refs as single string:', refs)
               }
+              console.log('Parsed refs from frontmatter:', refs)
             } catch (e) {
-              console.log('Could not parse refs from frontmatter for node:', id, e)
+              console.log('Failed to parse refs from frontmatter:', e.message)
             }
-          } else {
-            console.log('No refs field found in frontmatter')
           }
-        } else {
-          console.log('No frontmatter found in content')
         }
-      } else {
-        console.log('Node has no content')
       }
     }
     

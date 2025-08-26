@@ -89,20 +89,40 @@ export class MdRoamApiClient {
   async getNodes(): Promise<Node[]> {
     const result = await this.request<any>('/nodes')
     
-    // Handle different response formats
-    if (Array.isArray(result)) {
+    // Handle new API response format
+    if (result && Array.isArray(result.nodes)) {
+      return result.nodes
+    } else if (Array.isArray(result)) {
       return result
     } else if (result && Array.isArray(result.data)) {
       return result.data
-    } else if (result && Array.isArray(result.nodes)) {
-      return result.nodes
     }
     
     return []
   }
 
   async getNode(id: string): Promise<NodeDetail> {
-    return this.request<NodeDetail>(`/nodes/${encodeURIComponent(id)}/content`)
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/content`)
+    
+    // Handle new API response format
+    if (result && result.status === 'success') {
+      // The response is the complete node data, return it as-is
+      return {
+        id: result.node_id,
+        title: result.title,
+        file: result.file_path,
+        content: result.content,
+        level: result.level,
+        tags: result.tags || [],
+        aliases: result.aliases || [],
+        // Other fields as needed
+      }
+    } else if (result && result.content !== undefined) {
+      // Fallback for older format
+      return result
+    }
+    
+    throw new ApiError('Invalid node response format')
   }
 
   async createNode(nodeData: CreateNodeRequest): Promise<NodeDetail> {
@@ -182,7 +202,16 @@ export class MdRoamApiClient {
   }
 
   async getNodeRefs(id: string): Promise<string[]> {
-    return this.request<string[]>(`/nodes/${encodeURIComponent(id)}/refs`)
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/refs`)
+    
+    // Handle new API response format
+    if (result && Array.isArray(result.refs)) {
+      return result.refs
+    } else if (Array.isArray(result)) {
+      return result
+    }
+    
+    return []
   }
 
   // Metadata Collections

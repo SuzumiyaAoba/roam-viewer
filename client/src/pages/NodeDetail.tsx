@@ -160,8 +160,7 @@ export function NodeDetailPage() {
         {/* Main Content */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Content</h2>
+            <div className="flex items-center justify-end mb-4">
               <div className="flex space-x-2">
                 <button
                   onClick={() => setShowRaw(!showRaw)}
@@ -307,10 +306,22 @@ export function NodeDetailPage() {
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">References ({node.refs.length})</h2>
               <div className="space-y-3">
-                {node.refs.map((ref, index) => (
+                {node.refs.map((refValue, index) => (
                   <div key={index} className="bg-gray-50 p-3 rounded-md">
-                    <div className="text-sm font-mono text-gray-700 break-all">{ref}</div>
-                    <div className="text-xs text-gray-500 mt-1">Reference #{index + 1}</div>
+                    <div className="text-sm font-mono text-gray-700 break-all">
+                      {refValue.startsWith('https://') ? (
+                        <a
+                          href={refValue}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {refValue}
+                        </a>
+                      ) : (
+                        refValue
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
