@@ -173,6 +173,38 @@ app.delete('/api/nodes/:id', async (c) => {
   }
 })
 
+// Get all tags
+app.get('/api/tags', async (c) => {
+  try {
+    const tags = await apiClient.getTags()
+    return c.json(tags)
+  } catch (error) {
+    console.error('Error fetching tags:', error)
+    return c.json({ error: 'Failed to fetch tags' }, 500)
+  }
+})
+
+// Search nodes by tag
+app.get('/api/search/tag/:tag', async (c) => {
+  try {
+    const tag = c.req.param('tag')
+    // Use general search to find nodes with the tag
+    const result = await apiClient.searchNodes(tag)
+    
+    // Filter nodes that actually have the tag
+    const taggedNodes = result.nodes?.filter(node => 
+      node.tags?.includes(tag) || 
+      node.title?.toLowerCase().includes(tag.toLowerCase()) ||
+      node.aliases?.some(alias => alias.toLowerCase().includes(tag.toLowerCase()))
+    ) || []
+    
+    return c.json(taggedNodes)
+  } catch (error) {
+    console.error('Error searching nodes by tag:', error)
+    return c.json({ error: 'Failed to search nodes by tag' }, 500)
+  }
+})
+
 const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001;
 const port = await getPort({ port: preferredPort, portRange: [3001, 3011] });
 
