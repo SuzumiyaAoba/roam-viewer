@@ -43,13 +43,29 @@ This is a full-stack web application for viewing and managing Roam-style notes (
 
 ## Development Setup
 
-The application requires the external md-roam API to be running on port 8080. The development script automatically finds available ports for the frontend (3000-3010) and backend (3001-3011).
+**Prerequisites:**
+The application requires the external md-roam API server to be running on port 8080. This is a separate service that provides access to org-roam files.
 
-Environment variables:
+**Environment variables:**
 - `VITE_API_URL`: Frontend API endpoint (defaults to http://localhost:3001)
 - `MD_ROAM_API_URL`: Backend's external API endpoint (defaults to http://localhost:8080)
 - `BACKEND_PORT`: Preferred backend port (defaults to 3001)
 - `VITE_PORT`: Preferred frontend port (defaults to 3000)
+
+**Port allocation:**
+The development script automatically finds available ports for the frontend (3000-3010) and backend (3001-3011).
+
+## Troubleshooting
+
+**"Unable to connect to md-roam API server" errors:**
+1. Ensure the md-roam API server is running on port 8080
+2. Check if the server is accessible: `curl http://localhost:8080/nodes`
+3. Verify the server logs for connection issues
+4. The Hono server includes automatic retry logic (2 retries with 1-second delays)
+
+**Common issues:**
+- Socket connection closed unexpectedly: Usually indicates the md-roam API server stopped or restarted
+- Network timeouts: The client has a 10-second timeout with retry logic
 
 ## Key Architectural Patterns
 

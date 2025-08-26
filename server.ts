@@ -1,8 +1,140 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { getPort } from 'get-port-please'
-import { apiClient } from './client/src/lib/api-client'
 import type { CreateNodeRequest, UpdateNodeRequest } from './client/src/types/api'
+
+// Direct md-roam API client for server-side use
+class MdRoamApiClient {
+  private baseUrl: string
+  private timeout: number
+
+  constructor(baseUrl: string = 'http://localhost:8080', timeout: number = 10000) {
+    this.baseUrl = baseUrl.replace(/\/$/, '')
+    this.timeout = timeout
+  }
+
+  private async request<T>(endpoint: string, options: RequestInit = {}, retries: number = 2): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`
+    
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout)
+
+    const config: RequestInit = {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    }
+
+    try {
+      const response = await fetch(url, config)
+      clearTimeout(timeoutId)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const contentType = response.headers.get('content-type')
+      if (contentType?.includes('application/json')) {
+        return await response.json()
+      } else {
+        return await response.text() as unknown as T
+      }
+    } catch (error) {
+      clearTimeout(timeoutId)
+      
+      // Retry on network errors
+      if (retries > 0 && (
+        error.name === 'AbortError' || 
+        error.message.includes('socket connection was closed') ||
+        error.message.includes('fetch failed') ||
+        error.message.includes('ECONNREFUSED')
+      )) {
+        console.warn(`Request failed, retrying... (${retries} attempts left)`)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return this.request<T>(endpoint, options, retries - 1)
+      }
+      
+      throw error
+    }
+  }
+
+  async getNodes() {
+    const result = await this.request<any>('/nodes')
+    if (result && Array.isArray(result.nodes)) {
+      return result.nodes
+    } else if (Array.isArray(result)) {
+      return result
+    }
+    return []
+  }
+
+  async getNode(id: string) {
+    return this.request<any>(`/nodes/${encodeURIComponent(id)}/content`)
+  }
+
+  async getNodeRefs(id: string) {
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/refs`)
+    if (result && Array.isArray(result.refs)) {
+      return result.refs
+    } else if (Array.isArray(result)) {
+      return result
+    }
+    return []
+  }
+
+  async getBacklinks(id: string) {
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/backlinks`)
+    if (Array.isArray(result)) {
+      return result
+    } else if (result && Array.isArray(result.backlinks)) {
+      return result.backlinks
+    }
+    return []
+  }
+
+  async getForwardLinks(id: string) {
+    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/links`)
+    if (Array.isArray(result)) {
+      return result
+    } else if (result && Array.isArray(result.links)) {
+      return result.links
+    }
+    return []
+  }
+
+  async searchNodes(query: string) {
+    return this.request<any>(`/search/${encodeURIComponent(query)}`)
+  }
+
+  async createNode(nodeData: CreateNodeRequest) {
+    return this.request<any>('/nodes', {
+      method: 'POST',
+      body: JSON.stringify(nodeData),
+    })
+  }
+
+  async updateNode(id: string, nodeData: UpdateNodeRequest) {
+    return this.request<any>(`/nodes/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      body: JSON.stringify(nodeData),
+    })
+  }
+
+  async deleteNode(id: string) {
+    return this.request<void>(`/nodes/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    })
+  }
+
+  async getTags() {
+    return this.request<any>('/tags')
+  }
+}
+
+const apiClient = new MdRoamApiClient(process.env.MD_ROAM_API_URL || 'http://localhost:8080')
 
 const app = new Hono()
 
@@ -24,7 +156,26 @@ app.get('/api/nodes', async (c) => {
     return c.json(nodes)
   } catch (error) {
     console.error('Error fetching nodes:', error)
-    return c.json({ error: 'Failed to fetch nodes' }, 500)
+    
+    // Provide more detailed error information
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const isConnectionError = errorMessage.includes('socket connection was closed') || 
+                             errorMessage.includes('Network error') ||
+                             errorMessage.includes('ECONNREFUSED')
+    
+    if (isConnectionError) {
+      console.error('Connection issue detected. Please ensure md-roam API server is running on port 8080')
+      return c.json({ 
+        error: 'Unable to connect to md-roam API server',
+        details: 'Please ensure the md-roam API server is running on port 8080',
+        suggestion: 'Check if the md-roam API server is started and accessible'
+      }, 503)
+    }
+    
+    return c.json({ 
+      error: 'Failed to fetch nodes', 
+      details: errorMessage 
+    }, 500)
   }
 })
 
