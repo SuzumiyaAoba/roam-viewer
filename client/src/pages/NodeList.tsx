@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
+import { useLocalStorage } from 'react-use'
 import { useNodes, useSearchNodes, useDeleteNode } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
 import { NodeCard, NodeCardCompact } from '../components/design-system/NodeCard'
@@ -13,7 +14,7 @@ type ViewMode = 'grid' | 'list' | 'table'
 export function NodeListPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
-  const [viewMode, setViewMode] = useState<ViewMode>('grid')
+  const [viewMode, setViewMode] = useLocalStorage<ViewMode>('node-list-view-mode', 'grid')
   const navigate = useNavigate()
   
   const { data: nodes, isLoading: nodesLoading, error: nodesError } = useNodes()
@@ -107,7 +108,6 @@ export function NodeListPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TODO</th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -139,13 +139,6 @@ export function NodeListPage() {
                           <span className="text-xs text-gray-400">+{node.tags.length - 3}</span>
                         )}
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {node.todo && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                          {node.todo.length > 30 ? `${node.todo.substring(0, 30)}...` : node.todo}
-                        </span>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
