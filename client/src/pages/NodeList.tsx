@@ -46,11 +46,6 @@ export function NodeListPage() {
     // Search is handled by debounced effect
   }
 
-  const clearSearch = () => {
-    setSearchQuery('')
-    setDebouncedQuery('')
-  }
-
   const renderNodes = () => {
     if (!displayNodes.length) return null
 
@@ -237,13 +232,6 @@ export function NodeListPage() {
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors"
             >
               Search
-            </button>
-            <button 
-              type="button"
-              onClick={clearSearch}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-md transition-colors"
-            >
-              Clear
             </button>
           </div>
         </form>
