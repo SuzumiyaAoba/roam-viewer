@@ -117,8 +117,8 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
     children,
     ...props
   }, ref) => {
-    const displayTags = tags.slice(0, maxTags)
-    const extraTagsCount = tags.length - maxTags
+    const displayTags = (tags || []).slice(0, maxTags)
+    const extraTagsCount = Math.max(0, (tags || []).length - maxTags)
     
     const displayContent = content && content.length > maxContentLength
       ? content.substring(0, maxContentLength) + '...'
