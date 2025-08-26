@@ -75,3 +75,18 @@ export function useDeleteNode() {
     },
   })
 }
+
+export function useTags() {
+  return useQuery({
+    queryKey: ['tags'],
+    queryFn: () => apiClient.getTags(),
+  })
+}
+
+export function useNodesByTag(tag: string) {
+  return useQuery({
+    queryKey: ['nodes', 'tag', tag],
+    queryFn: () => apiClient.searchNodesByTag(tag),
+    enabled: !!tag,
+  })
+}

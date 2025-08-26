@@ -99,7 +99,52 @@ export class ApiClient {
 
   // Search Operations
   async searchNodes(query: string): Promise<SearchResult> {
-    return this.request<SearchResult>(`/api/search/${encodeURIComponent(query)}`)
+    const result = await this.request<any>(`/api/search/${encodeURIComponent(query)}`)
+    
+    // Handle new API response format
+    if (result && result.nodes !== undefined) {
+      return {
+        nodes: Array.isArray(result.nodes) ? result.nodes : [],
+        total: result.count || 0
+      }
+    } else if (result && Array.isArray(result)) {
+      return {
+        nodes: result,
+        total: result.length
+      }
+    }
+    
+    return { nodes: [], total: 0 }
+  }
+
+  // Tags
+  async getTags(): Promise<{tag: string; count: number}[]> {
+    const result = await this.request<any>('/api/tags')
+    
+    // Handle new API response format
+    if (result && Array.isArray(result.tags)) {
+      return result.tags.map((tagInfo: any) => ({
+        tag: tagInfo.tag,
+        count: tagInfo.count
+      }))
+    } else if (Array.isArray(result)) {
+      return result
+    }
+    
+    return []
+  }
+
+  async searchNodesByTag(tag: string): Promise<Node[]> {
+    const result = await this.request<any>(`/api/search/tag/${encodeURIComponent(tag)}`)
+    
+    // Handle new API response format
+    if (result && Array.isArray(result.nodes)) {
+      return result.nodes
+    } else if (Array.isArray(result)) {
+      return result
+    }
+    
+    return []
   }
 
   // Relationships

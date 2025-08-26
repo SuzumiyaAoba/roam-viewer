@@ -18,6 +18,7 @@ export function Layout({ children, title }: LayoutProps) {
             </Link>
             <nav className="flex space-x-4">
               <Link to="/nodes" className="text-gray-600 hover:text-gray-900">Nodes</Link>
+              <Link to="/tags" className="text-gray-600 hover:text-gray-900">Tags</Link>
               <Link to="/nodes/new" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">Create</Link>
             </nav>
           </div>

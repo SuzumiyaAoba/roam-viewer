@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
+import { Icon } from '@iconify/react'
 import { useNode, useBacklinks, useForwardLinks, useDeleteNode } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
 import type { BacklinkNode } from '../types/api'
@@ -142,16 +143,22 @@ export function NodeDetailPage() {
         <div className="flex space-x-2">
           <Link 
             to={`/nodes/${encodeURIComponent(node.id)}/edit`}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition-colors flex items-center justify-center"
+            title="Edit node"
           >
-            Edit
+            <Icon icon="lucide:edit" width={16} height={16} />
           </Link>
           <button 
             onClick={handleDelete}
             disabled={deleteNodeMutation.isPending}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors disabled:opacity-50"
+            className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md transition-colors disabled:opacity-50 flex items-center justify-center"
+            title={deleteNodeMutation.isPending ? 'Deleting...' : 'Delete node'}
           >
-            {deleteNodeMutation.isPending ? 'Deleting...' : 'Delete'}
+            {deleteNodeMutation.isPending ? (
+              <Icon icon="lucide:loader-2" width={16} height={16} className="animate-spin" />
+            ) : (
+              <Icon icon="lucide:trash-2" width={16} height={16} />
+            )}
           </button>
         </div>
       </div>
