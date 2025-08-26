@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useNodesByTag } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
@@ -29,6 +29,7 @@ function EmptyState({ tag }: { tag: string }) {
 
 export function TagDetailPage() {
   const { tag } = useParams<{ tag: string }>()
+  const navigate = useNavigate()
   const { data: nodes, isLoading, error } = useNodesByTag(tag!)
 
   if (isLoading) {
@@ -113,12 +114,10 @@ export function TagDetailPage() {
         {nodes.map((node: Node) => (
           <NodeCard
             key={node.id}
-            id={node.id}
             title={node.title}
             file={node.file}
             tags={node.tags}
-            properties={node.properties}
-            pos={node.pos}
+            onCardClick={() => navigate(`/nodes/${node.id}`)}
           />
         ))}
       </div>

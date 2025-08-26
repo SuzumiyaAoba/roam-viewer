@@ -188,16 +188,18 @@ app.get('/api/tags', async (c) => {
 app.get('/api/search/tag/:tag', async (c) => {
   try {
     const tag = c.req.param('tag')
-    // Use general search to find nodes with the tag
-    const result = await apiClient.searchNodes(tag)
     
-    // Filter nodes that actually have the tag
-    const taggedNodes = result.nodes?.filter(node => 
+    // Get all nodes first, then filter by tag
+    const allNodes = await apiClient.getNodes()
+    
+    // Filter nodes that have the specific tag
+    const taggedNodes = allNodes.filter(node => 
       node.tags?.includes(tag) || 
       node.title?.toLowerCase().includes(tag.toLowerCase()) ||
       node.aliases?.some(alias => alias.toLowerCase().includes(tag.toLowerCase()))
-    ) || []
+    )
     
+    console.log(`Found ${taggedNodes.length} nodes for tag: ${tag}`)
     return c.json(taggedNodes)
   } catch (error) {
     console.error('Error searching nodes by tag:', error)
