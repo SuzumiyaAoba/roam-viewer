@@ -1,71 +1,20 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { Icon } from '@iconify/react'
 import { useNodes, useSearchNodes, useDeleteNode } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
+import { NodeCard, NodeCardCompact } from '../components/design-system/NodeCard'
+import { Button } from '../components/design-system/Button'
 import type { Node } from '../types/api'
 
-function NodeCard({ node, onDelete }: { node: Node; onDelete: (id: string) => void }) {
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this node?')) {
-      onDelete(node.id)
-    }
-  }
+type ViewMode = 'grid' | 'list' | 'table'
 
-  return (
-    <div className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            <Link 
-              to={`/nodes/${encodeURIComponent(node.id)}`}
-              className="hover:text-blue-600"
-            >
-              {node.title}
-            </Link>
-          </h3>
-          <p className="text-sm text-gray-500 mb-2">
-            File: {node.file}
-          </p>
-          {node.tags && node.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-3">
-              {node.tags.map((tag) => (
-                <span 
-                  key={tag}
-                  className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-          {node.todo && (
-            <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mb-2">
-              TODO: {node.todo}
-            </span>
-          )}
-        </div>
-        <div className="flex space-x-2 ml-4">
-          <Link 
-            to={`/nodes/${encodeURIComponent(node.id)}/edit`}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm transition-colors"
-          >
-            Edit
-          </Link>
-          <button 
-            onClick={handleDelete}
-            className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-sm transition-colors"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export function NodeListPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
+  const [viewMode, setViewMode] = useState<ViewMode>('grid')
+  const navigate = useNavigate()
   
   const { data: nodes, isLoading: nodesLoading, error: nodesError } = useNodes()
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery)
@@ -101,16 +50,183 @@ export function NodeListPage() {
     setDebouncedQuery('')
   }
 
+  const renderNodes = () => {
+    if (!displayNodes.length) return null
+
+    switch (viewMode) {
+      case 'grid':
+        return (
+          <div className="grid gap-6 md:grid-cols-2">
+            {displayNodes.map((node) => (
+              <NodeCard 
+                key={node.id} 
+                title={node.title}
+                file={node.file}
+                tags={node.tags}
+                todo={node.todo}
+                onCardClick={() => navigate(`/nodes/${node.id}`)}
+                onEdit={() => navigate(`/nodes/${node.id}/edit`)}
+                onDelete={() => {
+                  if (window.confirm('Are you sure you want to delete this node?')) {
+                    handleDelete(node.id)
+                  }
+                }}
+              />
+            ))}
+          </div>
+        )
+      
+      case 'list':
+        return (
+          <div className="space-y-4">
+            {displayNodes.map((node) => (
+              <NodeCardCompact 
+                key={node.id} 
+                title={node.title}
+                file={node.file}
+                tags={node.tags}
+                todo={node.todo}
+                onCardClick={() => navigate(`/nodes/${node.id}`)}
+                onEdit={() => navigate(`/nodes/${node.id}/edit`)}
+                onDelete={() => {
+                  if (window.confirm('Are you sure you want to delete this node?')) {
+                    handleDelete(node.id)
+                  }
+                }}
+              />
+            ))}
+          </div>
+        )
+      
+      case 'table':
+        return (
+          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TODO</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {displayNodes.map((node) => (
+                  <tr key={node.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => navigate(`/nodes/${node.id}`)}
+                        className="text-sm font-medium text-gray-900 hover:text-blue-600 text-left"
+                      >
+                        {node.title}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-gray-500 font-mono">{node.file}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1">
+                        {node.tags?.slice(0, 3).map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {node.tags && node.tags.length > 3 && (
+                          <span className="text-xs text-gray-400">+{node.tags.length - 3}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {node.todo && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                          {node.todo.length > 30 ? `${node.todo.substring(0, 30)}...` : node.todo}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => navigate(`/nodes/${node.id}/edit`)}
+                          className="h-8 w-8 p-0"
+                          title="Edit node"
+                        >
+                          <Icon icon="lucide:edit" width={14} height={14} />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to delete this node?')) {
+                              handleDelete(node.id)
+                            }
+                          }}
+                          className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                          title="Delete node"
+                        >
+                          <Icon icon="lucide:trash-2" width={14} height={14} />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      
+      default:
+        return null
+    }
+  }
+
   return (
     <Layout>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Nodes</h1>
-        <Link 
-          to="/nodes/new"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
-        >
-          Create New Node
-        </Link>
+        <div className="flex items-center space-x-4">
+          {/* View Mode Toggle */}
+          <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+            <Button
+              size="sm"
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('grid')}
+              className="px-3 py-2"
+              title="Grid view"
+            >
+              <Icon icon="lucide:grid-3x3" width={16} height={16} />
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('list')}
+              className="px-3 py-2"
+              title="List view"
+            >
+              <Icon icon="lucide:list" width={16} height={16} />
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'table' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('table')}
+              className="px-3 py-2"
+              title="Table view"
+            >
+              <Icon icon="lucide:table" width={16} height={16} />
+            </Button>
+          </div>
+          <Link 
+            to="/nodes/new"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Create New Node
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
@@ -162,15 +278,7 @@ export function NodeListPage() {
           </div>
         )}
 
-        {!isLoading && !error && displayNodes.length > 0 && 
-          displayNodes.map((node) => (
-            <NodeCard 
-              key={node.id} 
-              node={node} 
-              onDelete={handleDelete}
-            />
-          ))
-        }
+        {!isLoading && !error && displayNodes.length > 0 && renderNodes()}
       </div>
     </Layout>
   )
