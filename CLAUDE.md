@@ -26,7 +26,6 @@ This is a full-stack web application for viewing and managing Roam-style notes (
 
 **Primary development:**
 - `bun run dev` - Starts both client and server with automatic port detection
-- `bun run dev:simple` - Alternative dev command using concurrently
 
 **Individual services:**
 - `bun run dev:server` - Start only the Hono backend server (port 3001)

@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.js",
-    "dev:simple": "concurrently \"bun run dev:server\" \"bun run dev:client\"",
     "dev:server": "bun --watch server.ts",
     "dev:client": "vite",
     "start": "bun server.ts",

@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { getPort } from 'get-port-please'
-import { apiClient } from './src/lib/api-client'
-import type { CreateNodeRequest, UpdateNodeRequest } from './src/types/api'
+import { apiClient } from './client/src/lib/api-client'
+import type { CreateNodeRequest, UpdateNodeRequest } from './client/src/types/api'
 
 const app = new Hono()
 
