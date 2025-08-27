@@ -61,6 +61,7 @@ export interface CreateNodeRequest {
   tags?: string[]
   aliases?: string[]
   refs?: string[]
+  file_type?: 'md' | 'org'
 }
 
 export interface UpdateNodeRequest {

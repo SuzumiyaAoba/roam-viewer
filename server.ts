@@ -181,6 +181,7 @@ class MdRoamApiClient {
     console.log('Creating node with data:', JSON.stringify(nodeData, null, 2))
     
     // Remove refs field as md-roam API doesn't support it in node creation
+    // Keep file_type as it's supported by md-roam API
     const { refs, ...apiNodeData } = nodeData
     console.log('Sending to md-roam API (without refs):', JSON.stringify(apiNodeData, null, 2))
     

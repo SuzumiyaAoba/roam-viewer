@@ -10,6 +10,7 @@ interface NodeFormData {
   tags: string
   aliases: string
   refs: string
+  file_type: 'md' | 'org'
 }
 
 function parseTagsString(str: string): string[] {
@@ -29,6 +30,7 @@ export function NodeCreatePage() {
     tags: '',
     aliases: '',
     refs: '',
+    file_type: 'md',
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,6 +42,7 @@ export function NodeCreatePage() {
       tags: parseTagsString(formData.tags),
       aliases: parseTagsString(formData.aliases),
       refs: parseTagsString(formData.refs),
+      file_type: formData.file_type,
     }
 
     createNodeMutation.mutate(nodeRequest, {
@@ -84,6 +87,25 @@ export function NodeCreatePage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter node title"
             />
+          </div>
+
+          <div>
+            <label htmlFor="file_type" className="block text-sm font-medium text-gray-700 mb-2">
+              File Format
+            </label>
+            <select
+              id="file_type"
+              name="file_type"
+              value={formData.file_type}
+              onChange={(e) => setFormData(prev => ({ ...prev, file_type: e.target.value as 'md' | 'org' }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="md">Markdown (.md)</option>
+              <option value="org">Org Mode (.org)</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Choose the file format for your node
+            </p>
           </div>
 
           <div>
@@ -193,6 +215,7 @@ export function NodeEditPage() {
     tags: '',
     aliases: '',
     refs: '',
+    file_type: 'md',
   })
 
   // Update form data when node is loaded

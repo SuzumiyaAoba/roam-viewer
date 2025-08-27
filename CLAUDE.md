@@ -12,15 +12,18 @@ This is a full-stack web application for viewing and managing Roam-style notes (
 - **External API**: The backend communicates with an external md-roam API service (default: http://localhost:8080)
 
 **Key Components:**
-- `server.ts`: Hono-based API server that proxies requests to md-roam API and enriches responses
+- `server.ts`: Hono-based API server with embedded MdRoamApiClient that proxies requests to md-roam API v2.0.0 and enriches responses
 - `client/src/`: React frontend with pages for node listing, detail views, editing, and tag management
-- `src/lib/api-client.ts`: TypeScript client for communicating with the md-roam API
-- Design system components in `client/src/components/design-system/`
+- `client/src/lib/api-client.ts`: Frontend TypeScript client for communicating with the Hono server
+- Design system components in `client/src/components/design-system/` with Storybook documentation
+- Dual UI component system: custom design-system + shadcn/ui components
 
 **Data Flow:**
-1. React frontend → Hono server (port 3001) → md-roam API (port 8080)
-2. The Hono server enriches node data with refs, backlinks, and forward links
-3. Supports CRUD operations on nodes and searching/filtering by tags
+1. React frontend → Hono server (port 3001) → md-roam API v2.0.0 (port 8080)
+2. The Hono server normalizes API responses from new unified format and enriches node data 
+3. Supports CRUD operations on nodes with Markdown (.md) and Org Mode (.org) file formats
+4. URL-based state management for tag filtering (?tag=...) and search (?search=...)
+5. Efficient tag-based node filtering using node_ids from enhanced tags API
 
 ## Development Commands
 
@@ -44,7 +47,7 @@ This is a full-stack web application for viewing and managing Roam-style notes (
 ## Development Setup
 
 **Prerequisites:**
-The application requires the external md-roam API server to be running on port 8080. This is a separate service that provides access to org-roam files.
+The application requires the external md-roam API v2.0.0 server to be running on port 8080. This is a separate service that provides access to org-roam files and supports both Markdown (.md) and Org Mode (.org) formats.
 
 **Environment variables:**
 - `VITE_API_URL`: Frontend API endpoint (defaults to http://localhost:3001)
@@ -65,14 +68,17 @@ The development script automatically finds available ports for the frontend (300
 
 **Common issues:**
 - Socket connection closed unexpectedly: Usually indicates the md-roam API server stopped or restarted
-- Network timeouts: The client has a 10-second timeout with retry logic
+- Network timeouts: Extended timeouts for POST/PUT operations (60s) due to slow processing with Japanese characters
+- Node creation with Japanese text: May take 30+ seconds but will eventually succeed
 
 ## Key Architectural Patterns
 
-**API Response Handling:** The api-client.ts handles multiple response formats from the md-roam API, providing fallbacks and normalization for different API versions.
+**API Version Handling:** Server-side MdRoamApiClient adapts between md-roam API v2.0.0's unified response format `{status, message, timestamp, ...}` and the frontend's expected data structures, with backward compatibility fallbacks.
 
-**Node Enrichment:** The Hono server enriches node responses by fetching additional data (refs, backlinks) and parsing frontmatter as fallback when API endpoints return empty results.
+**Tag-based Filtering:** Leverages new node_ids arrays in tags API for efficient filtering. URL state management with ?tag= and ?search= parameters enables shareable filtered views.
 
-**Component Structure:** Uses both a custom design system (`design-system/`) and shadcn/ui components (`ui/`) with Tailwind CSS styling.
+**File Format Support:** Node creation supports both Markdown (.md) and Org Mode (.org) formats via file_type parameter. The refs field is filtered out as unsupported by the md-roam API.
 
-**Routing:** React Router with page-based organization - nodes, tags, and CRUD operations are handled as separate pages.
+**Component Architecture:** Dual system with custom design-system components (with Storybook documentation) and shadcn/ui components, unified via Tailwind CSS and class-variance-authority.
+
+**Error Recovery:** Smart retry logic that avoids retrying POST/PUT operations on timeout (as they may have succeeded) while retrying true network failures. Extended timeouts for operations involving Japanese text processing.
