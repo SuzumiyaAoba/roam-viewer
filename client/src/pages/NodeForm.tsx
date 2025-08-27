@@ -9,7 +9,7 @@ interface NodeFormData {
   content: string
   tags: string
   aliases: string
-  roam_refs: string
+  refs: string
 }
 
 function parseTagsString(str: string): string[] {
@@ -28,7 +28,7 @@ export function NodeCreatePage() {
     content: '',
     tags: '',
     aliases: '',
-    roam_refs: '',
+    refs: '',
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -39,7 +39,7 @@ export function NodeCreatePage() {
       content: formData.content,
       tags: parseTagsString(formData.tags),
       aliases: parseTagsString(formData.aliases),
-      roam_refs: parseTagsString(formData.roam_refs),
+      refs: parseTagsString(formData.refs),
     }
 
     createNodeMutation.mutate(nodeRequest, {
@@ -135,17 +135,17 @@ export function NodeCreatePage() {
           </div>
 
           <div>
-            <label htmlFor="roam_refs" className="block text-sm font-medium text-gray-700 mb-2">
-              Roam References
+            <label htmlFor="refs" className="block text-sm font-medium text-gray-700 mb-2">
+              References
             </label>
             <input
               type="text"
-              id="roam_refs"
-              name="roam_refs"
-              value={formData.roam_refs}
+              id="refs"
+              name="refs"
+              value={formData.refs}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter Roam references separated by commas"
+              placeholder="Enter references separated by commas"
             />
           </div>
 
@@ -192,7 +192,7 @@ export function NodeEditPage() {
     content: '',
     tags: '',
     aliases: '',
-    roam_refs: '',
+    refs: '',
   })
 
   // Update form data when node is loaded
@@ -203,7 +203,7 @@ export function NodeEditPage() {
         content: node.content || '',
         tags: (node.tags || []).join(', '),
         aliases: (node.aliases || []).join(', '),
-        roam_refs: (node.roam_refs || []).join(', '),
+        refs: (node.refs || []).join(', '),
       })
     }
   }, [node])
@@ -218,7 +218,7 @@ export function NodeEditPage() {
       content: formData.content,
       tags: parseTagsString(formData.tags),
       aliases: parseTagsString(formData.aliases),
-      roam_refs: parseTagsString(formData.roam_refs),
+      refs: parseTagsString(formData.refs),
     }
 
     updateNodeMutation.mutate({ id, data: nodeRequest }, {
@@ -342,17 +342,17 @@ export function NodeEditPage() {
           </div>
 
           <div>
-            <label htmlFor="roam_refs" className="block text-sm font-medium text-gray-700 mb-2">
-              Roam References
+            <label htmlFor="refs" className="block text-sm font-medium text-gray-700 mb-2">
+              References
             </label>
             <input
               type="text"
-              id="roam_refs"
-              name="roam_refs"
-              value={formData.roam_refs}
+              id="refs"
+              name="refs"
+              value={formData.refs}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter Roam references separated by commas"
+              placeholder="Enter references separated by commas"
             />
           </div>
 
