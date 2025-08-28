@@ -14,6 +14,11 @@
     "build:client": "vite build",
     "build": "bun run build:client && bun run build:server",
     "preview": "vite preview",
+    "test": "bun test",
+    "test:unit": "bun test test/simple-unit.test.ts",
+    "test:vitest": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -24,18 +29,22 @@
     "@storybook/addon-onboarding": "^9.1.3",
     "@storybook/addon-vitest": "^9.1.3",
     "@storybook/react-vite": "^9.1.3",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/bun": "latest",
     "@vitejs/plugin-react-swc": "^4.0.1",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.0",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.55.0",
     "postcss": "^8.5.6",
     "storybook": "^9.1.3",
     "tailwindcss": "^3.4.0",
     "vite": "^7.1.3",
-    "vitest": "^3.2.4",
-    "@vitest/browser": "^3.2.4",
-    "playwright": "^1.55.0",
-    "@vitest/coverage-v8": "^3.2.4"
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "typescript": "^5"

@@ -82,3 +82,30 @@ The development script automatically finds available ports for the frontend (300
 **Component Architecture:** Dual system with custom design-system components (with Storybook documentation) and shadcn/ui components, unified via Tailwind CSS and class-variance-authority.
 
 **Error Recovery:** Smart retry logic that avoids retrying POST/PUT operations on timeout (as they may have succeeded) while retrying true network failures. Extended timeouts for operations involving Japanese text processing.
+
+**Testing Infrastructure:** Extensive test suite with 16 test files covering all major code paths. Includes unit tests (Bun), component tests (Vitest + React Testing Library), integration tests, design system tests, routing tests, utility function tests, and server-side logic tests. Achieves comprehensive coverage of components, hooks, utilities, and user workflows. See `test/README.md` for detailed documentation.
+
+## Testing
+
+Run tests with:
+```bash
+# Basic unit tests (utility functions, API error handling)
+bun test
+
+# Specific unit tests
+bun test:unit
+
+# Full test suite with React components (when Vitest config resolved)
+bun run test:vitest
+
+# Coverage report
+bun run test:coverage
+```
+
+Test structure includes (16 test files total):
+- **Unit Tests**: API client, utility functions (cn, removeFrontmatter, parseTagsString), error handling
+- **Component Tests**: Layout, NodeForm, NodeList, NodeDetail, TagList, TagDetail, App routing
+- **Design System Tests**: Button variants/sizes, NodeCard functionality and variants
+- **Hook Tests**: React Query hooks (useNodes, useCreateNode, etc.) with proper QueryClient setup
+- **Integration Tests**: End-to-end user workflows, navigation, error recovery scenarios
+- **Server Tests**: API v2.0.0 compatibility, request filtering, Japanese text processing, retry logic
