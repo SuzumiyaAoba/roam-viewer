@@ -7,6 +7,7 @@ import rehypeRaw from 'rehype-raw'
 import { Icon } from '@iconify/react'
 import { useNode, useBacklinks, useForwardLinks, useDeleteNode } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
+import { OrgRenderer } from '../components/OrgRenderer'
 import type { BacklinkNode } from '../types/api'
 
 // Simple function to remove frontmatter
@@ -183,37 +184,46 @@ export function NodeDetailPage() {
                 {node.content || 'No content available.'}
               </pre>
             ) : (
-              <div className="markdown-content max-w-none">
+              <div className="max-w-none">
                 {node.content ? (
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeHighlight, rehypeRaw]}
-                    components={{
-                      // Custom link rendering for internal node links
-                      a: ({ href, children, ...props }) => {
-                        // Check if it's an internal node reference (you can customize this logic)
-                        if (href?.startsWith('#') || href?.match(/^\[\[.*\]\]$/)) {
-                          return (
-                            <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
-                              {children}
-                            </span>
-                          );
-                        }
-                        return (
-                          <a
-                            href={href}
-                            target={href?.startsWith('http') ? '_blank' : undefined}
-                            rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                            {...props}
-                          >
-                            {children}
-                          </a>
-                        );
-                      }
-                    }}
-                  >
-                    {removeFrontmatter(node.content)}
-                  </ReactMarkdown>
+                  node.file?.endsWith('.org') ? (
+                    <OrgRenderer 
+                      content={removeFrontmatter(node.content)}
+                      enableSyntaxHighlight={true}
+                    />
+                  ) : (
+                    <div className="markdown-content">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeHighlight, rehypeRaw]}
+                        components={{
+                          // Custom link rendering for internal node links
+                          a: ({ href, children, ...props }) => {
+                            // Check if it's an internal node reference (you can customize this logic)
+                            if (href?.startsWith('#') || href?.match(/^\[\[.*\]\]$/)) {
+                              return (
+                                <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
+                                  {children}
+                                </span>
+                              );
+                            }
+                            return (
+                              <a
+                                href={href}
+                                target={href?.startsWith('http') ? '_blank' : undefined}
+                                rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                {...props}
+                              >
+                                {children}
+                              </a>
+                            );
+                          }
+                        }}
+                      >
+                        {removeFrontmatter(node.content)}
+                      </ReactMarkdown>
+                    </div>
+                  )
                 ) : (
                   <div className="text-gray-500 italic">No content available.</div>
                 )}
