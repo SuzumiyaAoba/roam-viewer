@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { Icon } from '@iconify/react'
 
 interface OrgRendererProps {
   /**
@@ -178,9 +179,176 @@ const components = {
   ),
 }
 
-// Simple org-mode parser function
-function parseOrgContent(content: string): React.ReactNode {
+// Extract and parse metadata from org content
+interface OrgMetadata {
+  title?: string
+  category?: string
+  tags?: string[]
+  id?: string
+  author?: string
+  date?: string
+}
+
+function extractMetadata(content: string): { metadata: OrgMetadata; cleanedContent: string } {
   const lines = content.split('\n')
+  const cleanedLines: string[] = []
+  const metadata: OrgMetadata = {}
+  
+  let seenProperties = false
+  let seenTitle = false
+  let inPropertiesBlock = false
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    
+    // Track PROPERTIES blocks
+    if (trimmed === ':PROPERTIES:') {
+      if (seenProperties) continue // Skip duplicate PROPERTIES block
+      seenProperties = true
+      inPropertiesBlock = true
+      continue // Don't include in cleaned content
+    } else if (trimmed === ':END:' && inPropertiesBlock) {
+      inPropertiesBlock = false
+      continue // Don't include in cleaned content
+    } else if (inPropertiesBlock) {
+      // Extract ID from properties
+      if (trimmed.startsWith(':ID:')) {
+        metadata.id = trimmed.replace(':ID:', '').trim()
+      }
+      continue // Don't include properties in cleaned content
+    }
+    
+    // Extract metadata from #+lines
+    if (trimmed.startsWith('#+title:')) {
+      if (!seenTitle) {
+        metadata.title = trimmed.replace('#+title:', '').trim()
+        seenTitle = true
+      }
+      continue // Don't include in cleaned content
+    }
+    
+    if (trimmed.startsWith('#+category:')) {
+      metadata.category = trimmed.replace('#+category:', '').trim()
+      continue // Don't include in cleaned content
+    }
+    
+    if (trimmed.startsWith('#+tags:')) {
+      metadata.tags = trimmed.replace('#+tags:', '').trim().split(/\s+/).filter(t => t.length > 0)
+      continue // Don't include in cleaned content
+    }
+    
+    if (trimmed.startsWith('#+author:')) {
+      metadata.author = trimmed.replace('#+author:', '').trim()
+      continue // Don't include in cleaned content
+    }
+    
+    if (trimmed.startsWith('#+date:')) {
+      metadata.date = trimmed.replace('#+date:', '').trim()
+      continue // Don't include in cleaned content
+    }
+    
+    // Skip other org metadata
+    if (trimmed.startsWith('#+')) {
+      continue
+    }
+    
+    // Skip duplicate PROPERTIES or ID lines after we've seen them
+    if (seenProperties && !inPropertiesBlock && 
+        (trimmed === ':PROPERTIES:' || trimmed.startsWith(':ID:') || trimmed === ':END:')) {
+      continue
+    }
+    
+    cleanedLines.push(line)
+  }
+  
+  return {
+    metadata,
+    cleanedContent: cleanedLines.join('\n')
+  }
+}
+
+// Metadata display component
+function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
+  const hasMetadata = Object.values(metadata).some(v => v !== undefined && v !== null)
+  
+  if (!hasMetadata) return null
+  
+  return (
+    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+      <div className="flex items-center gap-2 mb-3">
+        <Icon icon="lucide:info" className="w-4 h-4 text-gray-600" />
+        <span className="text-sm font-medium text-gray-700">Metadata</span>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        {metadata.title && (
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:heading" className="w-4 h-4 text-blue-600" />
+            <span className="text-gray-600">Title:</span>
+            <span className="font-medium text-gray-900">{metadata.title}</span>
+          </div>
+        )}
+        
+        {metadata.category && (
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:folder" className="w-4 h-4 text-green-600" />
+            <span className="text-gray-600">Category:</span>
+            <span className="font-medium text-gray-900">{metadata.category}</span>
+          </div>
+        )}
+        
+        {metadata.author && (
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:user" className="w-4 h-4 text-purple-600" />
+            <span className="text-gray-600">Author:</span>
+            <span className="font-medium text-gray-900">{metadata.author}</span>
+          </div>
+        )}
+        
+        {metadata.date && (
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:calendar" className="w-4 h-4 text-orange-600" />
+            <span className="text-gray-600">Date:</span>
+            <span className="font-medium text-gray-900">{metadata.date}</span>
+          </div>
+        )}
+        
+        {metadata.id && (
+          <div className="flex items-center gap-2 col-span-1 md:col-span-2">
+            <Icon icon="lucide:hash" className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">ID:</span>
+            <code className="bg-white px-2 py-1 rounded text-xs font-mono text-gray-700 border">
+              {metadata.id}
+            </code>
+          </div>
+        )}
+        
+        {metadata.tags && metadata.tags.length > 0 && (
+          <div className="flex items-start gap-2 col-span-1 md:col-span-2">
+            <Icon icon="lucide:tags" className="w-4 h-4 text-indigo-600 mt-0.5" />
+            <span className="text-gray-600">Tags:</span>
+            <div className="flex flex-wrap gap-1">
+              {metadata.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Simple org-mode parser function
+function parseOrgContent(content: string): { metadata: OrgMetadata; elements: React.ReactNode[] } {
+  // First, extract metadata and get cleaned content
+  const { metadata, cleanedContent } = extractMetadata(content)
+  const lines = cleanedContent.split('\n')
   const elements: React.ReactNode[] = []
   let currentListItems: string[] = []
   let currentCodeBlock: { language: string; code: string } | null = null
@@ -211,6 +379,7 @@ function parseOrgContent(content: string): React.ReactNode {
   }
 
   lines.forEach((line, index) => {
+    
     // Code blocks
     if (line.trim().startsWith('#+BEGIN_SRC')) {
       flushList()
@@ -289,7 +458,7 @@ function parseOrgContent(content: string): React.ReactNode {
   flushList()
   flushCodeBlock()
 
-  return elements
+  return { metadata, elements }
 }
 
 // Parse inline formatting like *bold*, /italic/, =code=
@@ -373,23 +542,41 @@ export function OrgRenderer({
   className = '', 
   enableSyntaxHighlight = true 
 }: OrgRendererProps) {
-  const renderedContent = useMemo(() => {
+  const { metadata, renderedElements, error } = useMemo(() => {
     try {
-      return parseOrgContent(content)
+      const result = parseOrgContent(content)
+      return {
+        metadata: result.metadata,
+        renderedElements: result.elements,
+        error: null
+      }
     } catch (error) {
       console.error('Error processing org content:', error)
-      return (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          <strong>Error:</strong> Failed to render org-mode content.
-          <pre className="mt-2 text-sm">{String(error)}</pre>
-        </div>
-      )
+      return {
+        metadata: {},
+        renderedElements: (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <strong>Error:</strong> Failed to render org-mode content.
+            <pre className="mt-2 text-sm">{String(error)}</pre>
+          </div>
+        ),
+        error: error
+      }
     }
   }, [content, enableSyntaxHighlight])
 
+  if (error) {
+    return (
+      <div className={`prose max-w-none ${className}`}>
+        {renderedElements}
+      </div>
+    )
+  }
+
   return (
     <div className={`prose max-w-none ${className}`}>
-      {renderedContent}
+      <MetadataDisplay metadata={metadata} />
+      {renderedElements}
     </div>
   )
 }

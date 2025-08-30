@@ -70,7 +70,16 @@ export class ApiClient {
 
   // Node Operations
   async getNodes(): Promise<Node[]> {
-    return this.request<Node[]>('/api/nodes')
+    const result = await this.request<any>('/api/nodes')
+    
+    // Handle new API response format
+    if (result && Array.isArray(result.data)) {
+      return result.data
+    } else if (Array.isArray(result)) {
+      return result
+    }
+    
+    return []
   }
 
   async getNode(id: string): Promise<NodeDetail> {

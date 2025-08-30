@@ -76,7 +76,11 @@ class MdRoamApiClient {
 
   async getNodes() {
     const result = await this.request<any>('/nodes')
-    // New API format: {"status":"success", "nodes":[...], "count":N}
+    // New API format: {"status":"success", "data":[...], "count":N}
+    if (result && result.status === 'success' && Array.isArray(result.data)) {
+      return result.data
+    }
+    // Legacy format: {"status":"success", "nodes":[...], "count":N}
     if (result && result.status === 'success' && Array.isArray(result.nodes)) {
       return result.nodes
     }
