@@ -30,7 +30,7 @@ export function NodeCreatePage() {
     tags: '',
     aliases: '',
     refs: '',
-    file_type: 'md',
+    file_type: 'org',
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -215,7 +215,7 @@ export function NodeEditPage() {
     tags: '',
     aliases: '',
     refs: '',
-    file_type: 'md',
+    file_type: 'org',
   })
 
   // Update form data when node is loaded
