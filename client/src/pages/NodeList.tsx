@@ -40,6 +40,10 @@ export function NodeListPage() {
     if (tagsFromUrl) {
       const decodedTags = decodeURIComponent(tagsFromUrl).split(',').filter(t => t.length > 0)
       setSelectedTags(decodedTags)
+      // If tags are specified in URL, show the tag selector to reflect the selection
+      if (decodedTags.length > 0) {
+        setShowTagSelector(true)
+      }
     }
     
     if (searchFromUrl) {
@@ -69,6 +73,7 @@ export function NodeListPage() {
   // Handle browser back/forward navigation
   useEffect(() => {
     const tagFromUrl = searchParams.get('tag')
+    const tagsFromUrl = searchParams.get('tags')
     const searchFromUrl = searchParams.get('search')
     
     // Update selectedTag if URL parameter changed
@@ -76,6 +81,23 @@ export function NodeListPage() {
       setSelectedTag(decodeURIComponent(tagFromUrl))
     } else if (!tagFromUrl && selectedTag) {
       setSelectedTag(null)
+    }
+    
+    // Update selectedTags if URL parameter changed
+    if (tagsFromUrl) {
+      const decodedTags = decodeURIComponent(tagsFromUrl).split(',').filter(t => t.length > 0)
+      const currentTagsStr = selectedTags.join(',')
+      const urlTagsStr = decodedTags.join(',')
+      
+      if (urlTagsStr !== currentTagsStr) {
+        setSelectedTags(decodedTags)
+        // Show tag selector if tags are present
+        if (decodedTags.length > 0 && !showTagSelector) {
+          setShowTagSelector(true)
+        }
+      }
+    } else if (!tagsFromUrl && selectedTags.length > 0) {
+      setSelectedTags([])
     }
     
     // Update searchQuery if URL parameter changed
