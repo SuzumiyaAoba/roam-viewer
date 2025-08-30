@@ -348,12 +348,13 @@ export function NodeDetailPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Tags</h2>
               <div className="flex flex-wrap gap-2">
                 {node.tags.map((tag) => (
-                  <span 
+                  <Link
                     key={tag}
-                    className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+                    to={`/nodes?tag=${encodeURIComponent(tag)}`}
+                    className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full hover:bg-blue-200 transition-colors cursor-pointer inline-block"
                   >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>
