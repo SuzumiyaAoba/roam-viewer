@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useLocalStorage } from 'react-use'
-import { useNodes, useSearchNodes, useDeleteNode } from '../hooks/useNodes'
+import { useNodes, useSearchNodes, useDeleteNode, useTags } from '../hooks/useNodes'
 import { Layout } from '../components/Layout'
 import { NodeCard, NodeCardCompact } from '../components/design-system/NodeCard'
 import { Button } from '../components/design-system/Button'
@@ -17,20 +17,29 @@ export function NodeListPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [showTagSelector, setShowTagSelector] = useState(false)
   const [viewMode, setViewMode] = useLocalStorage<ViewMode>('node-list-view-mode', 'grid')
   const navigate = useNavigate()
   
   const { data: nodes, isLoading: nodesLoading, error: nodesError } = useNodes()
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery)
+  const { data: availableTags, isLoading: tagsLoading } = useTags(showTagSelector)
   const deleteNodeMutation = useDeleteNode()
 
   // Initialize state from URL parameters
   useEffect(() => {
     const tagFromUrl = searchParams.get('tag')
+    const tagsFromUrl = searchParams.get('tags')
     const searchFromUrl = searchParams.get('search')
     
     if (tagFromUrl) {
       setSelectedTag(decodeURIComponent(tagFromUrl))
+    }
+    
+    if (tagsFromUrl) {
+      const decodedTags = decodeURIComponent(tagsFromUrl).split(',').filter(t => t.length > 0)
+      setSelectedTags(decodedTags)
     }
     
     if (searchFromUrl) {
@@ -80,16 +89,23 @@ export function NodeListPage() {
     }
   }, [searchParams])
 
-  // Filter nodes based on search query and selected tag
+  // Filter nodes based on search query and selected tags
   const getFilteredNodes = (): Node[] => {
     let filteredNodes = debouncedQuery 
       ? (searchResults?.nodes || []) 
       : (nodes || [])
     
-    // Apply tag filter if a tag is selected
+    // Apply single tag filter (legacy support)
     if (selectedTag) {
       filteredNodes = filteredNodes.filter(node => 
         node.tags?.includes(selectedTag)
+      )
+    }
+    
+    // Apply multi-tag filter
+    if (selectedTags.length > 0) {
+      filteredNodes = filteredNodes.filter(node => 
+        selectedTags.every(tag => node.tags?.includes(tag))
       )
     }
     
@@ -111,7 +127,7 @@ export function NodeListPage() {
   }
 
   // Update URL parameters helper
-  const updateURLParams = (newTag?: string | null, newSearch?: string) => {
+  const updateURLParams = (newTag?: string | null, newSearch?: string, newTags?: string[]) => {
     const newParams = new URLSearchParams(searchParams)
     
     if (newTag !== undefined) {
@@ -119,6 +135,14 @@ export function NodeListPage() {
         newParams.delete('tag')
       } else {
         newParams.set('tag', encodeURIComponent(newTag))
+      }
+    }
+    
+    if (newTags !== undefined) {
+      if (newTags.length === 0) {
+        newParams.delete('tags')
+      } else {
+        newParams.set('tags', encodeURIComponent(newTags.join(',')))
       }
     }
     
@@ -147,10 +171,21 @@ export function NodeListPage() {
 
   const clearFilters = () => {
     setSelectedTag(null)
+    setSelectedTags([])
     setSearchQuery('')
     setDebouncedQuery('')
     // Clear all URL parameters
     setSearchParams({}, { replace: true })
+  }
+
+  const handleTagToggle = (tag: string) => {
+    const newSelectedTags = selectedTags.includes(tag)
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag]
+    
+    setSelectedTags(newSelectedTags)
+    setSelectedTag(null) // Clear single tag when using multi-tag
+    updateURLParams(null, undefined, newSelectedTags)
   }
 
   const renderNodes = () => {
@@ -354,8 +389,50 @@ export function NodeListPage() {
           </div>
         </form>
 
+        {/* Tag Selector */}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-700">Filter by Tags:</span>
+            <button
+              onClick={() => setShowTagSelector(!showTagSelector)}
+              className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            >
+              <Icon icon={showTagSelector ? "lucide:chevron-up" : "lucide:chevron-down"} width={16} height={16} />
+              {showTagSelector ? 'Hide' : 'Show'} Tags
+            </button>
+          </div>
+          
+          {showTagSelector && (
+            <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-md bg-gray-50 p-3">
+              {tagsLoading ? (
+                <div className="text-sm text-gray-500">Loading tags...</div>
+              ) : availableTags && availableTags.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {availableTags.map((tagInfo) => (
+                    <button
+                      key={tagInfo.tag}
+                      onClick={() => handleTagToggle(tagInfo.tag)}
+                      className={cn(
+                        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors",
+                        selectedTags.includes(tagInfo.tag)
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                      )}
+                    >
+                      {tagInfo.tag}
+                      <span className="ml-1.5 text-xs opacity-75">({tagInfo.count})</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">No tags available</div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Active Filters */}
-        {(selectedTag || debouncedQuery) && (
+        {(selectedTag || selectedTags.length > 0 || debouncedQuery) && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-medium text-gray-700">Active filters:</span>
@@ -373,6 +450,17 @@ export function NodeListPage() {
                   </button>
                 </div>
               )}
+              {selectedTags.map((tag) => (
+                <div key={tag} className="flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">
+                  <span>Tag: {tag}</span>
+                  <button
+                    onClick={() => handleTagToggle(tag)}
+                    className="ml-2 text-indigo-600 hover:text-indigo-800"
+                  >
+                    <Icon icon="lucide:x" width={14} height={14} />
+                  </button>
+                </div>
+              ))}
               {debouncedQuery && (
                 <div className="flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                   <span>Search: "{debouncedQuery}"</span>
@@ -419,7 +507,10 @@ export function NodeListPage() {
             <p className="text-lg">No nodes found.</p>
             {debouncedQuery && <p className="mt-2">Try a different search term.</p>}
             {selectedTag && <p className="mt-2">No nodes found with tag "{selectedTag}".</p>}
-            {(debouncedQuery || selectedTag) && (
+            {selectedTags.length > 0 && (
+              <p className="mt-2">No nodes found with tags: {selectedTags.join(', ')}</p>
+            )}
+            {(debouncedQuery || selectedTag || selectedTags.length > 0) && (
               <button
                 onClick={clearFilters}
                 className="mt-4 text-blue-600 hover:text-blue-800 underline"

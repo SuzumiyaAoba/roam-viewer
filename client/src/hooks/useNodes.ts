@@ -76,10 +76,11 @@ export function useDeleteNode() {
   })
 }
 
-export function useTags() {
+export function useTags(enabled: boolean = true) {
   return useQuery({
     queryKey: ['tags'],
     queryFn: () => apiClient.getTags(),
+    enabled,
   })
 }
 
