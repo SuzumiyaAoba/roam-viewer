@@ -22,6 +22,59 @@ function removeFrontmatter(content: string): string {
   return content
 }
 
+// Remove duplicate PROPERTIES and metadata blocks for cleaner display
+function removeDuplicateMetadata(content: string): string {
+  const lines = content.split('\n')
+  const cleanedLines: string[] = []
+  let seenProperties = false
+  let seenTitle = false
+  let seenCategory = false
+  let seenFiletags = false
+  let inPropertiesBlock = false
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    
+    // Track PROPERTIES blocks
+    if (trimmed === ':PROPERTIES:') {
+      if (seenProperties) continue // Skip duplicate PROPERTIES block
+      seenProperties = true
+      inPropertiesBlock = true
+    } else if (trimmed === ':END:' && inPropertiesBlock) {
+      inPropertiesBlock = false
+    } else if (inPropertiesBlock) {
+      // Skip all properties content (but keep the first occurrence)
+      if (seenProperties && trimmed.startsWith(':ID:')) {
+        // Allow first ID, skip subsequent ones
+        const idCount = cleanedLines.filter(l => l.trim().startsWith(':ID:')).length
+        if (idCount > 0) continue
+      }
+    }
+    
+    // Track metadata lines and skip duplicates
+    if (trimmed.startsWith('#+title:')) {
+      if (seenTitle) continue
+      seenTitle = true
+    } else if (trimmed.startsWith('#+category:')) {
+      if (seenCategory) continue
+      seenCategory = true
+    } else if (trimmed.startsWith('#+filetags:')) {
+      if (seenFiletags) continue
+      seenFiletags = true
+    }
+    
+    // Skip duplicate PROPERTIES or metadata lines after we've seen them
+    if (seenProperties && !inPropertiesBlock && 
+        (trimmed === ':PROPERTIES:' || trimmed.startsWith(':ID:') || trimmed === ':END:')) {
+      continue
+    }
+    
+    cleanedLines.push(line)
+  }
+  
+  return cleanedLines.join('\n')
+}
+
 function BacklinkCard({ link }: { link: BacklinkNode }) {
   return (
     <div className="border-l-4 border-blue-200 pl-4 space-y-2">
@@ -181,7 +234,7 @@ export function NodeDetailPage() {
             
             {showRaw ? (
               <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-md text-sm font-mono">
-                {node.content || 'No content available.'}
+                {removeDuplicateMetadata(node.content || 'No content available.')}
               </pre>
             ) : (
               <div className="max-w-none">

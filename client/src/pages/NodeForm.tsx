@@ -20,6 +20,37 @@ function parseTagsString(str: string): string[] {
     .filter(tag => tag.length > 0)
 }
 
+// Remove metadata from content to prevent duplication
+function stripMetadataFromContent(content: string): string {
+  const lines = content.split('\n')
+  const cleanedLines: string[] = []
+  let inPropertiesBlock = false
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    
+    // Skip PROPERTIES blocks
+    if (trimmed === ':PROPERTIES:') {
+      inPropertiesBlock = true
+      continue
+    } else if (trimmed === ':END:' && inPropertiesBlock) {
+      inPropertiesBlock = false
+      continue
+    } else if (inPropertiesBlock) {
+      continue // Skip all properties
+    }
+    
+    // Skip org metadata lines
+    if (trimmed.startsWith('#+')) {
+      continue
+    }
+    
+    cleanedLines.push(line)
+  }
+  
+  return cleanedLines.join('\n').trim()
+}
+
 export function NodeCreatePage() {
   const navigate = useNavigate()
   const createNodeMutation = useCreateNode()
@@ -223,10 +254,11 @@ export function NodeEditPage() {
     if (node) {
       setFormData({
         title: node.title || '',
-        content: node.content || '',
+        content: stripMetadataFromContent(node.content || ''),
         tags: (node.tags || []).join(', '),
         aliases: (node.aliases || []).join(', '),
         refs: (node.refs || []).join(', '),
+        file_type: node.file_type || 'org',
       })
     }
   }, [node])
