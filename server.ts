@@ -540,8 +540,16 @@ app.get("/api/search/tag/:tag", async (c) => {
 async function startServer() {
   const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001;
   const port = await getPort({ port: preferredPort, portRange: [3001, 3011] });
+  
   console.log(`🔥 Bun server starting on port ${port}`);
-  return { port, fetch: app.fetch };
+  
+  const server = Bun.serve({
+    port: port,
+    fetch: app.fetch,
+  });
+  
+  console.log(`✅ Server successfully started at http://localhost:${port}`);
+  return server;
 }
 
 export default startServer();
