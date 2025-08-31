@@ -1,35 +1,33 @@
-import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from "./utils"
+import type React from 'react'
+import { forwardRef } from 'react'
+import { cn } from './utils'
 
-const headerVariants = cva(
-  'w-full border-b bg-white transition-shadow duration-200',
-  {
-    variants: {
-      variant: {
-        default: 'border-gray-200 shadow-sm',
-        elevated: 'border-gray-200 shadow-md',
-        minimal: 'border-gray-100',
-        transparent: 'border-transparent bg-transparent backdrop-blur-sm',
-      },
-      size: {
-        sm: 'h-12 px-4',
-        default: 'h-16 px-6',
-        lg: 'h-20 px-8',
-      },
-      position: {
-        static: 'relative',
-        sticky: 'sticky top-0 z-40',
-        fixed: 'fixed top-0 left-0 right-0 z-50',
-      },
+const headerVariants = cva('w-full border-b bg-white transition-shadow duration-200', {
+  variants: {
+    variant: {
+      default: 'border-gray-200 shadow-sm',
+      elevated: 'border-gray-200 shadow-md',
+      minimal: 'border-gray-100',
+      transparent: 'border-transparent bg-transparent backdrop-blur-sm',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-      position: 'static',
+    size: {
+      sm: 'h-12 px-4',
+      default: 'h-16 px-6',
+      lg: 'h-20 px-8',
     },
-  }
-)
+    position: {
+      static: 'relative',
+      sticky: 'sticky top-0 z-40',
+      fixed: 'fixed top-0 left-0 right-0 z-50',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'default',
+    position: 'static',
+  },
+})
 
 export interface HeaderProps
   extends React.HTMLAttributes<HTMLElement>,
@@ -61,20 +59,23 @@ export interface HeaderProps
 }
 
 const Header = forwardRef<HTMLElement, HeaderProps>(
-  ({
-    className,
-    variant,
-    size,
-    position,
-    logo,
-    navigation,
-    actions,
-    showMobileMenu = true,
-    onMobileMenuToggle,
-    isMobileMenuOpen = false,
-    children,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      position,
+      logo,
+      navigation,
+      actions,
+      showMobileMenu = true,
+      onMobileMenuToggle,
+      isMobileMenuOpen = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <header
         ref={ref}
@@ -84,28 +85,16 @@ const Header = forwardRef<HTMLElement, HeaderProps>(
         <div className="flex h-full items-center justify-between">
           {/* Left section - Logo */}
           <div className="flex items-center space-x-4">
-            {logo && (
-              <div className="flex-shrink-0">
-                {logo}
-              </div>
-            )}
+            {logo && <div className="flex-shrink-0">{logo}</div>}
           </div>
 
           {/* Center section - Navigation (hidden on mobile) */}
-          {navigation && (
-            <div className="hidden md:flex items-center space-x-1">
-              {navigation}
-            </div>
-          )}
+          {navigation && <div className="hidden md:flex items-center space-x-1">{navigation}</div>}
 
           {/* Right section - Actions and Mobile Menu */}
           <div className="flex items-center space-x-4">
             {/* Desktop actions */}
-            {actions && (
-              <div className="flex items-center space-x-2">
-                {actions}
-              </div>
-            )}
+            {actions && <div className="flex items-center space-x-2">{actions}</div>}
 
             {/* Mobile menu button */}
             {showMobileMenu && (
@@ -117,8 +106,8 @@ const Header = forwardRef<HTMLElement, HeaderProps>(
               >
                 <svg
                   className={cn(
-                    "h-5 w-5 transition-transform duration-200",
-                    isMobileMenuOpen && "rotate-90"
+                    'h-5 w-5 transition-transform duration-200',
+                    isMobileMenuOpen && 'rotate-90'
                   )}
                   fill="none"
                   stroke="currentColor"
@@ -149,13 +138,11 @@ const Header = forwardRef<HTMLElement, HeaderProps>(
         {showMobileMenu && navigation && (
           <div
             className={cn(
-              "md:hidden border-t border-gray-200 transition-all duration-200",
-              isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+              'md:hidden border-t border-gray-200 transition-all duration-200',
+              isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
             )}
           >
-            <div className="px-4 py-4 space-y-2">
-              {navigation}
-            </div>
+            <div className="px-4 py-4 space-y-2">{navigation}</div>
           </div>
         )}
 
@@ -210,18 +197,13 @@ const HeaderLogo = forwardRef<
 })
 HeaderLogo.displayName = 'HeaderLogo'
 
-const HeaderNav = forwardRef<
-  HTMLElement,
-  React.HTMLAttributes<HTMLElement>
->(({ className, children, ...props }, ref) => (
-  <nav
-    ref={ref}
-    className={cn('flex items-center space-x-1', className)}
-    {...props}
-  >
-    {children}
-  </nav>
-))
+const HeaderNav = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+  ({ className, children, ...props }, ref) => (
+    <nav ref={ref} className={cn('flex items-center space-x-1', className)} {...props}>
+      {children}
+    </nav>
+  )
+)
 HeaderNav.displayName = 'HeaderNav'
 
 const HeaderNavItem = forwardRef<
@@ -235,9 +217,7 @@ const HeaderNavItem = forwardRef<
     ref={ref}
     className={cn(
       'px-3 py-2 rounded-md text-sm font-medium transition-colors',
-      active
-        ? 'bg-blue-100 text-blue-700'
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
+      active ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
       disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
       className
     )}
@@ -249,25 +229,13 @@ const HeaderNavItem = forwardRef<
 ))
 HeaderNavItem.displayName = 'HeaderNavItem'
 
-const HeaderActions = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('flex items-center space-x-2', className)}
-    {...props}
-  >
-    {children}
-  </div>
-))
+const HeaderActions = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => (
+    <div ref={ref} className={cn('flex items-center space-x-2', className)} {...props}>
+      {children}
+    </div>
+  )
+)
 HeaderActions.displayName = 'HeaderActions'
 
-export {
-  Header,
-  HeaderLogo,
-  HeaderNav,
-  HeaderNavItem,
-  HeaderActions,
-  headerVariants,
-}
+export { Header, HeaderLogo, HeaderNav, HeaderNavItem, HeaderActions, headerVariants }

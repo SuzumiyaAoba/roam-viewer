@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import React, { forwardRef } from 'react'
 import { cn } from './utils'
 
 const textareaVariants = cva(
@@ -8,11 +8,15 @@ const textareaVariants = cva(
     variants: {
       variant: {
         default: 'border border-gray-300 bg-white text-gray-900 placeholder-gray-500',
-        filled: 'border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-500 focus:bg-white',
+        filled:
+          'border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-500 focus:bg-white',
         outlined: 'border-2 border-gray-300 bg-white text-gray-900 placeholder-gray-500',
-        minimal: 'border-0 border-b-2 border-gray-200 rounded-none bg-transparent text-gray-900 placeholder-gray-500 focus:ring-0 focus:border-blue-500 resize-none',
-        error: 'border border-red-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-red-500 focus:border-red-500',
-        success: 'border border-green-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-green-500 focus:border-green-500',
+        minimal:
+          'border-0 border-b-2 border-gray-200 rounded-none bg-transparent text-gray-900 placeholder-gray-500 focus:ring-0 focus:border-blue-500 resize-none',
+        error:
+          'border border-red-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-red-500 focus:border-red-500',
+        success:
+          'border border-green-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-green-500 focus:border-green-500',
       },
       size: {
         sm: 'px-3 py-2 text-sm min-h-[80px]',
@@ -24,7 +28,7 @@ const textareaVariants = cva(
         vertical: 'resize-y',
         horizontal: 'resize-x',
         both: 'resize',
-      }
+      },
     },
     defaultVariants: {
       variant: 'default',
@@ -50,7 +54,7 @@ export interface TextareaProps
    */
   errorMessage?: string
   /**
-   * Success message displayed below the textarea  
+   * Success message displayed below the textarea
    */
   successMessage?: string
   /**
@@ -68,27 +72,30 @@ export interface TextareaProps
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({
-    className,
-    variant,
-    size,
-    resize,
-    label,
-    helperText,
-    errorMessage,
-    successMessage,
-    showCharCount,
-    maxLength,
-    autoResize = false,
-    id,
-    value,
-    onChange,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      resize,
+      label,
+      helperText,
+      errorMessage,
+      successMessage,
+      showCharCount,
+      maxLength,
+      autoResize = false,
+      id,
+      value,
+      onChange,
+      ...props
+    },
+    ref
+  ) => {
     const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`
     const hasError = !!errorMessage
     const hasSuccess = !!successMessage && !hasError
-    
+
     const currentVariant = hasError ? 'error' : hasSuccess ? 'success' : variant
     const charCount = typeof value === 'string' ? value.length : 0
     const isOverLimit = maxLength && charCount > maxLength
@@ -116,10 +123,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label
-            htmlFor={textareaId}
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor={textareaId} className="block text-sm font-medium text-gray-700 mb-2">
             {label}
             {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -131,7 +135,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             ref={ref}
             id={textareaId}
             className={cn(
-              textareaVariants({ variant: currentVariant, size, resize: autoResize ? 'none' : resize }),
+              textareaVariants({
+                variant: currentVariant,
+                size,
+                resize: autoResize ? 'none' : resize,
+              }),
               className
             )}
             value={value}
@@ -143,9 +151,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {/* Character count overlay */}
           {showCharCount && (maxLength || charCount > 0) && (
             <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white/90 px-2 py-1 rounded">
-              <span className={isOverLimit ? 'text-red-500' : ''}>
-                {charCount}
-              </span>
+              <span className={isOverLimit ? 'text-red-500' : ''}>{charCount}</span>
               {maxLength && (
                 <>
                   <span>/</span>
@@ -162,7 +168,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {errorMessage && (
               <p className="text-sm text-red-600 flex items-center">
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 {errorMessage}
               </p>
@@ -170,7 +180,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {!errorMessage && successMessage && (
               <p className="text-sm text-green-600 flex items-center">
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 {successMessage}
               </p>
@@ -184,10 +198,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {/* Character count below textarea */}
         {showCharCount && !errorMessage && !successMessage && (maxLength || charCount > 0) && (
           <div className="mt-1 text-right">
-            <span className={cn(
-              "text-xs",
-              isOverLimit ? 'text-red-500' : 'text-gray-400'
-            )}>
+            <span className={cn('text-xs', isOverLimit ? 'text-red-500' : 'text-gray-400')}>
               {charCount}
               {maxLength && (
                 <>
@@ -206,14 +217,7 @@ Textarea.displayName = 'Textarea'
 
 // Auto-resizing textarea variant
 const AutoTextarea = forwardRef<HTMLTextAreaElement, Omit<TextareaProps, 'autoResize' | 'resize'>>(
-  (props, ref) => (
-    <Textarea
-      ref={ref}
-      autoResize
-      resize="none"
-      {...props}
-    />
-  )
+  (props, ref) => <Textarea ref={ref} autoResize resize="none" {...props} />
 )
 AutoTextarea.displayName = 'AutoTextarea'
 
@@ -230,9 +234,4 @@ const InlineTextarea = forwardRef<HTMLTextAreaElement, Omit<TextareaProps, 'vari
 )
 InlineTextarea.displayName = 'InlineTextarea'
 
-export {
-  Textarea,
-  AutoTextarea,
-  InlineTextarea,
-  textareaVariants,
-}
+export { Textarea, AutoTextarea, InlineTextarea, textareaVariants }

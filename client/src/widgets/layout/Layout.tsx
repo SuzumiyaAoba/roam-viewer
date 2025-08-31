@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Link } from 'react-router-dom'
 
 interface LayoutProps {
@@ -17,14 +17,23 @@ export function Layout({ children, title }: LayoutProps) {
               Roam Web
             </Link>
             <nav className="flex space-x-4">
-              <Link to="/nodes" className="text-gray-600 hover:text-gray-900">Nodes</Link>
-              <Link to="/tags" className="text-gray-600 hover:text-gray-900">Tags</Link>
-              <Link to="/nodes/new" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">Create</Link>
+              <Link to="/nodes" className="text-gray-600 hover:text-gray-900">
+                Nodes
+              </Link>
+              <Link to="/tags" className="text-gray-600 hover:text-gray-900">
+                Tags
+              </Link>
+              <Link
+                to="/nodes/new"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+              >
+                Create
+              </Link>
             </nav>
           </div>
         </div>
       </header>
-      
+
       <main className="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
         {title && (
           <div className="mb-6">
@@ -36,9 +45,7 @@ export function Layout({ children, title }: LayoutProps) {
 
       <footer className="bg-white border-t">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <p className="text-sm text-gray-500 text-center">
-            © 2024 Roam Web. All rights reserved.
-          </p>
+          <p className="text-sm text-gray-500 text-center">© 2024 Roam Web. All rights reserved.</p>
         </div>
       </footer>
     </div>

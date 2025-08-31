@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { NodeListPage } from './NodeListPage'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Node } from '../../entities/node'
+import { NodeListPage } from './NodeListPage'
 
 // Mock the Layout component
 vi.mock('../../widgets/layout', () => ({
   Layout: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="layout">{children}</div>
-  )
+  ),
 }))
 
 // Mock the NodeCard components
@@ -20,7 +20,9 @@ vi.mock('../components/design-system/NodeCard', () => ({
       <p>{file}</p>
       <div>
         {tags?.map((tag: string) => (
-          <button key={tag} onClick={() => onTagClick(tag)}>{tag}</button>
+          <button key={tag} onClick={() => onTagClick(tag)}>
+            {tag}
+          </button>
         ))}
       </div>
       <button onClick={onEdit}>Edit</button>
@@ -33,13 +35,15 @@ vi.mock('../components/design-system/NodeCard', () => ({
       <p>{file}</p>
       <div>
         {tags?.map((tag: string) => (
-          <button key={tag} onClick={() => onTagClick(tag)}>{tag}</button>
+          <button key={tag} onClick={() => onTagClick(tag)}>
+            {tag}
+          </button>
         ))}
       </div>
       <button onClick={onEdit}>Edit</button>
       <button onClick={onDelete}>Delete</button>
     </div>
-  )
+  ),
 }))
 
 // Mock the Button component
@@ -55,19 +59,19 @@ vi.mock('../components/design-system/Button', () => ({
     >
       {children}
     </button>
-  )
+  ),
 }))
 
 // Mock utility function
 vi.mock('../components/design-system/utils', () => ({
-  cn: (...classes: any[]) => classes.filter(Boolean).join(' ')
+  cn: (...classes: any[]) => classes.filter(Boolean).join(' '),
 }))
 
 // Mock iconify
 vi.mock('@iconify/react', () => ({
   Icon: ({ icon, className }: { icon: string; className?: string }) => (
     <div data-testid={`icon-${icon}`} className={className} />
-  )
+  ),
 }))
 
 // Mock react-use
@@ -77,11 +81,13 @@ vi.mock('react-use', () => ({
       let mockValue = 'grid'
       return [
         () => mockValue,
-        (newValue: string) => { mockValue = newValue }
+        (newValue: string) => {
+          mockValue = newValue
+        },
       ]
     })()
     return [value(), setValue]
-  }
+  },
 }))
 
 // Mock hooks
@@ -95,7 +101,7 @@ const mockUseNavigate = vi.fn()
 vi.mock('../hooks/useNodes', () => ({
   useNodes: () => mockUseNodes(),
   useSearchNodes: (query: string) => mockUseSearchNodes(query),
-  useDeleteNode: () => mockUseDeleteNode()
+  useDeleteNode: () => mockUseDeleteNode(),
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -103,14 +109,14 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useSearchParams: () => [mockUseSearchParams(), mockSetSearchParams],
-    useNavigate: () => mockUseNavigate()
+    useNavigate: () => mockUseNavigate(),
   }
 })
 
 // Mock window.confirm
 Object.defineProperty(window, 'confirm', {
   writable: true,
-  value: vi.fn(() => true)
+  value: vi.fn(() => true),
 })
 
 describe('NodeListPage', () => {
@@ -125,22 +131,22 @@ describe('NodeListPage', () => {
       title: 'React Guide',
       file: 'react.md',
       tags: ['react', 'javascript'],
-      content: 'React guide content'
+      content: 'React guide content',
     },
     {
-      id: '2', 
+      id: '2',
       title: 'Vue Tutorial',
       file: 'vue.md',
       tags: ['vue', 'javascript'],
-      content: 'Vue tutorial content'
+      content: 'Vue tutorial content',
     },
     {
       id: '3',
       title: 'Node.js Basics',
-      file: 'nodejs.md', 
+      file: 'nodejs.md',
       tags: ['nodejs', 'backend'],
-      content: 'Node.js basics'
-    }
+      content: 'Node.js basics',
+    },
   ]
 
   const renderNodeListPage = (initialRoute: string = '/nodes') => {
@@ -154,7 +160,7 @@ describe('NodeListPage', () => {
     mockUseNavigate.mockReturnValue(mockNavigate)
     mockUseSearchParams.mockReturnValue(mockSearchParams)
     mockUseDeleteNode.mockReturnValue({
-      mutate: mockDeleteMutate
+      mutate: mockDeleteMutate,
     })
 
     return render(
@@ -173,11 +179,11 @@ describe('NodeListPage', () => {
     mockUseNodes.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
     mockUseSearchNodes.mockReturnValue({
       data: { nodes: [], total: 0 },
-      isLoading: false
+      isLoading: false,
     })
   })
 
@@ -189,7 +195,10 @@ describe('NodeListPage', () => {
     renderNodeListPage()
 
     expect(screen.getByText('Nodes')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /create new node/i })).toHaveAttribute('href', '/nodes/new')
+    expect(screen.getByRole('link', { name: /create new node/i })).toHaveAttribute(
+      'href',
+      '/nodes/new'
+    )
 
     // Should show nodes in grid view by default
     const nodeCards = screen.getAllByTestId('node-card')
@@ -203,7 +212,7 @@ describe('NodeListPage', () => {
     mockUseNodes.mockReturnValue({
       data: undefined,
       isLoading: true,
-      error: null
+      error: null,
     })
 
     renderNodeListPage()
@@ -215,7 +224,7 @@ describe('NodeListPage', () => {
     mockUseNodes.mockReturnValue({
       data: undefined,
       isLoading: false,
-      error: new Error('Failed to load')
+      error: new Error('Failed to load'),
     })
 
     renderNodeListPage()
@@ -228,7 +237,7 @@ describe('NodeListPage', () => {
     mockUseNodes.mockReturnValue({
       data: [],
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeListPage()
@@ -265,11 +274,11 @@ describe('NodeListPage', () => {
 
     const searchResults = {
       nodes: [mockNodes[0]],
-      total: 1
+      total: 1,
     }
     mockUseSearchNodes.mockReturnValue({
       data: searchResults,
-      isLoading: false
+      isLoading: false,
     })
 
     renderNodeListPage()
@@ -294,7 +303,7 @@ describe('NodeListPage', () => {
     fireEvent.click(reactTag)
 
     expect(mockSetSearchParams).toHaveBeenCalled()
-    
+
     // After filtering, should show active filter
     const activeFilters = screen.queryByText('Active filters:')
     // This depends on URL params being set properly in real scenario
@@ -387,13 +396,13 @@ describe('NodeListPage', () => {
   it('should show correct node counts in table view', () => {
     const nodeWithManyTags = {
       ...mockNodes[0],
-      tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5']
+      tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5'],
     }
 
     mockUseNodes.mockReturnValue({
       data: [nodeWithManyTags],
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeListPage()
@@ -411,7 +420,7 @@ describe('NodeListPage', () => {
 
     mockUseSearchNodes.mockReturnValue({
       data: { nodes: [], total: 0 },
-      isLoading: false
+      isLoading: false,
     })
 
     renderNodeListPage()
@@ -431,7 +440,7 @@ describe('NodeListPage', () => {
     renderNodeListPage()
 
     const gridButton = screen.getByTitle('Grid view')
-    const listButton = screen.getByTitle('List view') 
+    const listButton = screen.getByTitle('List view')
     const tableButton = screen.getByTitle('Table view')
 
     // Grid should be selected by default
@@ -441,7 +450,7 @@ describe('NodeListPage', () => {
 
     // Click list view
     fireEvent.click(listButton)
-    
+
     // Button states should update (this would need actual button state management)
   })
 })

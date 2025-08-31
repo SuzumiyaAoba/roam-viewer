@@ -8,7 +8,8 @@ const meta: Meta<typeof Textarea> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A styled textarea component built with Tailwind CSS. Perfect for multiline text input with automatic resizing and consistent styling.',
+        component:
+          'A styled textarea component built with Tailwind CSS. Perfect for multiline text input with automatic resizing and consistent styling.',
       },
     },
   },
@@ -56,7 +57,8 @@ export const Default: Story = {
 
 export const WithValue: Story = {
   args: {
-    value: 'This is a sample text that spans multiple lines.\n\nIt demonstrates how the textarea component handles multiline content with proper spacing and formatting.',
+    value:
+      'This is a sample text that spans multiple lines.\n\nIt demonstrates how the textarea component handles multiline content with proper spacing and formatting.',
     placeholder: 'Enter your message...',
   },
 }
@@ -138,25 +140,17 @@ export const FormExample: Story = {
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
           Description
         </label>
-        <Textarea
-          id="description"
-          placeholder="Provide a detailed description..."
-          rows={4}
-        />
+        <Textarea id="description" placeholder="Provide a detailed description..." rows={4} />
         <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
       </div>
-      
+
       <div>
         <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-2">
           Feedback
         </label>
-        <Textarea
-          id="feedback"
-          placeholder="Share your thoughts and suggestions..."
-          rows={6}
-        />
+        <Textarea id="feedback" placeholder="Share your thoughts and suggestions..." rows={6} />
       </div>
-      
+
       <div>
         <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
           Code Snippet
@@ -169,7 +163,7 @@ export const FormExample: Story = {
           spellCheck={false}
         />
       </div>
-      
+
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
           Additional Notes
@@ -196,7 +190,7 @@ export const ChatExample: Story = {
           <p className="text-sm">Your reply goes here</p>
         </div>
       </div>
-      
+
       <div className="flex items-end space-x-2">
         <Textarea
           placeholder="Type your message..."

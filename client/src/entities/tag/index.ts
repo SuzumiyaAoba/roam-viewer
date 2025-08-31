@@ -1,4 +1,4 @@
 // Tag Entity Export
 
-export * from './model/types'
 export * from './api/useTag'
+export * from './model/types'

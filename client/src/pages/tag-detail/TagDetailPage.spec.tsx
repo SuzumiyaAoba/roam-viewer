@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { TagDetailPage } from './TagDetailPage'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Node } from '../../entities/node'
+import { TagDetailPage } from './TagDetailPage'
 
 // Mock the Layout component
 vi.mock('../../widgets/layout', () => ({
@@ -12,7 +12,7 @@ vi.mock('../../widgets/layout', () => ({
       <h1>{title}</h1>
       {children}
     </div>
-  )
+  ),
 }))
 
 // Mock the NodeCard component
@@ -23,7 +23,7 @@ vi.mock('../components/design-system/NodeCard', () => ({
       <p>{file}</p>
       <div>{tags?.join(', ')}</div>
     </div>
-  )
+  ),
 }))
 
 // Mock the useNodesByTag hook and useParams
@@ -32,7 +32,7 @@ const mockUseParams = vi.fn()
 const mockUseNavigate = vi.fn()
 
 vi.mock('../hooks/useNodes', () => ({
-  useNodesByTag: (tag: string) => mockUseNodesByTag(tag)
+  useNodesByTag: (tag: string) => mockUseNodesByTag(tag),
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -40,7 +40,7 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useParams: () => mockUseParams(),
-    useNavigate: () => mockUseNavigate()
+    useNavigate: () => mockUseNavigate(),
   }
 })
 
@@ -48,7 +48,7 @@ vi.mock('react-router-dom', async () => {
 vi.mock('@iconify/react', () => ({
   Icon: ({ icon, className }: { icon: string; className?: string }) => (
     <div data-testid={`icon-${icon}`} className={className} />
-  )
+  ),
 }))
 
 describe('TagDetailPage', () => {
@@ -83,7 +83,7 @@ describe('TagDetailPage', () => {
     mockUseNodesByTag.mockReturnValue({
       data: undefined,
       isLoading: true,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('react')
@@ -97,7 +97,7 @@ describe('TagDetailPage', () => {
     mockUseNodesByTag.mockReturnValue({
       data: undefined,
       isLoading: false,
-      error: new Error('Failed to load')
+      error: new Error('Failed to load'),
     })
 
     renderTagDetailPage('react')
@@ -111,13 +111,15 @@ describe('TagDetailPage', () => {
     mockUseNodesByTag.mockReturnValue({
       data: [],
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('empty-tag')
 
     expect(screen.getByText('No nodes found with tag "#empty-tag"')).toBeInTheDocument()
-    expect(screen.getByText('Create a new node and add the "#empty-tag" tag to see it here.')).toBeInTheDocument()
+    expect(
+      screen.getByText('Create a new node and add the "#empty-tag" tag to see it here.')
+    ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /create node/i })).toHaveAttribute('href', '/nodes/new')
     expect(screen.getByRole('link', { name: /back to tags/i })).toHaveAttribute('href', '/tags')
   })
@@ -126,7 +128,7 @@ describe('TagDetailPage', () => {
     mockUseNodesByTag.mockReturnValue({
       data: null,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('null-tag')
@@ -141,34 +143,34 @@ describe('TagDetailPage', () => {
         title: 'React Hooks Guide',
         file: 'react-hooks.md',
         tags: ['react', 'hooks'],
-        content: 'Guide about React hooks'
+        content: 'Guide about React hooks',
       },
       {
         id: '2',
         title: 'React Components',
         file: 'components.md',
         tags: ['react', 'components'],
-        content: 'About React components'
-      }
+        content: 'About React components',
+      },
     ]
 
     mockUseNodesByTag.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('react')
 
     expect(screen.getByText('#react')).toBeInTheDocument()
     expect(screen.getByText('2 nodes tagged with #react')).toBeInTheDocument()
-    
+
     // Check if node cards are displayed
     expect(screen.getByText('React Hooks Guide')).toBeInTheDocument()
     expect(screen.getByText('React Components')).toBeInTheDocument()
     expect(screen.getByText('react-hooks.md')).toBeInTheDocument()
     expect(screen.getByText('components.md')).toBeInTheDocument()
-    
+
     // Check node cards count
     const nodeCards = screen.getAllByTestId('node-card')
     expect(nodeCards).toHaveLength(2)
@@ -181,14 +183,14 @@ describe('TagDetailPage', () => {
         title: 'Single Node',
         file: 'single.md',
         tags: ['single'],
-        content: 'Only one node'
-      }
+        content: 'Only one node',
+      },
     ]
 
     mockUseNodesByTag.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('single')
@@ -203,14 +205,14 @@ describe('TagDetailPage', () => {
         title: 'Test Node',
         file: 'test.md',
         tags: ['test'],
-        content: 'Test content'
-      }
+        content: 'Test content',
+      },
     ]
 
     mockUseNodesByTag.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('test')
@@ -219,7 +221,10 @@ describe('TagDetailPage', () => {
     expect(screen.getByRole('link', { name: /back to tags/i })).toHaveAttribute('href', '/tags')
 
     // Check view all nodes link
-    expect(screen.getByRole('link', { name: /view all nodes/i })).toHaveAttribute('href', '/nodes?tag=test')
+    expect(screen.getByRole('link', { name: /view all nodes/i })).toHaveAttribute(
+      'href',
+      '/nodes?tag=test'
+    )
 
     // Check create node link
     expect(screen.getByRole('link', { name: /create node/i })).toHaveAttribute('href', '/nodes/new')
@@ -232,21 +237,21 @@ describe('TagDetailPage', () => {
         title: 'C++ Guide',
         file: 'cpp.md',
         tags: ['c++'],
-        content: 'C++ programming guide'
-      }
+        content: 'C++ programming guide',
+      },
     ]
 
     mockUseNodesByTag.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('c++')
 
     expect(screen.getByText('#c++')).toBeInTheDocument()
     expect(screen.getByText('1 node tagged with #c++')).toBeInTheDocument()
-    
+
     // Check that the view all nodes link is properly encoded
     const viewAllLink = screen.getByRole('link', { name: /view all nodes/i })
     expect(viewAllLink).toHaveAttribute('href', '/nodes?tag=c%2B%2B')
@@ -259,14 +264,14 @@ describe('TagDetailPage', () => {
         title: 'Clickable Node',
         file: 'clickable.md',
         tags: ['test'],
-        content: 'Clickable node content'
-      }
+        content: 'Clickable node content',
+      },
     ]
 
     mockUseNodesByTag.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('test')
@@ -284,14 +289,14 @@ describe('TagDetailPage', () => {
         title: 'Test Node',
         file: 'test.md',
         tags: ['test'],
-        content: 'Test content'
-      }
+        content: 'Test content',
+      },
     ]
 
     mockUseNodesByTag.mockReturnValue({
       data: mockNodes,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('test')
@@ -306,7 +311,7 @@ describe('TagDetailPage', () => {
     mockUseNodesByTag.mockReturnValue({
       data: [],
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderTagDetailPage('specific-tag')

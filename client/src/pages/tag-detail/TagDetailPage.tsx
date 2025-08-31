@@ -1,9 +1,9 @@
-import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
-import { useNodesByTag } from '../../entities/node'
-import { Layout } from '../../widgets/layout'
-import { NodeCard } from '../../shared/ui'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import type { Node } from '../../entities/node'
+import { useNodesByTag } from '../../entities/node'
+import { NodeCard } from '../../shared/ui'
+import { Layout } from '../../widgets/layout'
 
 function EmptyState({ tag }: { tag: string }) {
   return (
@@ -51,10 +51,7 @@ export function TagDetailPage() {
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-md mx-auto">
             <strong>Error:</strong> Failed to load nodes for tag "#{tag}".
           </div>
-          <Link 
-            to="/tags" 
-            className="mt-4 inline-block text-blue-600 hover:text-blue-800"
-          >
+          <Link to="/tags" className="mt-4 inline-block text-blue-600 hover:text-blue-800">
             ← Back to Tags
           </Link>
         </div>
@@ -66,8 +63,8 @@ export function TagDetailPage() {
     return (
       <Layout title={`Tag: #${tag}`}>
         <div className="mb-8">
-          <Link 
-            to="/tags" 
+          <Link
+            to="/tags"
             className="text-gray-600 hover:text-gray-800 inline-flex items-center space-x-1"
           >
             <Icon icon="lucide:arrow-left" width={16} height={16} />
@@ -83,8 +80,8 @@ export function TagDetailPage() {
     <Layout title={`Tag: #${tag}`}>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <Link 
-            to="/tags" 
+          <Link
+            to="/tags"
             className="text-gray-600 hover:text-gray-800 inline-flex items-center space-x-1 mb-4"
           >
             <Icon icon="lucide:arrow-left" width={16} height={16} />

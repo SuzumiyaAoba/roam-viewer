@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Header, HeaderLogo, HeaderNav, HeaderNavItem, HeaderActions } from './Header'
-import { Button } from './Button'
 import { Badge } from './Badge'
+import { Button } from './Button'
+import { Header, HeaderActions, HeaderLogo, HeaderNav, HeaderNavItem } from './Header'
 
 const meta = {
   title: 'Design System/Header',
@@ -11,30 +11,31 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A flexible header component with logo, navigation, and actions. Supports responsive design with mobile menu and multiple variants.'
-      }
-    }
+        component:
+          'A flexible header component with logo, navigation, and actions. Supports responsive design with mobile menu and multiple variants.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'elevated', 'minimal', 'transparent'],
-      description: 'The visual variant of the header'
+      description: 'The visual variant of the header',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the header'
+      description: 'The size of the header',
     },
     position: {
       control: { type: 'select' },
       options: ['static', 'sticky', 'fixed'],
-      description: 'The positioning of the header'
+      description: 'The positioning of the header',
     },
     showMobileMenu: {
       control: 'boolean',
-      description: 'Whether to show mobile menu toggle'
+      description: 'Whether to show mobile menu toggle',
     },
   },
 } satisfies Meta<typeof Header>
@@ -54,16 +55,15 @@ export const Default: Story = {
       }
       navigation={
         <HeaderNav>
-          <HeaderNavItem href="/" active>Home</HeaderNavItem>
+          <HeaderNavItem href="/" active>
+            Home
+          </HeaderNavItem>
           <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
           <HeaderNavItem href="/search">Search</HeaderNavItem>
           <HeaderNavItem href="/about">About</HeaderNavItem>
         </HeaderNav>
       }
-      actions={
-        <HeaderActions>
-        </HeaderActions>
-      }
+      actions={<HeaderActions></HeaderActions>}
     />
   ),
 }
@@ -80,16 +80,15 @@ export const Elevated: Story = {
       }
       navigation={
         <HeaderNav>
-          <HeaderNavItem href="/" active>Home</HeaderNavItem>
+          <HeaderNavItem href="/" active>
+            Home
+          </HeaderNavItem>
           <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
           <HeaderNavItem href="/search">Search</HeaderNavItem>
           <HeaderNavItem href="/about">About</HeaderNavItem>
         </HeaderNav>
       }
-      actions={
-        <HeaderActions>
-        </HeaderActions>
-      }
+      actions={<HeaderActions></HeaderActions>}
     />
   ),
 }
@@ -105,15 +104,14 @@ export const Minimal: Story = {
       }
       navigation={
         <HeaderNav>
-          <HeaderNavItem href="/" active>Home</HeaderNavItem>
+          <HeaderNavItem href="/" active>
+            Home
+          </HeaderNavItem>
           <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
           <HeaderNavItem href="/search">Search</HeaderNavItem>
         </HeaderNav>
       }
-      actions={
-        <HeaderActions>
-        </HeaderActions>
-      }
+      actions={<HeaderActions></HeaderActions>}
     />
   ),
 }
@@ -131,15 +129,28 @@ export const Transparent: Story = {
         }
         navigation={
           <HeaderNav>
-            <HeaderNavItem href="/" active className="text-white hover:text-blue-200 hover:bg-white/10 data-[active]:bg-white/20 data-[active]:text-white">Home</HeaderNavItem>
-            <HeaderNavItem href="/nodes" className="text-white hover:text-blue-200 hover:bg-white/10">Nodes</HeaderNavItem>
-            <HeaderNavItem href="/search" className="text-white hover:text-blue-200 hover:bg-white/10">Search</HeaderNavItem>
+            <HeaderNavItem
+              href="/"
+              active
+              className="text-white hover:text-blue-200 hover:bg-white/10 data-[active]:bg-white/20 data-[active]:text-white"
+            >
+              Home
+            </HeaderNavItem>
+            <HeaderNavItem
+              href="/nodes"
+              className="text-white hover:text-blue-200 hover:bg-white/10"
+            >
+              Nodes
+            </HeaderNavItem>
+            <HeaderNavItem
+              href="/search"
+              className="text-white hover:text-blue-200 hover:bg-white/10"
+            >
+              Search
+            </HeaderNavItem>
           </HeaderNav>
         }
-        actions={
-          <HeaderActions>
-          </HeaderActions>
-        }
+        actions={<HeaderActions></HeaderActions>}
       />
       <div className="p-8 text-center text-white">
         <h1 className="text-4xl font-bold mb-4">Transparent Header Demo</h1>
@@ -150,9 +161,9 @@ export const Transparent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Transparent header with backdrop blur effect, perfect for hero sections'
-      }
-    }
+        story: 'Transparent header with backdrop blur effect, perfect for hero sections',
+      },
+    },
   },
 }
 
@@ -169,15 +180,14 @@ export const Small: Story = {
       }
       navigation={
         <HeaderNav>
-          <HeaderNavItem href="/" active>Home</HeaderNavItem>
+          <HeaderNavItem href="/" active>
+            Home
+          </HeaderNavItem>
           <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
           <HeaderNavItem href="/search">Search</HeaderNavItem>
         </HeaderNav>
       }
-      actions={
-        <HeaderActions>
-        </HeaderActions>
-      }
+      actions={<HeaderActions></HeaderActions>}
     />
   ),
 }
@@ -194,16 +204,15 @@ export const Large: Story = {
       }
       navigation={
         <HeaderNav>
-          <HeaderNavItem href="/" active>Home</HeaderNavItem>
+          <HeaderNavItem href="/" active>
+            Home
+          </HeaderNavItem>
           <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
           <HeaderNavItem href="/search">Search</HeaderNavItem>
           <HeaderNavItem href="/about">About</HeaderNavItem>
         </HeaderNav>
       }
-      actions={
-        <HeaderActions>
-        </HeaderActions>
-      }
+      actions={<HeaderActions></HeaderActions>}
     />
   ),
 }
@@ -222,15 +231,14 @@ export const Sticky: Story = {
         }
         navigation={
           <HeaderNav>
-            <HeaderNavItem href="/" active>Home</HeaderNavItem>
+            <HeaderNavItem href="/" active>
+              Home
+            </HeaderNavItem>
             <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
             <HeaderNavItem href="/search">Search</HeaderNavItem>
           </HeaderNav>
         }
-        actions={
-          <HeaderActions>
-          </HeaderActions>
-        }
+        actions={<HeaderActions></HeaderActions>}
       />
       <div className="p-8 space-y-4">
         <div className="h-32 bg-gray-100 rounded flex items-center justify-center">
@@ -251,9 +259,9 @@ export const Sticky: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Sticky header that remains at the top when scrolling'
-      }
-    }
+        story: 'Sticky header that remains at the top when scrolling',
+      },
+    },
   },
 }
 
@@ -269,10 +277,14 @@ export const WithUserMenu: Story = {
       }
       navigation={
         <HeaderNav>
-          <HeaderNavItem href="/dashboard" active>Dashboard</HeaderNavItem>
+          <HeaderNavItem href="/dashboard" active>
+            Dashboard
+          </HeaderNavItem>
           <HeaderNavItem href="/nodes">
             My Nodes
-            <Badge size="sm" className="ml-2">12</Badge>
+            <Badge size="sm" className="ml-2">
+              12
+            </Badge>
           </HeaderNavItem>
           <HeaderNavItem href="/shared">Shared</HeaderNavItem>
           <HeaderNavItem href="/search">Search</HeaderNavItem>
@@ -298,9 +310,9 @@ export const WithUserMenu: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Header for authenticated users with notifications and user avatar'
-      }
-    }
+        story: 'Header for authenticated users with notifications and user avatar',
+      },
+    },
   },
 }
 
@@ -308,7 +320,7 @@ export const WithUserMenu: Story = {
 export const MobileResponsive: Story = {
   render: () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
-    
+
     return (
       <Header
         logo={
@@ -319,17 +331,16 @@ export const MobileResponsive: Story = {
         }
         navigation={
           <HeaderNav>
-            <HeaderNavItem href="/" active>Home</HeaderNavItem>
+            <HeaderNavItem href="/" active>
+              Home
+            </HeaderNavItem>
             <HeaderNavItem href="/nodes">Nodes</HeaderNavItem>
             <HeaderNavItem href="/search">Search</HeaderNavItem>
             <HeaderNavItem href="/about">About</HeaderNavItem>
             <HeaderNavItem href="/contact">Contact</HeaderNavItem>
           </HeaderNav>
         }
-        actions={
-          <HeaderActions>
-          </HeaderActions>
-        }
+        actions={<HeaderActions></HeaderActions>}
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       />
@@ -338,9 +349,9 @@ export const MobileResponsive: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Responsive header with mobile menu (resize viewport to see mobile behavior)'
-      }
-    }
+        story: 'Responsive header with mobile menu (resize viewport to see mobile behavior)',
+      },
+    },
   },
 }
 
@@ -359,12 +370,18 @@ export const WithBreadcrumbs: Story = {
           <Button variant="ghost" size="sm">
             <span className="relative">
               🔔
-              <Badge size="sm" variant="destructive" className="absolute -top-1 -right-1 min-w-0 h-4 w-4 p-0 text-xs">
+              <Badge
+                size="sm"
+                variant="destructive"
+                className="absolute -top-1 -right-1 min-w-0 h-4 w-4 p-0 text-xs"
+              >
                 5
               </Badge>
             </span>
           </Button>
-          <Button variant="ghost" size="sm">⚙️</Button>
+          <Button variant="ghost" size="sm">
+            ⚙️
+          </Button>
           <Button variant="ghost" size="sm" className="rounded-full w-8 h-8 p-0">
             <span className="text-xs font-medium">JD</span>
           </Button>
@@ -373,9 +390,13 @@ export const WithBreadcrumbs: Story = {
     >
       <div className="border-t border-gray-200 px-6 py-2">
         <nav className="flex items-center space-x-2 text-sm text-gray-500">
-          <a href="/" className="hover:text-gray-700">Home</a>
+          <a href="/" className="hover:text-gray-700">
+            Home
+          </a>
           <span>›</span>
-          <a href="/nodes" className="hover:text-gray-700">Nodes</a>
+          <a href="/nodes" className="hover:text-gray-700">
+            Nodes
+          </a>
           <span>›</span>
           <span className="text-gray-900 font-medium">React Components</span>
         </nav>
@@ -385,9 +406,9 @@ export const WithBreadcrumbs: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Header with breadcrumb navigation for deeper app navigation'
-      }
-    }
+        story: 'Header with breadcrumb navigation for deeper app navigation',
+      },
+    },
   },
 }
 
@@ -417,7 +438,9 @@ export const WithSearch: Story = {
       }
       actions={
         <HeaderActions>
-          <Button variant="ghost" size="sm">Create</Button>
+          <Button variant="ghost" size="sm">
+            Create
+          </Button>
           <Button variant="ghost" size="sm" className="rounded-full w-8 h-8 p-0">
             <span className="text-xs font-medium">JS</span>
           </Button>
@@ -428,8 +451,8 @@ export const WithSearch: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Header with prominent search functionality'
-      }
-    }
+        story: 'Header with prominent search functionality',
+      },
+    },
   },
 }

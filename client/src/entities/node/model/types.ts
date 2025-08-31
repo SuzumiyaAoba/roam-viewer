@@ -12,9 +12,9 @@ export interface Node {
   tags?: string[]
   properties?: Record<string, any>
   olp?: string[]
-  content?: string  // Add content for test compatibility
-  aliases?: string[]  // Add aliases for test compatibility
-  refs?: string[]  // Add refs for test compatibility
+  content?: string // Add content for test compatibility
+  aliases?: string[] // Add aliases for test compatibility
+  refs?: string[] // Add refs for test compatibility
 }
 
 export interface NodeDetail extends Node {

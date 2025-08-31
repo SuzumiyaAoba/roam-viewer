@@ -1,15 +1,12 @@
-import { Link } from 'react-router-dom'
 import { Icon } from '@iconify/react'
+import { Link } from 'react-router-dom'
 import { useTags } from '../../entities/tag'
 import { Layout } from '../../widgets/layout'
 
 function TagCard({ tag, count }: { tag: string; count: number }) {
   return (
     <div className="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow">
-      <Link
-        to={`/tags/${encodeURIComponent(tag)}`}
-        className="block"
-      >
+      <Link to={`/tags/${encodeURIComponent(tag)}`} className="block">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -17,7 +14,9 @@ function TagCard({ tag, count }: { tag: string; count: number }) {
             </div>
             <div>
               <h3 className="font-medium text-gray-900">#{tag}</h3>
-              <p className="text-sm text-gray-500">{count} node{count !== 1 ? 's' : ''}</p>
+              <p className="text-sm text-gray-500">
+                {count} node{count !== 1 ? 's' : ''}
+              </p>
             </div>
           </div>
           <div className="text-gray-400">
@@ -51,9 +50,7 @@ function EmptyState() {
         <Icon icon="lucide:hash" className="text-gray-400" width={32} height={32} />
       </div>
       <h3 className="text-lg font-medium text-gray-900 mb-2">No tags found</h3>
-      <p className="text-gray-500 mb-6">
-        Tags will appear here once you add them to your nodes.
-      </p>
+      <p className="text-gray-500 mb-6">Tags will appear here once you add them to your nodes.</p>
       <Link
         to="/nodes/new"
         className="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
@@ -120,11 +117,7 @@ export function TagListPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tags.map((tagInfo) => (
-          <TagCard 
-            key={tagInfo.tag} 
-            tag={tagInfo.tag} 
-            count={tagInfo.count} 
-          />
+          <TagCard key={tagInfo.tag} tag={tagInfo.tag} count={tagInfo.count} />
         ))}
       </div>
     </Layout>

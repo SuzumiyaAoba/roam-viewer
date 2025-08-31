@@ -9,7 +9,8 @@ const meta: Meta<typeof Layout> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'The main layout component that provides the application structure with header, navigation, and content area. Includes responsive design and consistent spacing.',
+        component:
+          'The main layout component that provides the application structure with header, navigation, and content area. Includes responsive design and consistent spacing.',
       },
     },
   },
@@ -66,7 +67,8 @@ export const NoTitle: Story = {
         <h1 className="text-3xl font-bold text-gray-900">Custom Page Title</h1>
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <p className="text-gray-600">
-            This layout doesn't use the built-in title prop, instead relying on custom content for the page title.
+            This layout doesn't use the built-in title prop, instead relying on custom content for
+            the page title.
           </p>
         </div>
       </div>
@@ -94,15 +96,15 @@ export const ContentExamples: Story = {
             <p className="text-gray-600">A third card completing the grid.</p>
           </div>
         </div>
-        
+
         {/* Full-width content */}
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <h2 className="text-xl font-semibold mb-4">Full Width Content</h2>
           <div className="prose max-w-none">
             <p className="text-gray-600">
-              This is a full-width content area that demonstrates how the layout handles 
-              different types of content structures. The layout provides consistent margins 
-              and spacing for optimal readability.
+              This is a full-width content area that demonstrates how the layout handles different
+              types of content structures. The layout provides consistent margins and spacing for
+              optimal readability.
             </p>
             <ul className="text-gray-600">
               <li>Flexible content areas</li>
@@ -124,13 +126,11 @@ export const FormLayout: Story = {
       <div className="max-w-2xl">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <h2 className="text-xl font-semibold mb-6">User Settings</h2>
-          
+
           <div className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  First Name
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -138,9 +138,7 @@ export const FormLayout: Story = {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -148,29 +146,25 @@ export const FormLayout: Story = {
                 />
               </div>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
               <input
                 type="email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="john.doe@example.com"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Bio
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
               <textarea
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Tell us about yourself..."
               />
             </div>
-            
+
             <div className="flex space-x-4">
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
                 Save Changes
@@ -195,7 +189,7 @@ export const DataTable: Story = {
           <h2 className="text-lg font-semibold">User Management</h2>
           <p className="text-gray-600 text-sm mt-1">Manage user accounts and permissions</p>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -221,7 +215,12 @@ export const DataTable: Story = {
               {[
                 { name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active' },
                 { name: 'Jane Smith', email: 'jane@example.com', role: 'Editor', status: 'Active' },
-                { name: 'Bob Johnson', email: 'bob@example.com', role: 'Viewer', status: 'Inactive' },
+                {
+                  name: 'Bob Johnson',
+                  email: 'bob@example.com',
+                  role: 'Viewer',
+                  status: 'Inactive',
+                },
               ].map((user, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -236,11 +235,13 @@ export const DataTable: Story = {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      user.status === 'Active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        user.status === 'Active'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
                       {user.status}
                     </span>
                   </td>
@@ -264,13 +265,24 @@ export const EmptyState: Story = {
     children: (
       <div className="text-center py-12">
         <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-          <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          <svg
+            className="w-12 h-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
           </svg>
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">No projects found</h3>
         <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-          Get started by creating your first project. Projects help you organize your work and collaborate with others.
+          Get started by creating your first project. Projects help you organize your work and
+          collaborate with others.
         </p>
         <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
           Create Project

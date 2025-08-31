@@ -1,9 +1,9 @@
 // Re-export shadcn/ui Card components for consistent design system usage
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '../shadcn/card'

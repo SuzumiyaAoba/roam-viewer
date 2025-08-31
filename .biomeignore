@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+coverage/
+.next/
+storybook-static/
+*.min.js
+*.bundle.js
+**/*.d.ts
+*.config.js
+*.config.ts
+vite.config.ts
+tailwind.config.js

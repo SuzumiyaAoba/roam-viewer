@@ -1,28 +1,23 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter
-} from './card'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'
 
 describe('Card', () => {
   it('should render with default styling', () => {
     render(<Card data-testid="card">Card content</Card>)
-    
+
     const card = screen.getByTestId('card')
     expect(card).toBeInTheDocument()
-    expect(card).toHaveClass(
-      'rounded-xl', 'border', 'bg-card', 'text-card-foreground', 'shadow'
-    )
+    expect(card).toHaveClass('rounded-xl', 'border', 'bg-card', 'text-card-foreground', 'shadow')
   })
 
   it('should accept custom className', () => {
-    render(<Card className="custom-class" data-testid="card">Content</Card>)
-    
+    render(
+      <Card className="custom-class" data-testid="card">
+        Content
+      </Card>
+    )
+
     const card = screen.getByTestId('card')
     expect(card).toHaveClass('custom-class')
   })
@@ -30,7 +25,7 @@ describe('Card', () => {
   it('should forward ref correctly', () => {
     const ref = vi.fn()
     render(<Card ref={ref}>Content</Card>)
-    
+
     expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement))
   })
 
@@ -41,19 +36,14 @@ describe('Card', () => {
         <div>Child 2</div>
       </Card>
     )
-    
+
     expect(screen.getByText('Child 1')).toBeInTheDocument()
     expect(screen.getByText('Child 2')).toBeInTheDocument()
   })
 
   it('should accept all standard div attributes', () => {
     render(
-      <Card
-        id="test-card"
-        role="article"
-        aria-label="Test card"
-        data-testid="card"
-      >
+      <Card id="test-card" role="article" aria-label="Test card" data-testid="card">
         Content
       </Card>
     )
@@ -74,7 +64,7 @@ describe('Card', () => {
 
     const card = screen.getByTestId('card')
     fireEvent.click(card)
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 })
@@ -82,15 +72,19 @@ describe('Card', () => {
 describe('CardHeader', () => {
   it('should render with default styling', () => {
     render(<CardHeader data-testid="card-header">Header content</CardHeader>)
-    
+
     const header = screen.getByTestId('card-header')
     expect(header).toBeInTheDocument()
     expect(header).toHaveClass('flex', 'flex-col', 'space-y-1.5', 'p-6')
   })
 
   it('should accept custom className', () => {
-    render(<CardHeader className="custom-header" data-testid="card-header">Content</CardHeader>)
-    
+    render(
+      <CardHeader className="custom-header" data-testid="card-header">
+        Content
+      </CardHeader>
+    )
+
     const header = screen.getByTestId('card-header')
     expect(header).toHaveClass('custom-header')
   })
@@ -98,7 +92,7 @@ describe('CardHeader', () => {
   it('should forward ref correctly', () => {
     const ref = vi.fn()
     render(<CardHeader ref={ref}>Header</CardHeader>)
-    
+
     expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement))
   })
 })
@@ -106,15 +100,19 @@ describe('CardHeader', () => {
 describe('CardTitle', () => {
   it('should render with default styling', () => {
     render(<CardTitle data-testid="card-title">Title Text</CardTitle>)
-    
+
     const title = screen.getByTestId('card-title')
     expect(title).toBeInTheDocument()
     expect(title).toHaveClass('font-semibold', 'leading-none', 'tracking-tight')
   })
 
   it('should accept custom className', () => {
-    render(<CardTitle className="custom-title" data-testid="card-title">Title</CardTitle>)
-    
+    render(
+      <CardTitle className="custom-title" data-testid="card-title">
+        Title
+      </CardTitle>
+    )
+
     const title = screen.getByTestId('card-title')
     expect(title).toHaveClass('custom-title')
   })
@@ -122,7 +120,7 @@ describe('CardTitle', () => {
   it('should forward ref correctly', () => {
     const ref = vi.fn()
     render(<CardTitle ref={ref}>Title</CardTitle>)
-    
+
     expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement))
   })
 })
@@ -130,15 +128,19 @@ describe('CardTitle', () => {
 describe('CardDescription', () => {
   it('should render with default styling', () => {
     render(<CardDescription data-testid="card-description">Description text</CardDescription>)
-    
+
     const description = screen.getByTestId('card-description')
     expect(description).toBeInTheDocument()
     expect(description).toHaveClass('text-sm', 'text-muted-foreground')
   })
 
   it('should accept custom className', () => {
-    render(<CardDescription className="custom-desc" data-testid="card-description">Description</CardDescription>)
-    
+    render(
+      <CardDescription className="custom-desc" data-testid="card-description">
+        Description
+      </CardDescription>
+    )
+
     const description = screen.getByTestId('card-description')
     expect(description).toHaveClass('custom-desc')
   })
@@ -146,7 +148,7 @@ describe('CardDescription', () => {
   it('should forward ref correctly', () => {
     const ref = vi.fn()
     render(<CardDescription ref={ref}>Description</CardDescription>)
-    
+
     expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement))
   })
 })
@@ -154,15 +156,19 @@ describe('CardDescription', () => {
 describe('CardContent', () => {
   it('should render with default styling', () => {
     render(<CardContent data-testid="card-content">Content text</CardContent>)
-    
+
     const content = screen.getByTestId('card-content')
     expect(content).toBeInTheDocument()
     expect(content).toHaveClass('p-6', 'pt-0')
   })
 
   it('should accept custom className', () => {
-    render(<CardContent className="custom-content" data-testid="card-content">Content</CardContent>)
-    
+    render(
+      <CardContent className="custom-content" data-testid="card-content">
+        Content
+      </CardContent>
+    )
+
     const content = screen.getByTestId('card-content')
     expect(content).toHaveClass('custom-content')
   })
@@ -170,7 +176,7 @@ describe('CardContent', () => {
   it('should forward ref correctly', () => {
     const ref = vi.fn()
     render(<CardContent ref={ref}>Content</CardContent>)
-    
+
     expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement))
   })
 })
@@ -178,15 +184,19 @@ describe('CardContent', () => {
 describe('CardFooter', () => {
   it('should render with default styling', () => {
     render(<CardFooter data-testid="card-footer">Footer content</CardFooter>)
-    
+
     const footer = screen.getByTestId('card-footer')
     expect(footer).toBeInTheDocument()
     expect(footer).toHaveClass('flex', 'items-center', 'p-6', 'pt-0')
   })
 
   it('should accept custom className', () => {
-    render(<CardFooter className="custom-footer" data-testid="card-footer">Footer</CardFooter>)
-    
+    render(
+      <CardFooter className="custom-footer" data-testid="card-footer">
+        Footer
+      </CardFooter>
+    )
+
     const footer = screen.getByTestId('card-footer')
     expect(footer).toHaveClass('custom-footer')
   })
@@ -194,7 +204,7 @@ describe('CardFooter', () => {
   it('should forward ref correctly', () => {
     const ref = vi.fn()
     render(<CardFooter ref={ref}>Footer</CardFooter>)
-    
+
     expect(ref).toHaveBeenCalledWith(expect.any(HTMLDivElement))
   })
 })
@@ -231,9 +241,7 @@ describe('Card Composition', () => {
         <CardHeader>
           <CardTitle>Title Only</CardTitle>
         </CardHeader>
-        <CardContent>
-          Content without footer
-        </CardContent>
+        <CardContent>Content without footer</CardContent>
       </Card>
     )
 
@@ -244,7 +252,7 @@ describe('Card Composition', () => {
 
   it('should handle nested interactive elements', () => {
     const handleClick = vi.fn()
-    
+
     render(
       <Card>
         <CardContent>
@@ -255,7 +263,7 @@ describe('Card Composition', () => {
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
@@ -280,11 +288,19 @@ describe('Card Composition', () => {
     render(
       <Card className="custom-card" data-testid="styled-card">
         <CardHeader className="custom-header" data-testid="styled-header">
-          <CardTitle className="custom-title" data-testid="styled-title">Title</CardTitle>
-          <CardDescription className="custom-desc" data-testid="styled-desc">Description</CardDescription>
+          <CardTitle className="custom-title" data-testid="styled-title">
+            Title
+          </CardTitle>
+          <CardDescription className="custom-desc" data-testid="styled-desc">
+            Description
+          </CardDescription>
         </CardHeader>
-        <CardContent className="custom-content" data-testid="styled-content">Content</CardContent>
-        <CardFooter className="custom-footer" data-testid="styled-footer">Footer</CardFooter>
+        <CardContent className="custom-content" data-testid="styled-content">
+          Content
+        </CardContent>
+        <CardFooter className="custom-footer" data-testid="styled-footer">
+          Footer
+        </CardFooter>
       </Card>
     )
 

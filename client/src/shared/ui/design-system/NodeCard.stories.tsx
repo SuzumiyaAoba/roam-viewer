@@ -9,45 +9,46 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A modern card component for displaying knowledge nodes with rich metadata, tags, and interactive features. Designed with hover effects and modern UI patterns.'
-      }
-    }
+        component:
+          'A modern card component for displaying knowledge nodes with rich metadata, tags, and interactive features. Designed with hover effects and modern UI patterns.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'elevated', 'minimal', 'accent', 'glass'],
-      description: 'The visual variant of the node card'
+      description: 'The visual variant of the node card',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the node card'
+      description: 'The size of the node card',
     },
     interactive: {
       control: 'boolean',
-      description: 'Whether the card has hover animations'
+      description: 'Whether the card has hover animations',
     },
     title: {
       control: 'text',
-      description: 'The node title'
+      description: 'The node title',
     },
     content: {
-      control: 'text',  
-      description: 'Content preview text'
+      control: 'text',
+      description: 'Content preview text',
     },
     file: {
       control: 'text',
-      description: 'File path of the node'
+      description: 'File path of the node',
     },
     selected: {
       control: 'boolean',
-      description: 'Whether the card is selected'
+      description: 'Whether the card is selected',
     },
     showActions: {
       control: 'boolean',
-      description: 'Whether to show action buttons'
+      description: 'Whether to show action buttons',
     },
   },
 } satisfies Meta<typeof NodeCard>
@@ -59,7 +60,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     title: 'React Components Best Practices',
-    content: 'Learn how to build scalable and maintainable React components with modern patterns, proper state management, and performance optimizations.',
+    content:
+      'Learn how to build scalable and maintainable React components with modern patterns, proper state management, and performance optimizations.',
     file: 'react/components-best-practices.md',
     tags: ['React', 'Components', 'Best Practices', 'Frontend'],
     onCardClick: () => alert('Card clicked'),
@@ -71,7 +73,8 @@ export const Default: Story = {
 export const WithTodo: Story = {
   args: {
     title: 'Database Design Patterns',
-    content: 'Comprehensive guide to database design patterns including normalization, indexing strategies, and performance optimization techniques.',
+    content:
+      'Comprehensive guide to database design patterns including normalization, indexing strategies, and performance optimization techniques.',
     file: 'database/design-patterns.md',
     tags: ['Database', 'SQL', 'Design Patterns'],
     todo: 'Add performance benchmarks',
@@ -85,7 +88,8 @@ export const WithTodo: Story = {
 export const LongContent: Story = {
   args: {
     title: 'Advanced TypeScript Techniques for Large Scale Applications',
-    content: 'This is a very long piece of content that demonstrates how the card handles text truncation. TypeScript provides powerful type safety features that can help prevent runtime errors and improve developer experience. In large applications, proper type definitions, generic constraints, and advanced utility types become essential for maintaining code quality and developer productivity. This content should be truncated with an ellipsis to maintain the card layout.',
+    content:
+      'This is a very long piece of content that demonstrates how the card handles text truncation. TypeScript provides powerful type safety features that can help prevent runtime errors and improve developer experience. In large applications, proper type definitions, generic constraints, and advanced utility types become essential for maintaining code quality and developer productivity. This content should be truncated with an ellipsis to maintain the card layout.',
     file: 'typescript/advanced-techniques-for-enterprise-applications.md',
     tags: ['TypeScript', 'Enterprise', 'Architecture', 'Types', 'Generics', 'Utilities'],
     date: new Date(),
@@ -149,11 +153,9 @@ export const Glass: Story = {
   parameters: {
     backgrounds: {
       default: 'gradient',
-      values: [
-        { name: 'gradient', value: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)' }
-      ]
-    }
-  }
+      values: [{ name: 'gradient', value: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)' }],
+    },
+  },
 }
 
 // Sizes
@@ -174,7 +176,8 @@ export const Large: Story = {
   args: {
     size: 'lg',
     title: 'Comprehensive API Documentation',
-    content: 'Complete API documentation with examples, authentication methods, rate limiting, and best practices for integration.',
+    content:
+      'Complete API documentation with examples, authentication methods, rate limiting, and best practices for integration.',
     file: 'api/documentation.md',
     tags: ['API', 'Documentation', 'REST', 'GraphQL'],
     date: new Date(),
@@ -219,17 +222,38 @@ export const CustomActions: Story = {
       <div className="flex items-center space-x-1">
         <button className="p-1 text-blue-500 hover:text-blue-700" onClick={() => alert('Share')}>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+            />
           </svg>
         </button>
-        <button className="p-1 text-yellow-500 hover:text-yellow-700" onClick={() => alert('Bookmark')}>
+        <button
+          className="p-1 text-yellow-500 hover:text-yellow-700"
+          onClick={() => alert('Bookmark')}
+        >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+            />
           </svg>
         </button>
-        <button className="p-1 text-green-500 hover:text-green-700" onClick={() => alert('Download')}>
+        <button
+          className="p-1 text-green-500 hover:text-green-700"
+          onClick={() => alert('Download')}
+        >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
         </button>
       </div>
@@ -274,9 +298,9 @@ export const Compact: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Compact variant for dense list layouts'
-      }
-    }
+        story: 'Compact variant for dense list layouts',
+      },
+    },
   },
 }
 
@@ -344,9 +368,9 @@ export const Grid: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Grid layout with fixed aspect ratio cards'
-      }
-    }
+        story: 'Grid layout with fixed aspect ratio cards',
+      },
+    },
   },
 }
 
@@ -365,7 +389,7 @@ export const RoamWebExample: Story = {
         onEdit={() => alert('Edit knowledge management')}
         onDelete={() => alert('Delete knowledge management')}
       />
-      
+
       <NodeCard
         variant="accent"
         title="Roam Research vs Obsidian"
@@ -394,9 +418,9 @@ export const RoamWebExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Example of how NodeCards might appear in the Roam Web application'
-      }
-    }
+        story: 'Example of how NodeCards might appear in the Roam Web application',
+      },
+    },
   },
 }
 
@@ -412,7 +436,7 @@ export const AllVariants: Story = {
         tags={['Default']}
         onCardClick={() => alert('Default clicked')}
       />
-      
+
       <NodeCard
         variant="elevated"
         title="Elevated Variant"
@@ -421,7 +445,7 @@ export const AllVariants: Story = {
         tags={['Elevated']}
         onCardClick={() => alert('Elevated clicked')}
       />
-      
+
       <NodeCard
         variant="minimal"
         title="Minimal Variant"
@@ -430,7 +454,7 @@ export const AllVariants: Story = {
         tags={['Minimal']}
         onCardClick={() => alert('Minimal clicked')}
       />
-      
+
       <NodeCard
         variant="accent"
         title="Accent Variant"
@@ -444,8 +468,8 @@ export const AllVariants: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Overview of all available NodeCard variants'
-      }
-    }
+        story: 'Overview of all available NodeCard variants',
+      },
+    },
   },
 }

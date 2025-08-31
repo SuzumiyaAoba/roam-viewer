@@ -1,9 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { NodeListPage } from '../../pages/node-list'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { NodeDetailPage } from '../../pages/node-detail'
-import { NodeFormPage, NodeEditPage } from '../../pages/node-form'
-import { TagListPage } from '../../pages/tag-list'
+import { NodeEditPage, NodeFormPage } from '../../pages/node-form'
+import { NodeListPage } from '../../pages/node-list'
 import { TagDetailPage } from '../../pages/tag-detail'
+import { TagListPage } from '../../pages/tag-list'
 
 export function AppRouter() {
   return (

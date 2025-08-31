@@ -1,7 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Footer, FooterSection, FooterLink, FooterSocial, FooterSocialLink, FooterBottom, FooterCTA } from './Footer'
 import { Button } from './Button'
+import {
+  Footer,
+  FooterBottom,
+  FooterCTA,
+  FooterLink,
+  FooterSection,
+  FooterSocial,
+  FooterSocialLink,
+} from './Footer'
 
 const meta = {
   title: 'Design System/Footer',
@@ -10,26 +18,27 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A flexible footer component with multiple variants and composable parts. Perfect for displaying site information, links, and calls-to-action with proper spacing and visual hierarchy.'
-      }
-    }
+        component:
+          'A flexible footer component with multiple variants and composable parts. Perfect for displaying site information, links, and calls-to-action with proper spacing and visual hierarchy.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'minimal', 'dark', 'accent'],
-      description: 'The visual variant of the footer'
+      description: 'The visual variant of the footer',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the footer'
+      description: 'The size of the footer',
     },
     layout: {
       control: { type: 'select' },
       options: ['simple', 'multi', 'centered'],
-      description: 'The layout style of the footer'
+      description: 'The layout style of the footer',
     },
   },
 } satisfies Meta<typeof Footer>
@@ -40,11 +49,7 @@ type Story = StoryObj<typeof meta>
 // Basic examples
 export const Default: Story = {
   render: () => (
-    <Footer
-      bottom={
-        <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-      }
-    />
+    <Footer bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
   ),
 }
 
@@ -52,9 +57,7 @@ export const Minimal: Story = {
   render: () => (
     <Footer
       variant="minimal"
-      bottom={
-        <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-      }
+      bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
     />
   ),
 }
@@ -63,9 +66,7 @@ export const Dark: Story = {
   render: () => (
     <Footer
       variant="dark"
-      bottom={
-        <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-      }
+      bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
     />
   ),
 }
@@ -74,9 +75,7 @@ export const Accent: Story = {
   render: () => (
     <Footer
       variant="accent"
-      bottom={
-        <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-      }
+      bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
     />
   ),
 }
@@ -84,23 +83,13 @@ export const Accent: Story = {
 // Size variations
 export const Small: Story = {
   render: () => (
-    <Footer
-      size="sm"
-      bottom={
-        <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-      }
-    />
+    <Footer size="sm" bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
   ),
 }
 
 export const Large: Story = {
   render: () => (
-    <Footer
-      size="lg"
-      bottom={
-        <FooterBottom copyright="© 2024 Roam Web. All rights reserved." />
-      }
-    />
+    <Footer size="lg" bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
   ),
 }
 
@@ -117,7 +106,7 @@ export const WithSections: Story = {
             <FooterLink href="/api">API</FooterLink>
             <FooterLink href="/documentation">Documentation</FooterLink>
           </FooterSection>
-          
+
           <FooterSection title="Company">
             <FooterLink href="/about">About</FooterLink>
             <FooterLink href="/blog">Blog</FooterLink>
@@ -179,7 +168,7 @@ export const Centered: Story = {
               The modern knowledge management platform for organizing and connecting your ideas.
             </p>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-6">
             <FooterLink href="/about">About</FooterLink>
             <FooterLink href="/features">Features</FooterLink>
@@ -220,7 +209,7 @@ export const AppFooter: Story = {
             <FooterLink href="/search">Search</FooterLink>
             <FooterLink href="/tags">Tags</FooterLink>
           </FooterSection>
-          
+
           <FooterSection title="Account">
             <FooterLink href="/profile">Profile</FooterLink>
             <FooterLink href="/settings">Settings</FooterLink>
@@ -250,7 +239,9 @@ export const AppFooter: Story = {
             <>
               <FooterLink href="/privacy">Privacy</FooterLink>
               <FooterLink href="/terms">Terms</FooterLink>
-              <FooterLink href="/status" external>Status</FooterLink>
+              <FooterLink href="/status" external>
+                Status
+              </FooterLink>
             </>
           }
         />
@@ -260,9 +251,10 @@ export const AppFooter: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Footer specifically designed for the Roam Web application with relevant links and sections'
-      }
-    }
+        story:
+          'Footer specifically designed for the Roam Web application with relevant links and sections',
+      },
+    },
   },
 }
 
@@ -276,37 +268,53 @@ export const DarkTheme: Story = {
         sections={
           <>
             <FooterSection title="Product">
-              <FooterLink href="/features" className="text-gray-300 hover:text-white">Features</FooterLink>
-              <FooterLink href="/pricing" className="text-gray-300 hover:text-white">Pricing</FooterLink>
-              <FooterLink href="/api" className="text-gray-300 hover:text-white">API</FooterLink>
-              <FooterLink href="/docs" className="text-gray-300 hover:text-white">Documentation</FooterLink>
+              <FooterLink href="/features" className="text-gray-300 hover:text-white">
+                Features
+              </FooterLink>
+              <FooterLink href="/pricing" className="text-gray-300 hover:text-white">
+                Pricing
+              </FooterLink>
+              <FooterLink href="/api" className="text-gray-300 hover:text-white">
+                API
+              </FooterLink>
+              <FooterLink href="/docs" className="text-gray-300 hover:text-white">
+                Documentation
+              </FooterLink>
             </FooterSection>
-            
+
             <FooterSection title="Company">
-              <FooterLink href="/about" className="text-gray-300 hover:text-white">About</FooterLink>
-              <FooterLink href="/blog" className="text-gray-300 hover:text-white">Blog</FooterLink>
-              <FooterLink href="/careers" className="text-gray-300 hover:text-white">Careers</FooterLink>
-              <FooterLink href="/contact" className="text-gray-300 hover:text-white">Contact</FooterLink>
+              <FooterLink href="/about" className="text-gray-300 hover:text-white">
+                About
+              </FooterLink>
+              <FooterLink href="/blog" className="text-gray-300 hover:text-white">
+                Blog
+              </FooterLink>
+              <FooterLink href="/careers" className="text-gray-300 hover:text-white">
+                Careers
+              </FooterLink>
+              <FooterLink href="/contact" className="text-gray-300 hover:text-white">
+                Contact
+              </FooterLink>
             </FooterSection>
           </>
         }
         social={
           <FooterSocial title="Connect">
-            <FooterSocialLink 
-              platform="Twitter" 
-              icon="🐦" 
+            <FooterSocialLink
+              platform="Twitter"
+              icon="🐦"
               href="https://twitter.com"
               className="bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white"
             />
-            <FooterSocialLink 
-              platform="GitHub" 
-              icon="🐙" 
+            <FooterSocialLink
+              platform="GitHub"
+              icon="🐙"
               href="https://github.com"
               className="bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white"
             />
-            <FooterSocialLink 
-              platform="Discord" 
-              icon="💬" 
+            <FooterSocialLink
+              platform="Discord"
+              icon="💬"
               href="https://discord.com"
               className="bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white"
             />
@@ -323,7 +331,9 @@ export const DarkTheme: Story = {
                   placeholder="Enter your email"
                   className="px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <Button size="sm" className="w-full">Subscribe</Button>
+                <Button size="sm" className="w-full">
+                  Subscribe
+                </Button>
               </div>
             }
           />
@@ -333,9 +343,15 @@ export const DarkTheme: Story = {
             copyright="© 2024 Roam Web. All rights reserved."
             links={
               <>
-                <FooterLink href="/privacy" className="text-gray-400 hover:text-white">Privacy</FooterLink>
-                <FooterLink href="/terms" className="text-gray-400 hover:text-white">Terms</FooterLink>
-                <FooterLink href="/security" className="text-gray-400 hover:text-white">Security</FooterLink>
+                <FooterLink href="/privacy" className="text-gray-400 hover:text-white">
+                  Privacy
+                </FooterLink>
+                <FooterLink href="/terms" className="text-gray-400 hover:text-white">
+                  Terms
+                </FooterLink>
+                <FooterLink href="/security" className="text-gray-400 hover:text-white">
+                  Security
+                </FooterLink>
               </>
             }
           />
@@ -346,9 +362,9 @@ export const DarkTheme: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Dark theme footer with custom styling for dark backgrounds'
-      }
-    }
+        story: 'Dark theme footer with custom styling for dark backgrounds',
+      },
+    },
   },
 }
 
@@ -368,9 +384,7 @@ export const SimpleFooter: Story = {
             <FooterLink href="/terms">Terms</FooterLink>
             <FooterLink href="/contact">Contact</FooterLink>
           </div>
-          <div className="text-sm text-gray-500">
-            © 2024 All rights reserved
-          </div>
+          <div className="text-sm text-gray-500">© 2024 All rights reserved</div>
         </div>
       }
     />
@@ -385,14 +399,12 @@ export const NewsletterFocus: Story = {
       sections={
         <div className="text-center space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Stay in the loop
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Stay in the loop</h3>
             <p className="text-gray-600 max-w-md mx-auto">
               Get notified about new features, updates, and tips for better knowledge management.
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
@@ -403,14 +415,12 @@ export const NewsletterFocus: Story = {
               Subscribe
             </Button>
           </div>
-          
-          <p className="text-xs text-gray-500">
-            We respect your privacy. Unsubscribe at any time.
-          </p>
+
+          <p className="text-xs text-gray-500">We respect your privacy. Unsubscribe at any time.</p>
         </div>
       }
       bottom={
-        <FooterBottom 
+        <FooterBottom
           copyright="© 2024 Roam Web. All rights reserved."
           links={
             <>
@@ -425,9 +435,9 @@ export const NewsletterFocus: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Footer focused on newsletter signup with accent styling'
-      }
-    }
+        story: 'Footer focused on newsletter signup with accent styling',
+      },
+    },
   },
 }
 
@@ -437,11 +447,9 @@ export const AllVariants: Story = {
     <div className="space-y-8">
       <div>
         <h3 className="text-lg font-semibold mb-4">Default</h3>
-        <Footer
-          bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
-        />
+        <Footer bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-4">Minimal</h3>
         <Footer
@@ -449,7 +457,7 @@ export const AllVariants: Story = {
           bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
         />
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-4">Accent</h3>
         <Footer
@@ -457,7 +465,7 @@ export const AllVariants: Story = {
           bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
         />
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-4">Dark</h3>
         <Footer
@@ -471,8 +479,8 @@ export const AllVariants: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Overview of all available footer variants'
-      }
-    }
+        story: 'Overview of all available footer variants',
+      },
+    },
   },
 }

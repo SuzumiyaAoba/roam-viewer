@@ -8,7 +8,8 @@ const meta: Meta<typeof Input> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A styled input component built with Tailwind CSS. Supports all standard HTML input types and attributes.',
+        component:
+          'A styled input component built with Tailwind CSS. Supports all standard HTML input types and attributes.',
       },
     },
   },
@@ -142,58 +143,35 @@ export const FormExample: Story = {
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
           Full Name
         </label>
-        <Input
-          id="name"
-          type="text"
-          placeholder="Enter your full name"
-          required
-        />
+        <Input id="name" type="text" placeholder="Enter your full name" required />
       </div>
-      
+
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
           Email
         </label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="your.email@example.com"
-          required
-        />
+        <Input id="email" type="email" placeholder="your.email@example.com" required />
       </div>
-      
+
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
           Password
         </label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="Enter secure password"
-          required
-        />
+        <Input id="password" type="password" placeholder="Enter secure password" required />
       </div>
-      
+
       <div>
         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
           Phone (Optional)
         </label>
-        <Input
-          id="phone"
-          type="tel"
-          placeholder="+1 (555) 000-0000"
-        />
+        <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" />
       </div>
-      
+
       <div>
         <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-2">
           Website
         </label>
-        <Input
-          id="website"
-          type="url"
-          placeholder="https://example.com"
-        />
+        <Input id="website" type="url" placeholder="https://example.com" />
       </div>
     </div>
   ),

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Select, SelectLabel, SelectHelperText } from './Select'
+import { Select, SelectHelperText, SelectLabel } from './Select'
 
 const meta = {
   title: 'Design System/Select',
@@ -9,34 +9,35 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A dropdown select component for choosing from a list of options. Supports keyboard navigation, validation states, and custom styling.'
-      }
-    }
+        component:
+          'A dropdown select component for choosing from a list of options. Supports keyboard navigation, validation states, and custom styling.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'error'],
-      description: 'The variant of the select'
+      description: 'The variant of the select',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the select'
+      description: 'The size of the select',
     },
     disabled: {
       control: 'boolean',
-      description: 'Whether the select is disabled'
+      description: 'Whether the select is disabled',
     },
     required: {
       control: 'boolean',
-      description: 'Whether the select is required'
+      description: 'Whether the select is required',
     },
     placeholder: {
       control: 'text',
-      description: 'Placeholder text when no option is selected'
-    }
+      description: 'Placeholder text when no option is selected',
+    },
   },
 } satisfies Meta<typeof Select>
 
@@ -140,12 +141,12 @@ export const WithHelperText: Story = {
   render: () => (
     <div className="w-64">
       <SelectLabel htmlFor="select-with-helper">Priority Level</SelectLabel>
-      <Select 
+      <Select
         options={[
           { value: 'low', label: 'Low' },
           { value: 'medium', label: 'Medium' },
           { value: 'high', label: 'High' },
-          { value: 'critical', label: 'Critical' }
+          { value: 'critical', label: 'Critical' },
         ]}
         placeholder="Select priority..."
       />
@@ -158,12 +159,12 @@ export const WithError: Story = {
   render: () => (
     <div className="w-64">
       <SelectLabel htmlFor="select-error">Required Field</SelectLabel>
-      <Select 
+      <Select
         variant="error"
         options={[
           { value: 'option1', label: 'Option 1' },
           { value: 'option2', label: 'Option 2' },
-          { value: 'option3', label: 'Option 3' }
+          { value: 'option3', label: 'Option 3' },
         ]}
         placeholder="Select an option..."
         required
@@ -177,17 +178,17 @@ export const WithError: Story = {
 export const Interactive: Story = {
   render: () => {
     const [selectedValue, setSelectedValue] = React.useState('')
-    
+
     return (
       <div className="space-y-4 w-64">
         <div>
           <SelectLabel>Interactive Select</SelectLabel>
-          <Select 
+          <Select
             options={[
               { value: 'react', label: 'React' },
               { value: 'vue', label: 'Vue.js' },
               { value: 'angular', label: 'Angular' },
-              { value: 'svelte', label: 'Svelte' }
+              { value: 'svelte', label: 'Svelte' },
             ]}
             value={selectedValue}
             onValueChange={setSelectedValue}
@@ -197,13 +198,13 @@ export const Interactive: Story = {
             {selectedValue ? `You selected: ${selectedValue}` : 'No selection made yet'}
           </SelectHelperText>
         </div>
-        
+
         {selectedValue && (
           <div className="p-3 bg-blue-50 rounded-md">
             <p className="text-sm text-blue-800">
               Selected value: <strong>{selectedValue}</strong>
             </p>
-            <button 
+            <button
               onClick={() => setSelectedValue('')}
               className="mt-2 text-xs text-blue-600 hover:text-blue-800"
             >
@@ -217,8 +218,8 @@ export const Interactive: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Interactive select with state management and feedback'
-      }
-    }
+        story: 'Interactive select with state management and feedback',
+      },
+    },
   },
 }

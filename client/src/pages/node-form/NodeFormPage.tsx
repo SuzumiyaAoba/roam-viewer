@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
-import { useNode, useCreateNode, useUpdateNode } from '../../entities/node'
-import { Layout } from '../../widgets/layout'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import type { CreateNodeRequest, UpdateNodeRequest } from '../../entities/node'
+import { useCreateNode, useNode, useUpdateNode } from '../../entities/node'
+import { Layout } from '../../widgets/layout'
 
 interface NodeFormData {
   title: string
@@ -16,8 +16,8 @@ interface NodeFormData {
 function parseTagsString(str: string): string[] {
   return str
     .split(',')
-    .map(tag => tag.trim())
-    .filter(tag => tag.length > 0)
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0)
 }
 
 // Remove metadata from content to prevent duplication
@@ -28,7 +28,7 @@ function stripMetadataFromContent(content: string): string {
 
   for (const line of lines) {
     const trimmed = line.trim()
-    
+
     // Skip PROPERTIES blocks
     if (trimmed === ':PROPERTIES:') {
       inPropertiesBlock = true
@@ -39,22 +39,22 @@ function stripMetadataFromContent(content: string): string {
     } else if (inPropertiesBlock) {
       continue // Skip all properties
     }
-    
+
     // Skip org metadata lines
     if (trimmed.startsWith('#+')) {
       continue
     }
-    
+
     cleanedLines.push(line)
   }
-  
+
   return cleanedLines.join('\n').trim()
 }
 
 export function NodeCreatePage() {
   const navigate = useNavigate()
   const createNodeMutation = useCreateNode()
-  
+
   const [formData, setFormData] = useState<NodeFormData>({
     title: '',
     content: '',
@@ -66,7 +66,7 @@ export function NodeCreatePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const nodeRequest: CreateNodeRequest = {
       title: formData.title,
       content: formData.content,
@@ -79,24 +79,21 @@ export function NodeCreatePage() {
     createNodeMutation.mutate(nodeRequest, {
       onSuccess: (newNode) => {
         navigate(`/nodes/${encodeURIComponent(newNode.id)}`)
-      }
+      },
     })
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }))
   }
 
   return (
     <Layout>
       <div className="flex items-center space-x-4 mb-8">
-        <Link 
-          to="/nodes" 
-          className="text-gray-600 hover:text-gray-800"
-        >
+        <Link to="/nodes" className="text-gray-600 hover:text-gray-800">
           ← Back to Nodes
         </Link>
         <h1 className="text-3xl font-bold text-gray-900">Create New Node</h1>
@@ -128,15 +125,15 @@ export function NodeCreatePage() {
               id="file_type"
               name="file_type"
               value={formData.file_type}
-              onChange={(e) => setFormData(prev => ({ ...prev, file_type: e.target.value as 'md' | 'org' }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, file_type: e.target.value as 'md' | 'org' }))
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="md">Markdown (.md)</option>
               <option value="org">Org Mode (.org)</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Choose the file format for your node
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Choose the file format for your node</p>
           </div>
 
           <div>
@@ -202,14 +199,12 @@ export function NodeCreatePage() {
             />
           </div>
 
-
           {createNodeMutation.error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              <strong>Error:</strong> Failed to create node. {
-                createNodeMutation.error instanceof Error 
-                  ? createNodeMutation.error.message 
-                  : 'Unknown error'
-              }
+              <strong>Error:</strong> Failed to create node.{' '}
+              {createNodeMutation.error instanceof Error
+                ? createNodeMutation.error.message
+                : 'Unknown error'}
             </div>
           )}
 
@@ -239,7 +234,7 @@ export function NodeEditPage() {
   const navigate = useNavigate()
   const { data: node, isLoading, error } = useNode(id!)
   const updateNodeMutation = useUpdateNode()
-  
+
   const [formData, setFormData] = useState<NodeFormData>({
     title: '',
     content: '',
@@ -258,14 +253,14 @@ export function NodeEditPage() {
         tags: (node.tags || []).join(', '),
         aliases: (node.aliases || []).join(', '),
         refs: (node.refs || []).join(', '),
-        file_type: 'org',  // Default for edit form
+        file_type: 'org', // Default for edit form
       })
     }
   }, [node])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!id) return
 
     const nodeRequest: UpdateNodeRequest = {
@@ -276,17 +271,20 @@ export function NodeEditPage() {
       refs: parseTagsString(formData.refs),
     }
 
-    updateNodeMutation.mutate({ id, data: nodeRequest }, {
-      onSuccess: () => {
-        navigate(`/nodes/${encodeURIComponent(id)}`)
+    updateNodeMutation.mutate(
+      { id, data: nodeRequest },
+      {
+        onSuccess: () => {
+          navigate(`/nodes/${encodeURIComponent(id)}`)
+        },
       }
-    })
+    )
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -307,10 +305,7 @@ export function NodeEditPage() {
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <strong>Error:</strong> Node not found or server error.
           </div>
-          <Link 
-            to="/nodes" 
-            className="mt-4 inline-block text-blue-600 hover:text-blue-800"
-          >
+          <Link to="/nodes" className="mt-4 inline-block text-blue-600 hover:text-blue-800">
             ← Back to Nodes
           </Link>
         </div>
@@ -321,7 +316,7 @@ export function NodeEditPage() {
   return (
     <Layout>
       <div className="flex items-center space-x-4 mb-8">
-        <Link 
+        <Link
           to={`/nodes/${encodeURIComponent(id!)}`}
           className="text-gray-600 hover:text-gray-800"
         >
@@ -411,14 +406,12 @@ export function NodeEditPage() {
             />
           </div>
 
-
           {updateNodeMutation.error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              <strong>Error:</strong> Failed to update node. {
-                updateNodeMutation.error instanceof Error 
-                  ? updateNodeMutation.error.message 
-                  : 'Unknown error'
-              }
+              <strong>Error:</strong> Failed to update node.{' '}
+              {updateNodeMutation.error instanceof Error
+                ? updateNodeMutation.error.message
+                : 'Unknown error'}
             </div>
           )}
 

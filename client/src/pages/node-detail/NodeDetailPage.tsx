@@ -1,14 +1,14 @@
+import { Icon } from '@iconify/react'
 import React from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
-import { Icon } from '@iconify/react'
-import { useNode, useBacklinks, useForwardLinks, useDeleteNode } from '../../entities/node'
-import { Layout } from '../../widgets/layout'
-import { OrgRenderer } from '../../features/org-rendering'
+import remarkGfm from 'remark-gfm'
 import type { BacklinkNode } from '../../entities/node'
+import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from '../../entities/node'
+import { OrgRenderer } from '../../features/org-rendering'
+import { Layout } from '../../widgets/layout'
 
 // Simple function to remove frontmatter
 function removeFrontmatter(content: string): string {
@@ -34,7 +34,7 @@ function removeDuplicateMetadata(content: string): string {
 
   for (const line of lines) {
     const trimmed = line.trim()
-    
+
     // Track PROPERTIES blocks
     if (trimmed === ':PROPERTIES:') {
       if (seenProperties) continue // Skip duplicate PROPERTIES block
@@ -46,11 +46,11 @@ function removeDuplicateMetadata(content: string): string {
       // Skip all properties content (but keep the first occurrence)
       if (seenProperties && trimmed.startsWith(':ID:')) {
         // Allow first ID, skip subsequent ones
-        const idCount = cleanedLines.filter(l => l.trim().startsWith(':ID:')).length
+        const idCount = cleanedLines.filter((l) => l.trim().startsWith(':ID:')).length
         if (idCount > 0) continue
       }
     }
-    
+
     // Track metadata lines and skip duplicates
     if (trimmed.startsWith('#+title:')) {
       if (seenTitle) continue
@@ -62,23 +62,26 @@ function removeDuplicateMetadata(content: string): string {
       if (seenFiletags) continue
       seenFiletags = true
     }
-    
+
     // Skip duplicate PROPERTIES or metadata lines after we've seen them
-    if (seenProperties && !inPropertiesBlock && 
-        (trimmed === ':PROPERTIES:' || trimmed.startsWith(':ID:') || trimmed === ':END:')) {
+    if (
+      seenProperties &&
+      !inPropertiesBlock &&
+      (trimmed === ':PROPERTIES:' || trimmed.startsWith(':ID:') || trimmed === ':END:')
+    ) {
       continue
     }
-    
+
     cleanedLines.push(line)
   }
-  
+
   return cleanedLines.join('\n')
 }
 
 function BacklinkCard({ link }: { link: BacklinkNode }) {
   return (
     <div className="border-l-4 border-blue-200 pl-4 space-y-2">
-      <Link 
+      <Link
         to={`/nodes/${encodeURIComponent(link.id)}`}
         className="text-blue-600 hover:text-blue-800 font-medium block"
       >
@@ -108,7 +111,7 @@ function BacklinkCard({ link }: { link: BacklinkNode }) {
 function ForwardLinkCard({ link }: { link: BacklinkNode }) {
   return (
     <div className="border-l-4 border-green-200 pl-4 space-y-2">
-      <Link 
+      <Link
         to={`/nodes/${encodeURIComponent(link.id)}`}
         className="text-green-600 hover:text-green-800 font-medium block"
       >
@@ -139,7 +142,7 @@ export function NodeDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [showRaw, setShowRaw] = React.useState(false)
-  
+
   const { data: node, isLoading: nodeLoading, error: nodeError } = useNode(id!)
   const { data: backlinks } = useBacklinks(id!)
   const { data: forwardLinks } = useForwardLinks(id!)
@@ -150,7 +153,7 @@ export function NodeDetailPage() {
       deleteNodeMutation.mutate(id!, {
         onSuccess: () => {
           navigate('/nodes')
-        }
+        },
       })
     }
   }
@@ -172,10 +175,7 @@ export function NodeDetailPage() {
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <strong>Error:</strong> Node not found or server error.
           </div>
-          <Link 
-            to="/nodes" 
-            className="mt-4 inline-block text-blue-600 hover:text-blue-800"
-          >
+          <Link to="/nodes" className="mt-4 inline-block text-blue-600 hover:text-blue-800">
             ← Back to Nodes
           </Link>
         </div>
@@ -187,22 +187,19 @@ export function NodeDetailPage() {
     <Layout title={node.title}>
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Link 
-            to="/nodes" 
-            className="text-gray-600 hover:text-gray-800"
-          >
+          <Link to="/nodes" className="text-gray-600 hover:text-gray-800">
             ← Back to Nodes
           </Link>
         </div>
         <div className="flex space-x-2">
-          <Link 
+          <Link
             to={`/nodes/${encodeURIComponent(node.id)}/edit`}
             className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition-colors flex items-center justify-center"
             title="Edit node"
           >
             <Icon icon="lucide:edit" width={16} height={16} />
           </Link>
-          <button 
+          <button
             onClick={handleDelete}
             disabled={deleteNodeMutation.isPending}
             className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md transition-colors disabled:opacity-50 flex items-center justify-center"
@@ -231,7 +228,7 @@ export function NodeDetailPage() {
                 </button>
               </div>
             </div>
-            
+
             {showRaw ? (
               <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-md text-sm font-mono">
                 {removeDuplicateMetadata(node.content || 'No content available.')}
@@ -240,7 +237,7 @@ export function NodeDetailPage() {
               <div className="max-w-none">
                 {node.content ? (
                   node.file?.endsWith('.org') ? (
-                    <OrgRenderer 
+                    <OrgRenderer
                       content={removeFrontmatter(node.content)}
                       enableSyntaxHighlight={true}
                     />
@@ -258,7 +255,7 @@ export function NodeDetailPage() {
                                 <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
                                   {children}
                                 </span>
-                              );
+                              )
                             }
                             return (
                               <a
@@ -269,8 +266,8 @@ export function NodeDetailPage() {
                               >
                                 {children}
                               </a>
-                            );
-                          }
+                            )
+                          },
                         }}
                       >
                         {removeFrontmatter(node.content)}
@@ -285,7 +282,7 @@ export function NodeDetailPage() {
           </div>
 
           {/* Backlinks */}
-          {(backlinks && backlinks.length > 0) && (
+          {backlinks && backlinks.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Backlinks ({backlinks.length})
@@ -299,7 +296,7 @@ export function NodeDetailPage() {
           )}
 
           {/* Forward Links */}
-          {(forwardLinks && forwardLinks.length > 0) && (
+          {forwardLinks && forwardLinks.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Forward Links ({forwardLinks.length})
@@ -366,7 +363,9 @@ export function NodeDetailPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Aliases</h2>
               <div className="space-y-2">
                 {node.aliases.map((alias, index) => (
-                  <div key={index} className="text-sm text-gray-600">{alias}</div>
+                  <div key={index} className="text-sm text-gray-600">
+                    {alias}
+                  </div>
                 ))}
               </div>
             </div>
@@ -375,7 +374,9 @@ export function NodeDetailPage() {
           {/* References */}
           {node.refs && node.refs.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">References ({node.refs.length})</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                References ({node.refs.length})
+              </h2>
               <div className="space-y-3">
                 {node.refs.map((refValue, index) => (
                   <div key={index} className="bg-gray-50 p-3 rounded-md">
@@ -398,7 +399,6 @@ export function NodeDetailPage() {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </Layout>

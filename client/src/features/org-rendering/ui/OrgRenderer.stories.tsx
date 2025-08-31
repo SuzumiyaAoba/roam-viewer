@@ -8,7 +8,8 @@ const meta: Meta<typeof OrgRenderer> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A component for rendering Org-mode content using uniorg. Supports headers, lists, links, code blocks, tables, and more with consistent styling.',
+        component:
+          'A component for rendering Org-mode content using uniorg. Supports headers, lists, links, code blocks, tables, and more with consistent styling.',
       },
     },
   },
@@ -141,7 +142,7 @@ The =OrgRenderer= component supports:
 const mathAndSymbolsContent = `* Mathematical Content
 
 ** Equations
-The quadratic formula: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$
+The quadratic formula: $x = \frac{-b pm sqrt{b^2 - 4ac}}{2a}$
 
 ** Greek Letters
 α (alpha), β (beta), γ (gamma), δ (delta)
@@ -251,7 +252,8 @@ export const TodoLabels: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates TODO keyword labels with different states: TODO (orange), DONE (green), DOING (blue), NEXT (purple), WAITING (yellow), and CANCELLED (gray). The labels are styled as small badges next to the headers.',
+        story:
+          'Demonstrates TODO keyword labels with different states: TODO (orange), DONE (green), DOING (blue), NEXT (purple), WAITING (yellow), and CANCELLED (gray). The labels are styled as small badges next to the headers.',
       },
     },
   },
@@ -370,7 +372,8 @@ export const ComparisonExample: Story = {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
         <h3 className="text-lg font-semibold mb-4">Org-mode</h3>
-        <OrgRenderer content={`* Header Level 1
+        <OrgRenderer
+          content={`* Header Level 1
 ** Header Level 2
 
 Some text with *bold* and /italic/ formatting.
@@ -385,14 +388,15 @@ Some text with *bold* and /italic/ formatting.
 
 #+BEGIN_SRC javascript
 console.log('Code block');
-#+END_SRC`} />
+#+END_SRC`}
+        />
       </div>
-      
+
       <div>
         <h3 className="text-lg font-semibold mb-4">Similar in Markdown</h3>
         <div className="prose max-w-none">
           <div className="font-mono text-sm bg-gray-100 p-4 rounded">
-{`# Header Level 1
+            {`# Header Level 1
 ## Header Level 2
 
 Some text with **bold** and *italic* formatting.

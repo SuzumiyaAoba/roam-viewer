@@ -1,19 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactNode } from 'react'
+import { renderHook, waitFor } from '@testing-library/react'
+import type { ReactNode } from 'react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as apiModule from '../../../shared/lib/api-client'
+import { useNodesByTag, useTags } from '../../tag/api/useTag'
 import {
-  useNodes,
-  useNode,
-  useSearchNodes,
   useBacklinks,
-  useForwardLinks,
   useCreateNode,
-  useUpdateNode,
   useDeleteNode,
+  useForwardLinks,
+  useNode,
+  useNodes,
+  useSearchNodes,
+  useUpdateNode,
 } from './useNode'
-import { useTags, useNodesByTag } from '../../tag/api/useTag'
 
 // Mock the API client
 vi.mock('../../../shared/lib/api-client')
@@ -44,7 +44,7 @@ describe('useNodes hooks', () => {
     it('should fetch nodes successfully', async () => {
       const mockNodes = [
         { id: '1', title: 'Node 1', file: 'node1.md' },
-        { id: '2', title: 'Node 2', file: 'node2.md' }
+        { id: '2', title: 'Node 2', file: 'node2.md' },
       ]
       mockApiClient.getNodes.mockResolvedValue(mockNodes)
 
@@ -77,7 +77,7 @@ describe('useNodes hooks', () => {
         id: '1',
         title: 'Test Node',
         file: 'test.md',
-        content: 'Test content'
+        content: 'Test content',
       }
       mockApiClient.getNode.mockResolvedValue(mockNode)
 
@@ -103,7 +103,7 @@ describe('useNodes hooks', () => {
     it('should search nodes successfully', async () => {
       const mockSearchResult = {
         nodes: [{ id: '1', title: 'Found Node', file: 'found.md' }],
-        total: 1
+        total: 1,
       }
       mockApiClient.searchNodes.mockResolvedValue(mockSearchResult)
 
@@ -128,7 +128,7 @@ describe('useNodes hooks', () => {
   describe('useBacklinks', () => {
     it('should fetch backlinks successfully', async () => {
       const mockBacklinks = [
-        { id: '2', title: 'Linking Node', file: 'linking.md', type: 'backlink' as const }
+        { id: '2', title: 'Linking Node', file: 'linking.md', type: 'backlink' as const },
       ]
       mockApiClient.getBacklinks.mockResolvedValue(mockBacklinks)
 
@@ -153,7 +153,7 @@ describe('useNodes hooks', () => {
   describe('useForwardLinks', () => {
     it('should fetch forward links successfully', async () => {
       const mockLinks = [
-        { id: '3', title: 'Linked Node', file: 'linked.md', type: 'forwardlink' as const }
+        { id: '3', title: 'Linked Node', file: 'linked.md', type: 'forwardlink' as const },
       ]
       mockApiClient.getForwardLinks.mockResolvedValue(mockLinks)
 
@@ -174,7 +174,7 @@ describe('useNodes hooks', () => {
         id: 'new-id',
         title: 'New Node',
         file: 'new.md',
-        content: 'New content'
+        content: 'New content',
       }
       mockApiClient.createNode.mockResolvedValue(mockNewNode)
 
@@ -183,7 +183,7 @@ describe('useNodes hooks', () => {
       const createData = {
         title: 'New Node',
         content: 'New content',
-        file_type: 'md' as const
+        file_type: 'md' as const,
       }
 
       result.current.mutate(createData)
@@ -206,7 +206,7 @@ describe('useNodes hooks', () => {
 
       result.current.mutate({
         title: 'New Node',
-        file_type: 'md'
+        file_type: 'md',
       })
 
       await waitFor(() => {
@@ -223,7 +223,7 @@ describe('useNodes hooks', () => {
         id: '1',
         title: 'Updated Node',
         file: 'updated.md',
-        content: 'Updated content'
+        content: 'Updated content',
       }
       mockApiClient.updateNode.mockResolvedValue(mockUpdatedNode)
 
@@ -231,7 +231,7 @@ describe('useNodes hooks', () => {
 
       const updateData = {
         title: 'Updated Node',
-        content: 'Updated content'
+        content: 'Updated content',
       }
 
       result.current.mutate({ id: '1', data: updateData })
@@ -299,7 +299,7 @@ describe('useNodes hooks', () => {
     it('should fetch tags successfully', async () => {
       const mockTags = [
         { tag: 'tag1', count: 5 },
-        { tag: 'tag2', count: 3 }
+        { tag: 'tag2', count: 3 },
       ]
       mockApiClient.getTags.mockResolvedValue(mockTags)
 
@@ -316,9 +316,7 @@ describe('useNodes hooks', () => {
 
   describe('useNodesByTag', () => {
     it('should fetch nodes by tag successfully', async () => {
-      const mockNodes = [
-        { id: '1', title: 'Tagged Node', file: 'tagged.md', tags: ['test-tag'] }
-      ]
+      const mockNodes = [{ id: '1', title: 'Tagged Node', file: 'tagged.md', tags: ['test-tag'] }]
       mockApiClient.searchNodesByTag.mockResolvedValue(mockNodes)
 
       const { result } = renderHook(() => useNodesByTag('test-tag'), { wrapper })

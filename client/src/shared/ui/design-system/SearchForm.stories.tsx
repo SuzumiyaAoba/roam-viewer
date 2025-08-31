@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { SearchForm, QuickSearch, SearchWithSuggestions, type SearchSuggestion } from './SearchForm'
+import { QuickSearch, SearchForm, type SearchSuggestion, SearchWithSuggestions } from './SearchForm'
 
 const meta = {
   title: 'Design System/SearchForm',
@@ -9,50 +9,51 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A comprehensive search form component with multiple variants, suggestions support, and advanced features. Perfect for implementing search functionality with great user experience.'
-      }
-    }
+        component:
+          'A comprehensive search form component with multiple variants, suggestions support, and advanced features. Perfect for implementing search functionality with great user experience.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'elevated', 'minimal', 'prominent'],
-      description: 'The visual variant of the search form'
+      description: 'The visual variant of the search form',
     },
     inputVariant: {
       control: { type: 'select' },
       options: ['default', 'filled', 'outlined', 'minimal'],
-      description: 'The input field variant style'
+      description: 'The input field variant style',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the search form'
+      description: 'The size of the search form',
     },
     placeholder: {
       control: 'text',
-      description: 'Placeholder text for the search input'
+      description: 'Placeholder text for the search input',
     },
     buttonText: {
       control: 'text',
-      description: 'Text for the search button'
+      description: 'Text for the search button',
     },
     showButton: {
       control: 'boolean',
-      description: 'Whether to show the search button'
+      description: 'Whether to show the search button',
     },
     showClearButton: {
       control: 'boolean',
-      description: 'Whether to show clear button when input has value'
+      description: 'Whether to show clear button when input has value',
     },
     loading: {
       control: 'boolean',
-      description: 'Loading state'
+      description: 'Loading state',
     },
     disabled: {
       control: 'boolean',
-      description: 'Disabled state'
+      description: 'Disabled state',
     },
   },
 } satisfies Meta<typeof SearchForm>
@@ -73,7 +74,12 @@ export const WithIcon: Story = {
     placeholder: 'Search with icon...',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -86,7 +92,12 @@ export const WithoutButton: Story = {
     showButton: false,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -100,7 +111,12 @@ export const Elevated: Story = {
     placeholder: 'Elevated search form...',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -115,7 +131,12 @@ export const Prominent: Story = {
     buttonText: 'Find',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -129,7 +150,12 @@ export const FilledInput: Story = {
     placeholder: 'Filled input style...',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -142,7 +168,12 @@ export const OutlinedInput: Story = {
     placeholder: 'Outlined input style...',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -156,7 +187,12 @@ export const MinimalInput: Story = {
     showButton: false,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -170,7 +206,12 @@ export const Small: Story = {
     placeholder: 'Small search...',
     icon: (
       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -183,7 +224,12 @@ export const Large: Story = {
     placeholder: 'Large search form...',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -197,7 +243,12 @@ export const Loading: Story = {
     loading: true,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -210,7 +261,12 @@ export const Disabled: Story = {
     disabled: true,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
@@ -230,9 +286,9 @@ export const QuickSearchExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'QuickSearch component for minimal search interfaces without a button'
-      }
-    }
+        story: 'QuickSearch component for minimal search interfaces without a button',
+      },
+    },
   },
 }
 
@@ -249,7 +305,12 @@ export const ControlledExample: Story = {
           placeholder="Controlled search..."
           icon={
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           }
           onSubmit={(query) => alert(`Searching for: ${query}`)}
@@ -263,9 +324,9 @@ export const ControlledExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Controlled search form example with external state management'
-      }
-    }
+        story: 'Controlled search form example with external state management',
+      },
+    },
   },
 }
 
@@ -279,38 +340,38 @@ export const WithSuggestions: Story = {
         id: '1',
         text: 'React Components',
         category: 'Programming',
-        icon: <span>⚛️</span>
+        icon: <span>⚛️</span>,
       },
       {
         id: '2',
         text: 'TypeScript Basics',
         category: 'Programming',
-        icon: <span>📘</span>
+        icon: <span>📘</span>,
       },
       {
         id: '3',
         text: 'Design Systems',
         category: 'Design',
-        icon: <span>🎨</span>
+        icon: <span>🎨</span>,
       },
       {
         id: '4',
         text: 'Node.js Server',
         category: 'Backend',
-        icon: <span>🖥️</span>
+        icon: <span>🖥️</span>,
       },
       {
         id: '5',
         text: 'Database Design',
         category: 'Data',
-        icon: <span>🗄️</span>
+        icon: <span>🗄️</span>,
       },
       {
         id: '6',
         text: 'API Documentation',
         category: 'Documentation',
-        icon: <span>📚</span>
-      }
+        icon: <span>📚</span>,
+      },
     ]
 
     return (
@@ -322,7 +383,12 @@ export const WithSuggestions: Story = {
           placeholder="Search with suggestions..."
           icon={
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           }
           onSubmit={(query) => alert(`Searching for: ${query}`)}
@@ -336,9 +402,9 @@ export const WithSuggestions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Search form with dropdown suggestions and keyboard navigation'
-      }
-    }
+        story: 'Search form with dropdown suggestions and keyboard navigation',
+      },
+    },
   },
 }
 
@@ -366,7 +432,12 @@ export const NodeSearchExample: Story = {
           buttonText="Find"
           icon={
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           }
           onSubmit={(query) => alert(`Main search: ${query}`)}
@@ -383,7 +454,12 @@ export const NodeSearchExample: Story = {
           buttonText="Explore"
           icon={
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           }
           onSubmit={(query) => alert(`Hero search: ${query}`)}
@@ -395,9 +471,9 @@ export const NodeSearchExample: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Examples of how search forms might be used in the Roam Web application'
-      }
-    }
+        story: 'Examples of how search forms might be used in the Roam Web application',
+      },
+    },
   },
 }
 
@@ -415,7 +491,7 @@ export const AllVariants: Story = {
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Elevated</label>
             <SearchForm
@@ -424,7 +500,7 @@ export const AllVariants: Story = {
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Prominent</label>
             <SearchForm
@@ -447,7 +523,7 @@ export const AllVariants: Story = {
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Filled Input</label>
             <SearchForm
@@ -456,7 +532,7 @@ export const AllVariants: Story = {
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Outlined Input</label>
             <SearchForm
@@ -465,7 +541,7 @@ export const AllVariants: Story = {
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Minimal Input</label>
             <SearchForm
@@ -483,9 +559,9 @@ export const AllVariants: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Overview of all available search form variants'
-      }
-    }
+        story: 'Overview of all available search form variants',
+      },
+    },
   },
 }
 
@@ -495,16 +571,19 @@ export const HeightAlignmentTest: Story = {
     <div className="space-y-8 w-full max-w-4xl">
       <h3 className="text-lg font-semibold">Height Alignment Test</h3>
       <div className="text-sm text-gray-600 mb-6">
-        This story tests the alignment between input fields and buttons across all size and variant combinations.
+        This story tests the alignment between input fields and buttons across all size and variant
+        combinations.
       </div>
-      
+
       {/* Size variations with default input variant */}
       <div className="space-y-6">
         <div>
           <h4 className="font-medium mb-4">Default Input Variant - All Sizes</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Small (38px height)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Small (38px height)
+              </label>
               <SearchForm
                 size="sm"
                 inputVariant="default"
@@ -512,9 +591,11 @@ export const HeightAlignmentTest: Story = {
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Default (50px height)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Default (50px height)
+              </label>
               <SearchForm
                 size="default"
                 inputVariant="default"
@@ -522,9 +603,11 @@ export const HeightAlignmentTest: Story = {
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Large (62px height)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Large (62px height)
+              </label>
               <SearchForm
                 size="lg"
                 inputVariant="default"
@@ -540,7 +623,9 @@ export const HeightAlignmentTest: Story = {
           <h4 className="font-medium mb-4">Outlined Input Variant - All Sizes (Thicker Border)</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Small Outlined (38px height + 2px border)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Small Outlined (38px height + 2px border)
+              </label>
               <SearchForm
                 size="sm"
                 inputVariant="outlined"
@@ -548,9 +633,11 @@ export const HeightAlignmentTest: Story = {
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Default Outlined (50px height + 2px border)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Default Outlined (50px height + 2px border)
+              </label>
               <SearchForm
                 size="default"
                 inputVariant="outlined"
@@ -558,9 +645,11 @@ export const HeightAlignmentTest: Story = {
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Large Outlined (62px height + 2px border)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Large Outlined (62px height + 2px border)
+              </label>
               <SearchForm
                 size="lg"
                 inputVariant="outlined"
@@ -584,7 +673,7 @@ export const HeightAlignmentTest: Story = {
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Default Filled</label>
               <SearchForm
@@ -594,7 +683,7 @@ export const HeightAlignmentTest: Story = {
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Large Filled</label>
               <SearchForm
@@ -613,8 +702,9 @@ export const HeightAlignmentTest: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Test story to verify proper height alignment between input fields and buttons across all variants and sizes.'
-      }
-    }
+        story:
+          'Test story to verify proper height alignment between input fields and buttons across all variants and sizes.',
+      },
+    },
   },
 }

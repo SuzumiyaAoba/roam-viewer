@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Icon } from '@iconify/react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLocalStorage } from 'react-use'
-import { useNodes, useSearchNodes, useDeleteNode } from '../../entities/node'
-import { useTags } from '../../entities/tag'
-import { Layout } from '../../widgets/layout'
-import { NodeCard, NodeCardCompact, Button, cn } from '../../shared/ui'
 import type { Node } from '../../entities/node'
+import { useDeleteNode, useNodes, useSearchNodes } from '../../entities/node'
+import { useTags } from '../../entities/tag'
+import { Button, cn, NodeCard, NodeCardCompact } from '../../shared/ui'
+import { Layout } from '../../widgets/layout'
 
 type ViewMode = 'grid' | 'list' | 'table'
-
 
 export function NodeListPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -20,7 +20,7 @@ export function NodeListPage() {
   const [showTagSelector, setShowTagSelector] = useState(false)
   const [viewMode, setViewMode] = useLocalStorage<ViewMode>('node-list-view-mode', 'grid')
   const navigate = useNavigate()
-  
+
   const { data: nodes, isLoading: nodesLoading, error: nodesError } = useNodes()
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery)
   const { data: availableTags, isLoading: tagsLoading } = useTags(showTagSelector)
@@ -31,20 +31,22 @@ export function NodeListPage() {
     const tagFromUrl = searchParams.get('tag')
     const tagsFromUrl = searchParams.get('tags')
     const searchFromUrl = searchParams.get('search')
-    
+
     if (tagFromUrl) {
       setSelectedTag(decodeURIComponent(tagFromUrl))
     }
-    
+
     if (tagsFromUrl) {
-      const decodedTags = decodeURIComponent(tagsFromUrl).split(',').filter(t => t.length > 0)
+      const decodedTags = decodeURIComponent(tagsFromUrl)
+        .split(',')
+        .filter((t) => t.length > 0)
       setSelectedTags(decodedTags)
       // If tags are specified in URL, show the tag selector to reflect the selection
       if (decodedTags.length > 0) {
         setShowTagSelector(true)
       }
     }
-    
+
     if (searchFromUrl) {
       const decodedSearch = decodeURIComponent(searchFromUrl)
       setSearchQuery(decodedSearch)
@@ -63,7 +65,9 @@ export function NodeListPage() {
 
   // Update URL when debounced query changes (but not on initial load)
   useEffect(() => {
-    const isInitialLoad = searchParams.get('search') && debouncedQuery === decodeURIComponent(searchParams.get('search')!)
+    const isInitialLoad =
+      searchParams.get('search') &&
+      debouncedQuery === decodeURIComponent(searchParams.get('search')!)
     if (!isInitialLoad) {
       updateURLParams(undefined, debouncedQuery)
     }
@@ -74,20 +78,22 @@ export function NodeListPage() {
     const tagFromUrl = searchParams.get('tag')
     const tagsFromUrl = searchParams.get('tags')
     const searchFromUrl = searchParams.get('search')
-    
+
     // Update selectedTag if URL parameter changed
     if (tagFromUrl && tagFromUrl !== selectedTag) {
       setSelectedTag(decodeURIComponent(tagFromUrl))
     } else if (!tagFromUrl && selectedTag) {
       setSelectedTag(null)
     }
-    
+
     // Update selectedTags if URL parameter changed
     if (tagsFromUrl) {
-      const decodedTags = decodeURIComponent(tagsFromUrl).split(',').filter(t => t.length > 0)
+      const decodedTags = decodeURIComponent(tagsFromUrl)
+        .split(',')
+        .filter((t) => t.length > 0)
       const currentTagsStr = selectedTags.join(',')
       const urlTagsStr = decodedTags.join(',')
-      
+
       if (urlTagsStr !== currentTagsStr) {
         setSelectedTags(decodedTags)
         // Show tag selector if tags are present
@@ -98,7 +104,7 @@ export function NodeListPage() {
     } else if (!tagsFromUrl && selectedTags.length > 0) {
       setSelectedTags([])
     }
-    
+
     // Update searchQuery if URL parameter changed
     if (searchFromUrl) {
       const decodedSearch = decodeURIComponent(searchFromUrl)
@@ -112,27 +118,23 @@ export function NodeListPage() {
 
   // Filter nodes based on search query and selected tags
   const getFilteredNodes = (): Node[] => {
-    let filteredNodes = debouncedQuery 
-      ? (searchResults?.nodes || []) 
-      : (nodes || [])
-    
+    let filteredNodes = debouncedQuery ? searchResults?.nodes || [] : nodes || []
+
     // Apply single tag filter (legacy support)
     if (selectedTag) {
-      filteredNodes = filteredNodes.filter(node => 
-        node.tags?.includes(selectedTag)
-      )
+      filteredNodes = filteredNodes.filter((node) => node.tags?.includes(selectedTag))
     }
-    
+
     // Apply multi-tag filter
     if (selectedTags.length > 0) {
-      filteredNodes = filteredNodes.filter(node => 
-        selectedTags.every(tag => node.tags?.includes(tag))
+      filteredNodes = filteredNodes.filter((node) =>
+        selectedTags.every((tag) => node.tags?.includes(tag))
       )
     }
-    
+
     return filteredNodes
   }
-  
+
   const displayNodes = getFilteredNodes()
 
   const isLoading = nodesLoading || searchLoading
@@ -150,7 +152,7 @@ export function NodeListPage() {
   // Update URL parameters helper
   const updateURLParams = (newTag?: string | null, newSearch?: string, newTags?: string[]) => {
     const newParams = new URLSearchParams(searchParams)
-    
+
     if (newTag !== undefined) {
       if (newTag === null) {
         newParams.delete('tag')
@@ -158,7 +160,7 @@ export function NodeListPage() {
         newParams.set('tag', encodeURIComponent(newTag))
       }
     }
-    
+
     if (newTags !== undefined) {
       if (newTags.length === 0) {
         newParams.delete('tags')
@@ -166,7 +168,7 @@ export function NodeListPage() {
         newParams.set('tags', encodeURIComponent(newTags.join(',')))
       }
     }
-    
+
     if (newSearch !== undefined) {
       if (newSearch === '') {
         newParams.delete('search')
@@ -174,7 +176,7 @@ export function NodeListPage() {
         newParams.set('search', encodeURIComponent(newSearch))
       }
     }
-    
+
     setSearchParams(newParams, { replace: true })
   }
 
@@ -201,9 +203,9 @@ export function NodeListPage() {
 
   const handleTagToggle = (tag: string) => {
     const newSelectedTags = selectedTags.includes(tag)
-      ? selectedTags.filter(t => t !== tag)
+      ? selectedTags.filter((t) => t !== tag)
       : [...selectedTags, tag]
-    
+
     setSelectedTags(newSelectedTags)
     setSelectedTag(null) // Clear single tag when using multi-tag
     updateURLParams(null, undefined, newSelectedTags)
@@ -217,8 +219,8 @@ export function NodeListPage() {
         return (
           <div className="grid gap-6 md:grid-cols-2">
             {displayNodes.map((node) => (
-              <NodeCard 
-                key={node.id} 
+              <NodeCard
+                key={node.id}
                 title={node.title}
                 file={node.file}
                 tags={node.tags}
@@ -235,13 +237,13 @@ export function NodeListPage() {
             ))}
           </div>
         )
-      
+
       case 'list':
         return (
           <div className="space-y-4">
             {displayNodes.map((node) => (
-              <NodeCardCompact 
-                key={node.id} 
+              <NodeCardCompact
+                key={node.id}
                 title={node.title}
                 file={node.file}
                 tags={node.tags}
@@ -258,17 +260,25 @@ export function NodeListPage() {
             ))}
           </div>
         )
-      
+
       case 'table':
         return (
           <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    File
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tags
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -295,10 +305,10 @@ export function NodeListPage() {
                               handleTagClick(tag)
                             }}
                             className={cn(
-                              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium transition-colors hover:bg-blue-200",
-                              selectedTag === tag 
-                                ? "bg-blue-600 text-white" 
-                                : "bg-blue-100 text-blue-800"
+                              'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium transition-colors hover:bg-blue-200',
+                              selectedTag === tag
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-blue-100 text-blue-800'
                             )}
                           >
                             {tag}
@@ -341,7 +351,7 @@ export function NodeListPage() {
             </table>
           </div>
         )
-      
+
       default:
         return null
     }
@@ -382,7 +392,7 @@ export function NodeListPage() {
               <Icon icon="lucide:table" width={16} height={16} />
             </Button>
           </div>
-          <Link 
+          <Link
             to="/nodes/new"
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
           >
@@ -394,14 +404,14 @@ export function NodeListPage() {
       <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
         <form onSubmit={handleSearch}>
           <div className="flex gap-4">
-            <input 
-              type="text" 
-              placeholder="Search nodes..." 
+            <input
+              type="text"
+              placeholder="Search nodes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-            <button 
+            <button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors"
             >
@@ -418,11 +428,15 @@ export function NodeListPage() {
               onClick={() => setShowTagSelector(!showTagSelector)}
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
             >
-              <Icon icon={showTagSelector ? "lucide:chevron-up" : "lucide:chevron-down"} width={16} height={16} />
+              <Icon
+                icon={showTagSelector ? 'lucide:chevron-up' : 'lucide:chevron-down'}
+                width={16}
+                height={16}
+              />
               {showTagSelector ? 'Hide' : 'Show'} Tags
             </button>
           </div>
-          
+
           {showTagSelector && (
             <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-md bg-gray-50 p-3">
               {tagsLoading ? (
@@ -434,10 +448,10 @@ export function NodeListPage() {
                       key={tagInfo.tag}
                       onClick={() => handleTagToggle(tagInfo.tag)}
                       className={cn(
-                        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors",
+                        'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors',
                         selectedTags.includes(tagInfo.tag)
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
                       )}
                     >
                       {tagInfo.tag}
@@ -472,7 +486,10 @@ export function NodeListPage() {
                 </div>
               )}
               {selectedTags.map((tag) => (
-                <div key={tag} className="flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">
+                <div
+                  key={tag}
+                  className="flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm"
+                >
                   <span>Tag: {tag}</span>
                   <button
                     onClick={() => handleTagToggle(tag)}

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '../../../shared/lib/api-client'
 import type { CreateNodeRequest, UpdateNodeRequest } from '../model/types'
 
@@ -43,7 +43,7 @@ export function useForwardLinks(id: string) {
 
 export function useCreateNode() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: (data: CreateNodeRequest) => apiClient.createNode(data),
     onSuccess: () => {
@@ -54,7 +54,7 @@ export function useCreateNode() {
 
 export function useUpdateNode() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateNodeRequest }) =>
       apiClient.updateNode(id, data),
@@ -67,7 +67,7 @@ export function useUpdateNode() {
 
 export function useDeleteNode() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: (id: string) => apiClient.deleteNode(id),
     onSuccess: () => {

@@ -19,7 +19,7 @@ const examples = [
     name: 'Simple code block',
     content: `#+BEGIN_SRC javascript
 console.log('test');
-#+END_SRC`
+#+END_SRC`,
   },
   {
     name: 'Code block with content after',
@@ -28,7 +28,7 @@ def hello():
     print("Hello")
 #+END_SRC
 
-This is a paragraph after the code block.`
+This is a paragraph after the code block.`,
   },
   {
     name: 'Multiple elements',
@@ -40,8 +40,8 @@ Some text with *bold* formatting.
 echo "Hello World"
 #+END_SRC
 
-Final paragraph.`
-  }
+Final paragraph.`,
+  },
 ]
 
 console.log('\nThese are the test cases that should work:')

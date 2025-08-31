@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { EmptyState, EmptyStateNoResults, EmptyStateNoNodes, EmptyStateError, EmptyStateLoading, EmptyStateOffline } from './EmptyState'
+import {
+  EmptyState,
+  EmptyStateError,
+  EmptyStateLoading,
+  EmptyStateNoNodes,
+  EmptyStateNoResults,
+  EmptyStateOffline,
+} from './EmptyState'
 
 const meta = {
   title: 'Design System/EmptyState',
@@ -9,33 +16,34 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A flexible empty state component for displaying when there\'s no data, errors, or loading states. Includes predefined variants for common scenarios and support for custom illustrations.'
-      }
-    }
+        component:
+          "A flexible empty state component for displaying when there's no data, errors, or loading states. Includes predefined variants for common scenarios and support for custom illustrations.",
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'muted', 'accent'],
-      description: 'The visual variant of the empty state'
+      description: 'The visual variant of the empty state',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the empty state'
+      description: 'The size of the empty state',
     },
     title: {
       control: 'text',
-      description: 'Main title text'
+      description: 'Main title text',
     },
     description: {
       control: 'text',
-      description: 'Description text'
+      description: 'Description text',
     },
     icon: {
       control: 'text',
-      description: 'Icon to display (emoji or custom element)'
+      description: 'Icon to display (emoji or custom element)',
     },
   },
 } satisfies Meta<typeof EmptyState>
@@ -68,7 +76,7 @@ export const WithTwoActions: Story = {
   args: {
     icon: '🔍',
     title: 'No search results',
-    description: 'We couldn\'t find any results for your search.',
+    description: "We couldn't find any results for your search.",
     action: {
       label: 'Clear Search',
       onClick: () => alert('Clear search clicked'),
@@ -115,7 +123,8 @@ export const Large: Story = {
     size: 'lg',
     icon: '🎯',
     title: 'Welcome to your dashboard',
-    description: 'This is where you\'ll see your important information once you start using the application.',
+    description:
+      "This is where you'll see your important information once you start using the application.",
     action: {
       label: 'Get Started',
       onClick: () => alert('Get started clicked'),
@@ -167,9 +176,9 @@ export const NoResults: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for no search results'
-      }
-    }
+        story: 'Predefined empty state for no search results',
+      },
+    },
   },
 }
 
@@ -185,9 +194,9 @@ export const NoNodes: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for when there are no nodes'
-      }
-    }
+        story: 'Predefined empty state for when there are no nodes',
+      },
+    },
   },
 }
 
@@ -205,22 +214,20 @@ export const ErrorState: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for error scenarios'
-      }
-    }
+        story: 'Predefined empty state for error scenarios',
+      },
+    },
   },
 }
 
 export const LoadingState: Story = {
-  render: () => (
-    <EmptyStateLoading />
-  ),
+  render: () => <EmptyStateLoading />,
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for loading scenarios'
-      }
-    }
+        story: 'Predefined empty state for loading scenarios',
+      },
+    },
   },
 }
 
@@ -237,9 +244,9 @@ export const OfflineState: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for offline scenarios'
-      }
-    }
+        story: 'Predefined empty state for offline scenarios',
+      },
+    },
   },
 }
 
@@ -294,9 +301,9 @@ export const RoamWebExamples: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Real-world examples of how empty states might be used in the Roam Web application'
-      }
-    }
+        story: 'Real-world examples of how empty states might be used in the Roam Web application',
+      },
+    },
   },
 }
 
@@ -353,9 +360,9 @@ export const DashboardScenarios: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Dashboard widget scenarios with compact empty states'
-      }
-    }
+        story: 'Dashboard widget scenarios with compact empty states',
+      },
+    },
   },
 }
 
@@ -389,9 +396,9 @@ export const WithCustomContent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Empty state with custom content children'
-      }
-    }
+        story: 'Empty state with custom content children',
+      },
+    },
   },
 }
 
@@ -411,7 +418,7 @@ export const AllVariants: Story = {
               description="Standard empty state styling."
             />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h4 className="text-sm font-medium mb-2">Muted</h4>
             <EmptyState
@@ -422,7 +429,7 @@ export const AllVariants: Story = {
               description="Subtle, less prominent styling."
             />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h4 className="text-sm font-medium mb-2">Accent</h4>
             <EmptyState
@@ -448,7 +455,7 @@ export const AllVariants: Story = {
               description="Compact for tight spaces."
             />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h4 className="text-sm font-medium mb-2">Default</h4>
             <EmptyState
@@ -457,7 +464,7 @@ export const AllVariants: Story = {
               description="Standard sizing for most use cases."
             />
           </div>
-          
+
           <div className="border rounded-lg p-4">
             <h4 className="text-sm font-medium mb-2">Large</h4>
             <EmptyState
@@ -475,8 +482,8 @@ export const AllVariants: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Overview of all available empty state variants and sizes'
-      }
-    }
+        story: 'Overview of all available empty state variants and sizes',
+      },
+    },
   },
 }

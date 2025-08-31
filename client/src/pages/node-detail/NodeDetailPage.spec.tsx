@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import type { ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { ReactNode } from 'react'
-import { NodeDetailPage } from './NodeDetailPage'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as useNodesModule from '../../entities/node/api/useNode'
+import { NodeDetailPage } from './NodeDetailPage'
 
 // Mock the hooks
 vi.mock('../../entities/node/api/useNode')
@@ -19,7 +19,9 @@ vi.mock('react-router-dom', async () => {
 
 // Mock ReactMarkdown to avoid complex rendering issues in tests
 vi.mock('react-markdown', () => ({
-  default: ({ children }: { children: string }) => <div data-testid="markdown-content">{children}</div>
+  default: ({ children }: { children: string }) => (
+    <div data-testid="markdown-content">{children}</div>
+  ),
 }))
 
 // Mock window.confirm
@@ -60,7 +62,7 @@ describe('NodeDetailPage', () => {
     },
     {
       id: 'backlink-2',
-      title: 'Backlink Node 2', 
+      title: 'Backlink Node 2',
       file: 'backlink2.md',
       type: 'backlink' as const,
     },
@@ -213,7 +215,7 @@ describe('NodeDetailPage', () => {
     it('should handle delete action with confirmation', () => {
       const mockNavigate = vi.fn()
       const mockMutate = vi.fn()
-      
+
       vi.mocked(window.confirm).mockReturnValue(true)
       mockUseDeleteNode.mockReturnValue({
         mutate: mockMutate,
@@ -242,7 +244,7 @@ describe('NodeDetailPage', () => {
     it('should cancel delete when user cancels confirmation', () => {
       const mockMutate = vi.fn()
       vi.mocked(window.confirm).mockReturnValue(false)
-      
+
       mockUseDeleteNode.mockReturnValue({
         mutate: mockMutate,
         isPending: false,
@@ -315,7 +317,7 @@ describe('NodeDetailPage', () => {
       render(<NodeDetailPage />, { wrapper })
 
       expect(screen.getByText('References (2)')).toBeInTheDocument()
-      
+
       const externalLink = screen.getByRole('link', { name: 'https://example.com' })
       expect(externalLink).toHaveAttribute('href', 'https://example.com')
       expect(externalLink).toHaveAttribute('target', '_blank')
@@ -379,7 +381,7 @@ This is the real content.`
 
       const nodeWithFrontmatter = {
         ...mockNode,
-        content: contentWithFrontmatter
+        content: contentWithFrontmatter,
       }
 
       mockUseNode.mockReturnValue({
@@ -428,7 +430,7 @@ This is the real content.`
 
       // Should have h1 for main title (from Layout)
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Test Node Title')
-      
+
       // Should have h2 for sections
       expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(6) // Node Info, Tags, Aliases, References, Backlinks, Forward Links
     })

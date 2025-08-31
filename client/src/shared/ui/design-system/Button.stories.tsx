@@ -9,38 +9,48 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile button component with multiple variants, sizes, and states. Built with accessibility in mind and designed to handle loading states gracefully.'
-      }
-    }
+        component:
+          'A versatile button component with multiple variants, sizes, and states. Built with accessibility in mind and designed to handle loading states gracefully.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'success', 'warning'],
-      description: 'The visual variant of the button'
+      options: [
+        'default',
+        'destructive',
+        'outline',
+        'secondary',
+        'ghost',
+        'link',
+        'success',
+        'warning',
+      ],
+      description: 'The visual variant of the button',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg', 'icon'],
-      description: 'The size of the button'
+      description: 'The size of the button',
     },
     fullWidth: {
       control: 'boolean',
-      description: 'Whether the button should take full width of its container'
+      description: 'Whether the button should take full width of its container',
     },
     loading: {
       control: 'boolean',
-      description: 'Whether the button is in a loading state'
+      description: 'Whether the button is in a loading state',
     },
     disabled: {
       control: 'boolean',
-      description: 'Whether the button is disabled'
+      description: 'Whether the button is disabled',
     },
     children: {
       control: 'text',
-      description: 'The content of the button'
-    }
+      description: 'The content of the button',
+    },
   },
 } satisfies Meta<typeof Button>
 
@@ -185,9 +195,9 @@ export const AllVariants: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Overview of all available button variants'
-      }
-    }
+        story: 'Overview of all available button variants',
+      },
+    },
   },
 }
 
@@ -205,8 +215,8 @@ export const AllSizes: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Overview of all available button sizes'
-      }
-    }
+        story: 'Overview of all available button sizes',
+      },
+    },
   },
 }

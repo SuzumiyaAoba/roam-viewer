@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { NodeFormPage, NodeEditPage } from './NodeFormPage'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Node } from '../../entities/node'
+import { NodeEditPage, NodeFormPage } from './NodeFormPage'
 
 // Mock the Layout component
 vi.mock('../../widgets/layout', () => ({
   Layout: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="layout">{children}</div>
-  )
+  ),
 }))
 
 // Mock the hooks
@@ -22,7 +22,7 @@ const mockUseNavigate = vi.fn()
 vi.mock('../hooks/useNodes', () => ({
   useNode: (id: string) => mockUseNode(id),
   useCreateNode: () => mockUseCreateNode(),
-  useUpdateNode: () => mockUseUpdateNode()
+  useUpdateNode: () => mockUseUpdateNode(),
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -30,7 +30,7 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useParams: () => mockUseParams(),
-    useNavigate: () => mockUseNavigate()
+    useNavigate: () => mockUseNavigate(),
   }
 })
 
@@ -51,7 +51,7 @@ describe('NodeCreatePage', () => {
     mockUseCreateNode.mockReturnValue({
       mutate: mockCreateMutate,
       isPending: false,
-      error: null
+      error: null,
     })
 
     return render(
@@ -139,7 +139,7 @@ describe('NodeCreatePage', () => {
         tags: ['tag1', 'tag2', 'tag3'],
         aliases: ['alias1', 'alias2'],
         refs: ['ref1', 'ref2'],
-        file_type: 'md'
+        file_type: 'md',
       },
       expect.objectContaining({ onSuccess: expect.any(Function) })
     )
@@ -147,13 +147,13 @@ describe('NodeCreatePage', () => {
 
   it('should handle successful creation and navigate', async () => {
     const mockNewNode = { id: 'new-node-id', title: 'Test Node' }
-    
+
     mockUseCreateNode.mockReturnValue({
       mutate: (data: any, options: any) => {
         options.onSuccess(mockNewNode)
       },
       isPending: false,
-      error: null
+      error: null,
     })
 
     renderNodeCreatePage()
@@ -172,7 +172,7 @@ describe('NodeCreatePage', () => {
     mockUseCreateNode.mockReturnValue({
       mutate: mockCreateMutate,
       isPending: false,
-      error: mockError
+      error: mockError,
     })
 
     renderNodeCreatePage()
@@ -185,7 +185,7 @@ describe('NodeCreatePage', () => {
     mockUseCreateNode.mockReturnValue({
       mutate: mockCreateMutate,
       isPending: true,
-      error: null
+      error: null,
     })
 
     renderNodeCreatePage()
@@ -205,7 +205,7 @@ describe('NodeCreatePage', () => {
 
     expect(mockCreateMutate).toHaveBeenCalledWith(
       expect.objectContaining({
-        tags: [] // Should be filtered to empty array
+        tags: [], // Should be filtered to empty array
       }),
       expect.any(Object)
     )
@@ -224,7 +224,7 @@ describe('NodeEditPage', () => {
     tags: ['tag1', 'tag2'],
     aliases: ['alias1'],
     refs: ['ref1'],
-    file: 'test.md'
+    file: 'test.md',
   }
 
   const renderNodeEditPage = (nodeId: string = 'test-id') => {
@@ -240,7 +240,7 @@ describe('NodeEditPage', () => {
     mockUseUpdateNode.mockReturnValue({
       mutate: mockUpdateMutate,
       isPending: false,
-      error: null
+      error: null,
     })
 
     return render(
@@ -260,7 +260,7 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: undefined,
       isLoading: true,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
@@ -272,7 +272,7 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: null,
       isLoading: false,
-      error: new Error('Not found')
+      error: new Error('Not found'),
     })
 
     renderNodeEditPage()
@@ -285,7 +285,7 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
@@ -302,7 +302,7 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
@@ -317,7 +317,7 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
@@ -336,8 +336,8 @@ describe('NodeEditPage', () => {
           content: 'Test content',
           tags: ['tag1', 'tag2'],
           aliases: ['alias1'],
-          refs: ['ref1']
-        }
+          refs: ['ref1'],
+        },
       },
       expect.objectContaining({ onSuccess: expect.any(Function) })
     )
@@ -347,7 +347,7 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     mockUseUpdateNode.mockReturnValue({
@@ -355,7 +355,7 @@ describe('NodeEditPage', () => {
         options.onSuccess()
       },
       isPending: false,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
@@ -370,14 +370,14 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     const mockError = new Error('Failed to update')
     mockUseUpdateNode.mockReturnValue({
       mutate: mockUpdateMutate,
       isPending: false,
-      error: mockError
+      error: mockError,
     })
 
     renderNodeEditPage()
@@ -390,13 +390,13 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     mockUseUpdateNode.mockReturnValue({
       mutate: mockUpdateMutate,
       isPending: true,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
@@ -409,12 +409,15 @@ describe('NodeEditPage', () => {
     mockUseNode.mockReturnValue({
       data: mockNode,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()
 
-    expect(screen.getByRole('link', { name: /back to node/i })).toHaveAttribute('href', '/nodes/test-id')
+    expect(screen.getByRole('link', { name: /back to node/i })).toHaveAttribute(
+      'href',
+      '/nodes/test-id'
+    )
     expect(screen.getByRole('link', { name: /cancel/i })).toHaveAttribute('href', '/nodes/test-id')
   })
 
@@ -422,13 +425,13 @@ describe('NodeEditPage', () => {
     const nodeWithMissingFields: Node = {
       id: 'test-id',
       title: 'Minimal Node',
-      file: 'minimal.md'
+      file: 'minimal.md',
     }
 
     mockUseNode.mockReturnValue({
       data: nodeWithMissingFields,
       isLoading: false,
-      error: null
+      error: null,
     })
 
     renderNodeEditPage()

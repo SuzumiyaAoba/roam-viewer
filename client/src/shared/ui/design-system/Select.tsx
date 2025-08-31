@@ -1,6 +1,7 @@
-import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from "./utils"
+import type React from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
+import { cn } from './utils'
 
 const selectTriggerVariants = cva(
   'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
@@ -63,25 +64,28 @@ export interface SelectProps
 }
 
 const Select = forwardRef<HTMLDivElement, SelectProps>(
-  ({
-    className,
-    variant,
-    size,
-    options,
-    value,
-    onValueChange,
-    placeholder = 'Select an option...',
-    disabled = false,
-    required = false,
-    name,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      options,
+      value,
+      onValueChange,
+      placeholder = 'Select an option...',
+      disabled = false,
+      required = false,
+      name,
+      ...props
+    },
+    ref
+  ) => {
     const [isOpen, setIsOpen] = useState(false)
     const [selectedValue, setSelectedValue] = useState(value || '')
     const selectRef = useRef<HTMLDivElement>(null)
     const listRef = useRef<HTMLUListElement>(null)
 
-    const selectedOption = options.find(option => option.value === selectedValue)
+    const selectedOption = options.find((option) => option.value === selectedValue)
 
     useEffect(() => {
       if (value !== undefined) {
@@ -164,10 +168,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           aria-disabled={disabled}
           aria-required={required}
         >
-          <span className={cn(
-            'block truncate',
-            !selectedOption && 'text-gray-500'
-          )}>
+          <span className={cn('block truncate', !selectedOption && 'text-gray-500')}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <svg
@@ -179,12 +180,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
 
@@ -207,9 +203,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                 aria-selected={selectedValue === option.value}
                 aria-disabled={option.disabled}
               >
-                <span className="block truncate">
-                  {option.label}
-                </span>
+                <span className="block truncate">{option.label}</span>
                 {selectedValue === option.value && (
                   <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-blue-600">
                     <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -226,32 +220,22 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           </ul>
         )}
 
-        {name && (
-          <input
-            type="hidden"
-            name={name}
-            value={selectedValue}
-          />
-        )}
+        {name && <input type="hidden" name={name} value={selectedValue} />}
       </div>
     )
   }
 )
 Select.displayName = 'Select'
 
-const SelectLabel = forwardRef<
-  HTMLLabelElement,
-  React.LabelHTMLAttributes<HTMLLabelElement>
->(({ className, ...props }, ref) => (
-  <label
-    ref={ref}
-    className={cn(
-      'block text-sm font-medium text-gray-700 mb-1',
-      className
-    )}
-    {...props}
-  />
-))
+const SelectLabel = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
+  ({ className, ...props }, ref) => (
+    <label
+      ref={ref}
+      className={cn('block text-sm font-medium text-gray-700 mb-1', className)}
+      {...props}
+    />
+  )
+)
 SelectLabel.displayName = 'SelectLabel'
 
 const SelectHelperText = forwardRef<
@@ -262,11 +246,7 @@ const SelectHelperText = forwardRef<
 >(({ className, error, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn(
-      'mt-1 text-xs',
-      error ? 'text-red-600' : 'text-gray-500',
-      className
-    )}
+    className={cn('mt-1 text-xs', error ? 'text-red-600' : 'text-gray-500', className)}
     {...props}
   />
 ))

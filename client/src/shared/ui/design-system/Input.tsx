@@ -1,7 +1,8 @@
-import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from './utils'
+import type React from 'react'
+import { forwardRef } from 'react'
 import { Input as ShadcnInput } from '../shadcn/input'
+import { cn } from './utils'
 
 const inputVariants = cva(
   [
@@ -10,7 +11,7 @@ const inputVariants = cva(
     'placeholder:text-gray-500',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
-    'transition-colors'
+    'transition-colors',
   ],
   {
     variants: {
@@ -43,18 +44,21 @@ export interface InputProps
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({
-    className,
-    variant,
-    size,
-    label,
-    helperText,
-    errorMessage,
-    leftIcon,
-    rightIcon,
-    id,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      label,
+      helperText,
+      errorMessage,
+      leftIcon,
+      rightIcon,
+      id,
+      ...props
+    },
+    ref
+  ) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
     const hasError = !!errorMessage
     const finalVariant = hasError ? 'error' : variant
@@ -62,10 +66,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex flex-col space-y-2">
         {label && (
-          <label
-            htmlFor={inputId}
-            className="text-sm font-medium text-gray-900"
-          >
+          <label htmlFor={inputId} className="text-sm font-medium text-gray-900">
             {label}
           </label>
         )}
@@ -96,11 +97,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {errorMessage}
           </span>
         )}
-        {!hasError && helperText && (
-          <span className="text-sm text-gray-500">
-            {helperText}
-          </span>
-        )}
+        {!hasError && helperText && <span className="text-sm text-gray-500">{helperText}</span>}
       </div>
     )
   }

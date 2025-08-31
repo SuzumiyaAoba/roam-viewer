@@ -1,6 +1,6 @@
+import { getPort } from 'get-port-please'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { getPort } from 'get-port-please'
 import type { CreateNodeRequest, UpdateNodeRequest } from './client/src/types/api'
 
 // Direct md-roam API client for server-side use
@@ -15,17 +15,18 @@ class MdRoamApiClient {
 
   async request<T>(endpoint: string, options: RequestInit = {}, retries: number = 2): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
-    
+
     // Use longer timeout for POST/PUT operations (node creation/updates can be slow)
-    const requestTimeout = (options.method === 'POST' || options.method === 'PUT') ? 60000 : this.timeout
-    
+    const requestTimeout =
+      options.method === 'POST' || options.method === 'PUT' ? 60000 : this.timeout
+
     if (options.method === 'POST' || options.method === 'PUT') {
       console.log(`Making ${options.method} request to:`, url, `(timeout: ${requestTimeout}ms)`)
       if (options.body) {
         console.log('Request body:', options.body)
       }
     }
-    
+
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), requestTimeout)
 
@@ -41,7 +42,7 @@ class MdRoamApiClient {
     try {
       const response = await fetch(url, config)
       clearTimeout(timeoutId)
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
@@ -50,26 +51,28 @@ class MdRoamApiClient {
       if (contentType?.includes('application/json')) {
         return await response.json()
       } else {
-        return await response.text() as unknown as T
+        return (await response.text()) as unknown as T
       }
     } catch (error) {
       clearTimeout(timeoutId)
-      
+
       // Retry only on network errors, not on 404 or other HTTP errors
       // Don't retry AbortError for POST/PUT operations as they might have succeeded
-      const shouldRetry = retries > 0 && (
-        (error.name === 'AbortError' && options.method !== 'POST' && options.method !== 'PUT') || 
-        error.message.includes('socket connection was closed') ||
-        error.message.includes('fetch failed') ||
-        error.message.includes('ECONNREFUSED')
-      ) && !error.message.includes('HTTP 404') && !error.message.includes('HTTP 400')
-      
+      const shouldRetry =
+        retries > 0 &&
+        ((error.name === 'AbortError' && options.method !== 'POST' && options.method !== 'PUT') ||
+          error.message.includes('socket connection was closed') ||
+          error.message.includes('fetch failed') ||
+          error.message.includes('ECONNREFUSED')) &&
+        !error.message.includes('HTTP 404') &&
+        !error.message.includes('HTTP 400')
+
       if (shouldRetry) {
         console.warn(`Request failed, retrying... (${retries} attempts left)`)
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise((resolve) => setTimeout(resolve, 1000))
         return this.request<T>(endpoint, options, retries - 1)
       }
-      
+
       throw error
     }
   }
@@ -174,7 +177,7 @@ class MdRoamApiClient {
     if (result && result.status === 'success' && Array.isArray(result.nodes)) {
       return {
         nodes: result.nodes,
-        total: result.count
+        total: result.count,
       }
     }
     // Return as-is for backward compatibility
@@ -183,12 +186,12 @@ class MdRoamApiClient {
 
   async createNode(nodeData: CreateNodeRequest) {
     console.log('Creating node with data:', JSON.stringify(nodeData, null, 2))
-    
+
     // Remove refs field as md-roam API doesn't support it in node creation
     // Keep file_type as it's supported by md-roam API
     const { refs, ...apiNodeData } = nodeData
     console.log('Sending to md-roam API (without refs):', JSON.stringify(apiNodeData, null, 2))
-    
+
     return this.request<any>('/nodes', {
       method: 'POST',
       body: JSON.stringify(apiNodeData),
@@ -197,11 +200,11 @@ class MdRoamApiClient {
 
   async updateNode(id: string, nodeData: UpdateNodeRequest) {
     console.log('Updating node with data:', JSON.stringify(nodeData, null, 2))
-    
+
     // Remove refs field as md-roam API doesn't support it in node updates
     const { refs, ...apiNodeData } = nodeData
     console.log('Sending to md-roam API (without refs):', JSON.stringify(apiNodeData, null, 2))
-    
+
     return this.request<any>(`/nodes/${encodeURIComponent(id)}`, {
       method: 'PUT',
       body: JSON.stringify(apiNodeData),
@@ -219,9 +222,9 @@ class MdRoamApiClient {
     // New API format: {"status":"success", "tags":[...], "total_tags":N}
     if (result && result.status === 'success' && Array.isArray(result.tags)) {
       // Convert new format to expected format, mapping tag objects to {tag, count}
-      return result.tags.map(tagObj => ({
+      return result.tags.map((tagObj) => ({
         tag: tagObj.tag,
-        count: tagObj.count
+        count: tagObj.count,
       }))
     }
     // Return as-is for backward compatibility
@@ -251,26 +254,35 @@ app.get('/api/nodes', async (c) => {
     return c.json(nodes)
   } catch (error) {
     console.error('Error fetching nodes:', error)
-    
+
     // Provide more detailed error information
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    const isConnectionError = errorMessage.includes('socket connection was closed') || 
-                             errorMessage.includes('Network error') ||
-                             errorMessage.includes('ECONNREFUSED')
-    
+    const isConnectionError =
+      errorMessage.includes('socket connection was closed') ||
+      errorMessage.includes('Network error') ||
+      errorMessage.includes('ECONNREFUSED')
+
     if (isConnectionError) {
-      console.error('Connection issue detected. Please ensure md-roam API server is running on port 8080')
-      return c.json({ 
-        error: 'Unable to connect to md-roam API server',
-        details: 'Please ensure the md-roam API server is running on port 8080',
-        suggestion: 'Check if the md-roam API server is started and accessible'
-      }, 503)
+      console.error(
+        'Connection issue detected. Please ensure md-roam API server is running on port 8080'
+      )
+      return c.json(
+        {
+          error: 'Unable to connect to md-roam API server',
+          details: 'Please ensure the md-roam API server is running on port 8080',
+          suggestion: 'Check if the md-roam API server is started and accessible',
+        },
+        503
+      )
     }
-    
-    return c.json({ 
-      error: 'Failed to fetch nodes', 
-      details: errorMessage 
-    }, 500)
+
+    return c.json(
+      {
+        error: 'Failed to fetch nodes',
+        details: errorMessage,
+      },
+      500
+    )
   }
 })
 
@@ -279,17 +291,17 @@ app.get('/api/nodes/:id', async (c) => {
   try {
     const id = c.req.param('id')
     const node = await apiClient.getNode(id)
-    
+
     // Try to get refs from the API first
     let refs: string[] = []
-    
+
     try {
       const apiRefs = await apiClient.getNodeRefs(id)
       console.log('Got refs from API:', apiRefs)
-      
+
       // Normalize refs format - handle both string and object formats
       if (apiRefs && apiRefs.length > 0) {
-        refs = apiRefs.map(refItem => {
+        refs = apiRefs.map((refItem) => {
           if (typeof refItem === 'string') {
             return refItem
           } else if (typeof refItem === 'object' && refItem.ref && refItem.type) {
@@ -302,14 +314,14 @@ app.get('/api/nodes/:id', async (c) => {
         })
         console.log('Normalized refs:', refs)
       }
-      
+
       // If API returns empty refs, try fallback
       if (refs.length === 0) {
-        console.log('API returned empty refs, trying fallback for node:', id);
+        console.log('API returned empty refs, trying fallback for node:', id)
         throw new Error('Empty refs, using fallback')
       }
     } catch (error) {
-      console.log('API refs call failed or empty, using fallback for node:', id);
+      console.log('API refs call failed or empty, using fallback for node:', id)
       // Fallback: extract refs from frontmatter if API fails
       if (node.content) {
         const frontmatterMatch = node.content.match(/^---\s*\n([\s\S]*?)\n---/)
@@ -332,38 +344,45 @@ app.get('/api/nodes/:id', async (c) => {
         }
       }
     }
-    
+
     // Merge the additional data with the node response
     const enrichedNode = {
       ...node,
-      refs: refs.length > 0 ? refs : undefined
+      refs: refs.length > 0 ? refs : undefined,
     }
-    
+
     return c.json(enrichedNode)
   } catch (error) {
     console.error('Error fetching node:', error)
-    
+
     // Return appropriate status code based on error type
     if (error.message.includes('HTTP 404')) {
       return c.json({ error: 'Node not found', nodeId: c.req.param('id') }, 404)
     }
-    
+
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    const isConnectionError = errorMessage.includes('socket connection was closed') || 
-                             errorMessage.includes('Network error') ||
-                             errorMessage.includes('ECONNREFUSED')
-    
+    const isConnectionError =
+      errorMessage.includes('socket connection was closed') ||
+      errorMessage.includes('Network error') ||
+      errorMessage.includes('ECONNREFUSED')
+
     if (isConnectionError) {
-      return c.json({ 
-        error: 'Unable to connect to md-roam API server',
-        details: 'Please ensure the md-roam API server is running on port 8080'
-      }, 503)
+      return c.json(
+        {
+          error: 'Unable to connect to md-roam API server',
+          details: 'Please ensure the md-roam API server is running on port 8080',
+        },
+        503
+      )
     }
-    
-    return c.json({ 
-      error: 'Failed to fetch node', 
-      details: errorMessage 
-    }, 500)
+
+    return c.json(
+      {
+        error: 'Failed to fetch node',
+        details: errorMessage,
+      },
+      500
+    )
   }
 })
 
@@ -375,16 +394,19 @@ app.get('/api/nodes/:id/backlinks', async (c) => {
     return c.json(backlinks)
   } catch (error) {
     console.error('Error fetching backlinks:', error)
-    
+
     // Return appropriate status based on error type
     if (error.message.includes('HTTP 404')) {
       return c.json({ error: 'Backlinks endpoint not available', backlinks: [] }, 200)
     }
-    
-    return c.json({ 
-      error: 'Failed to fetch backlinks', 
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, 500)
+
+    return c.json(
+      {
+        error: 'Failed to fetch backlinks',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500
+    )
   }
 })
 
@@ -396,16 +418,19 @@ app.get('/api/nodes/:id/links', async (c) => {
     return c.json(forwardLinks)
   } catch (error) {
     console.error('Error fetching forward links:', error)
-    
+
     // Return appropriate status based on error type
     if (error.message.includes('HTTP 404')) {
       return c.json({ error: 'Forward links endpoint not available', links: [] }, 200)
     }
-    
-    return c.json({ 
-      error: 'Failed to fetch forward links', 
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, 500)
+
+    return c.json(
+      {
+        error: 'Failed to fetch forward links',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500
+    )
   }
 })
 
@@ -469,22 +494,22 @@ app.get('/api/tags', async (c) => {
   }
 })
 
-// Search nodes by tag  
+// Search nodes by tag
 app.get('/api/search/tag/:tag', async (c) => {
   try {
     const tag = c.req.param('tag')
-    
+
     // Try to use the new tags API with node_ids first
     try {
       const tagsResult = await apiClient.request<any>('/tags')
       if (tagsResult && tagsResult.status === 'success' && Array.isArray(tagsResult.tags)) {
         // Find the specific tag and get its node_ids
-        const tagInfo = tagsResult.tags.find(t => t.tag === tag)
+        const tagInfo = tagsResult.tags.find((t) => t.tag === tag)
         if (tagInfo && Array.isArray(tagInfo.node_ids)) {
           // Get all nodes and filter by the node_ids
           const allNodes = await apiClient.getNodes()
-          const taggedNodes = allNodes.filter(node => tagInfo.node_ids.includes(node.id))
-          
+          const taggedNodes = allNodes.filter((node) => tagInfo.node_ids.includes(node.id))
+
           console.log(`Found ${taggedNodes.length} nodes for tag: ${tag} (using node_ids)`)
           return c.json(taggedNodes)
         }
@@ -492,17 +517,18 @@ app.get('/api/search/tag/:tag', async (c) => {
     } catch (error) {
       console.log(`New tags API not available, falling back to node filtering for tag: ${tag}`)
     }
-    
+
     // Fallback: Get all nodes first, then filter by tag
     const allNodes = await apiClient.getNodes()
-    
+
     // Filter nodes that have the specific tag
-    const taggedNodes = allNodes.filter(node => 
-      node.tags?.includes(tag) || 
-      node.title?.toLowerCase().includes(tag.toLowerCase()) ||
-      node.aliases?.some(alias => alias.toLowerCase().includes(tag.toLowerCase()))
+    const taggedNodes = allNodes.filter(
+      (node) =>
+        node.tags?.includes(tag) ||
+        node.title?.toLowerCase().includes(tag.toLowerCase()) ||
+        node.aliases?.some((alias) => alias.toLowerCase().includes(tag.toLowerCase()))
     )
-    
+
     console.log(`Found ${taggedNodes.length} nodes for tag: ${tag}`)
     return c.json(taggedNodes)
   } catch (error) {
@@ -511,10 +537,10 @@ app.get('/api/search/tag/:tag', async (c) => {
   }
 })
 
-const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001;
-const port = await getPort({ port: preferredPort, portRange: [3001, 3011] });
+const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001
+const port = await getPort({ port: preferredPort, portRange: [3001, 3011] })
 
-console.log(`🔥 Bun server starting on port ${port}`);
+console.log(`🔥 Bun server starting on port ${port}`)
 
 export default {
   port: port,

@@ -1,9 +1,9 @@
 import type {
+  BacklinkNode,
+  CreateNodeRequest,
   Node,
   NodeDetail,
   SearchResult,
-  BacklinkNode,
-  CreateNodeRequest,
   UpdateNodeRequest,
 } from '../types/api'
 
@@ -25,12 +25,9 @@ export class ApiClient {
     this.baseUrl = baseUrl.replace(/\/$/, '')
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
-    
+
     const defaultHeaders = {
       'Content-Type': 'application/json',
     }
@@ -45,7 +42,7 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, config)
-      
+
       if (!response.ok) {
         throw new ApiError(
           `HTTP ${response.status}: ${response.statusText}`,
@@ -58,27 +55,29 @@ export class ApiClient {
       if (contentType?.includes('application/json')) {
         return await response.json()
       } else {
-        return await response.text() as unknown as T
+        return (await response.text()) as unknown as T
       }
     } catch (error) {
       if (error instanceof ApiError) {
         throw error
       }
-      throw new ApiError(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new ApiError(
+        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
   // Node Operations
   async getNodes(): Promise<Node[]> {
     const result = await this.request<any>('/api/nodes')
-    
+
     // Handle new API response format
     if (result && Array.isArray(result.data)) {
       return result.data
     } else if (Array.isArray(result)) {
       return result
     }
-    
+
     return []
   }
 
@@ -109,50 +108,50 @@ export class ApiClient {
   // Search Operations
   async searchNodes(query: string): Promise<SearchResult> {
     const result = await this.request<any>(`/api/search/${encodeURIComponent(query)}`)
-    
+
     // Handle new API response format
     if (result && result.nodes !== undefined) {
       return {
         nodes: Array.isArray(result.nodes) ? result.nodes : [],
-        total: result.count || 0
+        total: result.count || 0,
       }
     } else if (result && Array.isArray(result)) {
       return {
         nodes: result,
-        total: result.length
+        total: result.length,
       }
     }
-    
+
     return { nodes: [], total: 0 }
   }
 
   // Tags
-  async getTags(): Promise<{tag: string; count: number}[]> {
+  async getTags(): Promise<{ tag: string; count: number }[]> {
     const result = await this.request<any>('/api/tags')
-    
+
     // Handle new API response format
     if (result && Array.isArray(result.tags)) {
       return result.tags.map((tagInfo: any) => ({
         tag: tagInfo.tag,
-        count: tagInfo.count
+        count: tagInfo.count,
       }))
     } else if (Array.isArray(result)) {
       return result
     }
-    
+
     return []
   }
 
   async searchNodesByTag(tag: string): Promise<Node[]> {
     const result = await this.request<any>(`/api/search/tag/${encodeURIComponent(tag)}`)
-    
+
     // Handle new API response format
     if (result && Array.isArray(result.nodes)) {
       return result.nodes
     } else if (Array.isArray(result)) {
       return result
     }
-    
+
     return []
   }
 
@@ -167,6 +166,4 @@ export class ApiClient {
 }
 
 // Default instance
-export const apiClient = new ApiClient(
-  import.meta.env.VITE_API_URL || 'http://localhost:3001'
-)
+export const apiClient = new ApiClient(import.meta.env.VITE_API_URL || 'http://localhost:3001')

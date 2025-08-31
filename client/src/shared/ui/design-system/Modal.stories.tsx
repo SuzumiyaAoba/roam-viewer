@@ -1,7 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Modal, ModalHeader, ModalTitle, ModalDescription, ModalCloseButton, ModalContent, ModalFooter } from './Modal'
 import { Button } from './Button'
+import {
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from './Modal'
 
 const meta = {
   title: 'Design System/Modal',
@@ -10,33 +18,34 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A modal dialog component that displays content in a layer above the main interface. Supports different sizes, animations, and customizable behavior.'
-      }
-    }
+        component:
+          'A modal dialog component that displays content in a layer above the main interface. Supports different sizes, animations, and customizable behavior.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg', 'xl', '2xl', '3xl', 'full'],
-      description: 'The size of the modal'
+      description: 'The size of the modal',
     },
     open: {
       control: 'boolean',
-      description: 'Whether the modal is open'
+      description: 'Whether the modal is open',
     },
     closeOnOverlayClick: {
       control: 'boolean',
-      description: 'Whether clicking the overlay should close the modal'
+      description: 'Whether clicking the overlay should close the modal',
     },
     closeOnEscape: {
       control: 'boolean',
-      description: 'Whether pressing escape should close the modal'
+      description: 'Whether pressing escape should close the modal',
     },
     animated: {
       control: 'boolean',
-      description: 'Whether to show the modal with animation'
-    }
+      description: 'Whether to show the modal with animation',
+    },
   },
 } satisfies Meta<typeof Modal>
 
@@ -47,7 +56,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => {
     const [open, setOpen] = React.useState(false)
-    
+
     return (
       <div>
         <Button onClick={() => setOpen(true)}>Open Modal</Button>
@@ -61,12 +70,14 @@ export const Default: Story = {
           </ModalHeader>
           <ModalContent>
             <p className="text-sm text-gray-600">
-              This is the modal content. You can put any content here including forms, 
-              images, or other components.
+              This is the modal content. You can put any content here including forms, images, or
+              other components.
             </p>
           </ModalContent>
           <ModalFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
             <Button onClick={() => setOpen(false)}>Confirm</Button>
           </ModalFooter>
         </Modal>
@@ -81,7 +92,7 @@ export const Default: Story = {
 export const Small: Story = {
   render: () => {
     const [open, setOpen] = React.useState(false)
-    
+
     return (
       <div>
         <Button onClick={() => setOpen(true)}>Small Modal</Button>
@@ -102,7 +113,7 @@ export const Small: Story = {
 export const Large: Story = {
   render: () => {
     const [open, setOpen] = React.useState(false)
-    
+
     return (
       <div>
         <Button onClick={() => setOpen(true)}>Large Modal</Button>
@@ -128,7 +139,9 @@ export const Large: Story = {
             </div>
           </ModalContent>
           <ModalFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
             <Button onClick={() => setOpen(false)}>Save Changes</Button>
           </ModalFooter>
         </Modal>
@@ -140,10 +153,12 @@ export const Large: Story = {
 export const ConfirmationDialog: Story = {
   render: () => {
     const [open, setOpen] = React.useState(false)
-    
+
     return (
       <div>
-        <Button variant="destructive" onClick={() => setOpen(true)}>Delete Item</Button>
+        <Button variant="destructive" onClick={() => setOpen(true)}>
+          Delete Item
+        </Button>
         <Modal open={open} onClose={() => setOpen(false)} size="sm">
           <ModalHeader>
             <div>
@@ -153,13 +168,17 @@ export const ConfirmationDialog: Story = {
           </ModalHeader>
           <ModalContent>
             <p className="text-sm text-gray-600">
-              Are you sure you want to delete this item? All associated data will be 
-              permanently removed from our servers.
+              Are you sure you want to delete this item? All associated data will be permanently
+              removed from our servers.
             </p>
           </ModalContent>
           <ModalFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => setOpen(false)}>Delete</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={() => setOpen(false)}>
+              Delete
+            </Button>
           </ModalFooter>
         </Modal>
       </div>
@@ -168,8 +187,8 @@ export const ConfirmationDialog: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'A confirmation dialog for destructive actions'
-      }
-    }
+        story: 'A confirmation dialog for destructive actions',
+      },
+    },
   },
 }

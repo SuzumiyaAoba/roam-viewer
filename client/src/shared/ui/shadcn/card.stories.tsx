@@ -1,12 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from './card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'
 
 const meta: Meta<typeof Card> = {
   title: 'UI/Card',
@@ -15,7 +8,8 @@ const meta: Meta<typeof Card> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A flexible card component with composable parts including header, title, description, content, and footer. Perfect for displaying organized content with consistent styling.',
+        component:
+          'A flexible card component with composable parts including header, title, description, content, and footer. Perfect for displaying organized content with consistent styling.',
       },
     },
   },
@@ -41,7 +35,10 @@ export const Default: Story = {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p>This is the main content area of the card. You can put any content here including text, images, forms, or other components.</p>
+        <p>
+          This is the main content area of the card. You can put any content here including text,
+          images, forms, or other components.
+        </p>
       </CardContent>
     </Card>
   ),
@@ -52,17 +49,16 @@ export const WithFooter: Story = {
     <Card className="w-80">
       <CardHeader>
         <CardTitle>Card with Footer</CardTitle>
-        <CardDescription>
-          This card includes a footer with action buttons.
-        </CardDescription>
+        <CardDescription>This card includes a footer with action buttons.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>This card demonstrates how to use the footer component for actions or additional information.</p>
+        <p>
+          This card demonstrates how to use the footer component for actions or additional
+          information.
+        </p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
-          Cancel
-        </button>
+        <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
         <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           Confirm
         </button>
@@ -100,9 +96,7 @@ export const ProductCard: Story = {
           <span className="text-sm text-gray-500 line-through">$399</span>
         </div>
         <div className="flex items-center mt-2">
-          <div className="flex text-yellow-400">
-            {'★'.repeat(5)}
-          </div>
+          <div className="flex text-yellow-400">{'★'.repeat(5)}</div>
           <span className="text-sm text-gray-600 ml-2">(124 reviews)</span>
         </div>
       </CardContent>
@@ -168,7 +162,7 @@ export const StatCard: Story = {
           <p className="text-xs text-gray-600">+20.1% from last month</p>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
@@ -181,12 +175,16 @@ export const StatCard: Story = {
           <p className="text-xs text-gray-600">+180.1% from last month</p>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Active Now</CardTitle>
           <svg className="h-4 w-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+              clipRule="evenodd"
+            />
           </svg>
         </CardHeader>
         <CardContent>
@@ -203,31 +201,29 @@ export const FormCard: Story = {
     <Card className="w-96">
       <CardHeader>
         <CardTitle>Create Account</CardTitle>
-        <CardDescription>
-          Enter your information below to create your account
-        </CardDescription>
+        <CardDescription>Enter your information below to create your account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">Full Name</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="John Doe"
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Email</label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             placeholder="john@example.com"
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Password</label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             placeholder="••••••••"
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -264,12 +260,8 @@ export const NotificationCard: Story = {
         </p>
       </CardContent>
       <CardFooter className="flex space-x-2">
-        <button className="text-sm text-blue-600 hover:text-blue-800">
-          View Message
-        </button>
-        <button className="text-sm text-gray-600 hover:text-gray-800">
-          Mark as Read
-        </button>
+        <button className="text-sm text-blue-600 hover:text-blue-800">View Message</button>
+        <button className="text-sm text-gray-600 hover:text-gray-800">Mark as Read</button>
       </CardFooter>
     </Card>
   ),
@@ -283,7 +275,7 @@ export const CompositionExample: Story = {
         <h3 className="font-semibold mb-2">Minimal Card</h3>
         <p className="text-gray-600 text-sm">Just content, no header or footer.</p>
       </Card>
-      
+
       {/* Header only */}
       <Card>
         <CardHeader>
@@ -291,7 +283,7 @@ export const CompositionExample: Story = {
           <CardDescription>This card only has a header section.</CardDescription>
         </CardHeader>
       </Card>
-      
+
       {/* Content only */}
       <Card>
         <CardContent className="pt-6">
@@ -299,7 +291,7 @@ export const CompositionExample: Story = {
           <p className="text-gray-600 text-sm">This card only has content, with custom padding.</p>
         </CardContent>
       </Card>
-      
+
       {/* Footer only */}
       <Card>
         <CardFooter className="pt-6">

@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 // Helper function that we're testing (from NodeForm.tsx)
 function parseTagsString(str: string): string[] {
   return str
     .split(',')
-    .map(tag => tag.trim())
-    .filter(tag => tag.length > 0)
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0)
 }
 
 describe('parseTagsString utility', () => {

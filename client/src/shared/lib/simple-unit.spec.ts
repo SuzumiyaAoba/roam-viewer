@@ -1,4 +1,4 @@
-import { expect, test, describe } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 // Test utility functions that don't require mocking
 describe('Basic utility tests', () => {
@@ -6,8 +6,8 @@ describe('Basic utility tests', () => {
     function parseTagsString(str: string): string[] {
       return str
         .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0)
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0)
     }
 
     const result = parseTagsString('tag1, tag2, tag3')
@@ -18,8 +18,8 @@ describe('Basic utility tests', () => {
     function parseTagsString(str: string): string[] {
       return str
         .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0)
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0)
     }
 
     const result = parseTagsString('  ,  ,   ')

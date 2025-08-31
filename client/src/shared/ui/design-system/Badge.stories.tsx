@@ -9,34 +9,35 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile badge component for displaying status, categories, or short pieces of information. Supports various styles, sizes, and interactive features.'
-      }
-    }
+        component:
+          'A versatile badge component for displaying status, categories, or short pieces of information. Supports various styles, sizes, and interactive features.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: { type: 'select' },
       options: ['default', 'secondary', 'destructive', 'success', 'warning', 'outline', 'ghost'],
-      description: 'The visual variant of the badge'
+      description: 'The visual variant of the badge',
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'default', 'lg'],
-      description: 'The size of the badge'
+      description: 'The size of the badge',
     },
     removable: {
       control: 'boolean',
-      description: 'Whether the badge can be removed'
+      description: 'Whether the badge can be removed',
     },
     dot: {
       control: 'boolean',
-      description: 'Whether to show a dot indicator'
+      description: 'Whether to show a dot indicator',
     },
     children: {
       control: 'text',
-      description: 'The content of the badge'
-    }
+      description: 'The content of the badge',
+    },
   },
 } satisfies Meta<typeof Badge>
 
@@ -158,16 +159,18 @@ export const AllVariants: Story = {
       <Badge variant="warning">Warning</Badge>
       <Badge variant="outline">Outline</Badge>
       <Badge variant="ghost">Ghost</Badge>
-      <Badge variant="default" size="sm">Small</Badge>
+      <Badge variant="default" size="sm">
+        Small
+      </Badge>
     </div>
   ),
   parameters: {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Overview of all available badge variants and sizes'
-      }
-    }
+        story: 'Overview of all available badge variants and sizes',
+      },
+    },
   },
 }
 
@@ -184,8 +187,8 @@ export const AllSizes: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'Comparison of all available badge sizes'
-      }
-    }
+        story: 'Comparison of all available badge sizes',
+      },
+    },
   },
 }

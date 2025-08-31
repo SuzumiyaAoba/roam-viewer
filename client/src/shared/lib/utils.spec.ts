@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { cn } from '../../client/src/lib/utils'
 
 // Helper function from NodeDetail.tsx that we want to test
@@ -69,7 +69,7 @@ describe('Utility Functions', () => {
         ['array-class1', 'array-class2'],
         'final-class'
       )
-      
+
       expect(result).toContain('base-class')
       expect(result).toContain('conditional-true')
       expect(result).not.toContain('conditional-false')
@@ -141,7 +141,7 @@ date: 2024-01-01
 This is the actual content of the post.`
 
       const result = removeFrontmatter(contentWithFrontmatter)
-      
+
       expect(result).not.toContain('title: Test Post')
       expect(result).not.toContain('tags: [test, markdown]')
       expect(result).toContain('# Main Content')
@@ -154,7 +154,7 @@ This is the actual content of the post.`
 This content has no frontmatter.`
 
       const result = removeFrontmatter(contentWithoutFrontmatter)
-      
+
       expect(result).toBe(contentWithoutFrontmatter)
     })
 
@@ -166,7 +166,7 @@ This never closes properly
 # Content Here`
 
       const result = removeFrontmatter(incompleFrontmatter)
-      
+
       // Should return original content since no closing ---
       expect(result).toBe(incompleFrontmatter)
     })
@@ -183,7 +183,7 @@ description: No content after
 ---`
 
       const result = removeFrontmatter(onlyFrontmatter)
-      
+
       // Should return empty string (everything after last --- is removed)
       expect(result).toBe('')
     })
@@ -196,7 +196,7 @@ title: Empty After
 `
 
       const result = removeFrontmatter(frontmatterWithEmptyContent)
-      
+
       expect(result).toBe('\n')
     })
 
@@ -212,10 +212,10 @@ Some text.
 This is not frontmatter, it's content.`
 
       const result = removeFrontmatter(multipleSeperators)
-      
+
       expect(result).not.toContain('title: Test')
       expect(result).toContain('# Content')
-      expect(result).toContain('This is not frontmatter, it\'s content.')
+      expect(result).toContain("This is not frontmatter, it's content.")
     })
 
     it('should handle content with --- in the middle (not frontmatter)', () => {
@@ -228,7 +228,7 @@ Some text before.
 Some text after the dashes.`
 
       const result = removeFrontmatter(contentWithDashes)
-      
+
       // Should return unchanged since it doesn't start with ---
       expect(result).toBe(contentWithDashes)
     })
@@ -237,16 +237,16 @@ Some text after the dashes.`
       const windowsContent = `---\r\ntitle: Windows Test\r\n---\r\n# Content\r\n\r\nWindows line endings.`
 
       const result = removeFrontmatter(windowsContent)
-      
+
       expect(result).not.toContain('title: Windows Test')
       expect(result).toContain('# Content')
     })
 
     it('should handle single line content', () => {
       const singleLine = 'Just a single line with no frontmatter'
-      
+
       const result = removeFrontmatter(singleLine)
-      
+
       expect(result).toBe(singleLine)
     })
 
@@ -261,7 +261,7 @@ Line 3 (line 2 was empty)
 Line 5`
 
       const result = removeFrontmatter(contentWithLineBreaks)
-      
+
       expect(result).toBe(`Line 1
 
 Line 3 (line 2 was empty)
@@ -280,7 +280,7 @@ special: "!@#$%^&*()"
 Regular content here.`
 
       const result = removeFrontmatter(specialChars)
-      
+
       expect(result).not.toContain('special characters & symbols')
       expect(result).toContain('# Content with émojis 🚀')
     })
@@ -298,7 +298,7 @@ Content here.`
 
     const cleanContent = removeFrontmatter(content)
     const classes = cn('markdown-content', 'prose', { 'prose-lg': cleanContent.length > 100 })
-    
+
     expect(cleanContent).toContain('# Heading')
     expect(cleanContent).not.toContain('title: Test')
     expect(classes).toContain('markdown-content')

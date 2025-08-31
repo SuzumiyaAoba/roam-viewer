@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Spinner, Loading, LoadingButton } from './Spinner'
 import { Button } from './Button'
+import { Loading, LoadingButton, Spinner } from './Spinner'
 
 const meta = {
   title: 'Design System/Spinner & Loading',
@@ -10,26 +10,27 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Loading indicators including spinners, loading states, and loading buttons for showing progress and async operations.'
-      }
-    }
+        component:
+          'Loading indicators including spinners, loading states, and loading buttons for showing progress and async operations.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     size: {
       control: { type: 'select' },
       options: ['xs', 'sm', 'default', 'lg', 'xl', '2xl'],
-      description: 'The size of the spinner'
+      description: 'The size of the spinner',
     },
     variant: {
       control: { type: 'select' },
       options: ['default', 'primary', 'secondary', 'success', 'warning', 'destructive', 'white'],
-      description: 'The color variant of the spinner'
+      description: 'The color variant of the spinner',
     },
     label: {
       control: 'text',
-      description: 'Accessible label for screen readers'
-    }
+      description: 'Accessible label for screen readers',
+    },
   },
 } satisfies Meta<typeof Spinner>
 
@@ -88,9 +89,9 @@ export const AllSizes: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'All available spinner sizes'
-      }
-    }
+        story: 'All available spinner sizes',
+      },
+    },
   },
 }
 
@@ -132,36 +133,32 @@ export const AllVariants: Story = {
     layout: 'padded',
     docs: {
       description: {
-        story: 'All available spinner color variants'
-      }
-    }
+        story: 'All available spinner color variants',
+      },
+    },
   },
 }
 
 // Loading Component
 export const BasicLoading: Story = {
-  render: () => (
-    <Loading text="Loading content..." />
-  ),
+  render: () => <Loading text="Loading content..." />,
   parameters: {
     docs: {
       description: {
-        story: 'Basic loading component with text'
-      }
-    }
+        story: 'Basic loading component with text',
+      },
+    },
   },
 }
 
 export const LoadingWithoutText: Story = {
-  render: () => (
-    <Loading text="" />
-  ),
+  render: () => <Loading text="" />,
   parameters: {
     docs: {
       description: {
-        story: 'Loading component without text'
-      }
-    }
+        story: 'Loading component without text',
+      },
+    },
   },
 }
 
@@ -179,9 +176,9 @@ export const LoadingOverlay: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Loading overlay that covers existing content'
-      }
-    }
+        story: 'Loading overlay that covers existing content',
+      },
+    },
   },
 }
 
@@ -189,34 +186,28 @@ export const LoadingOverlay: Story = {
 export const LoadingButtonStory: Story = {
   render: () => {
     const [loading, setLoading] = React.useState(false)
-    
+
     const handleClick = () => {
       setLoading(true)
       setTimeout(() => setLoading(false), 2000)
     }
-    
+
     return (
       <div className="space-y-4">
-        <LoadingButton 
-          loading={loading} 
-          onClick={handleClick}
-          loadingText="Saving..."
-        >
+        <LoadingButton loading={loading} onClick={handleClick} loadingText="Saving...">
           Save Changes
         </LoadingButton>
-        
-        <p className="text-sm text-gray-600">
-          Click the button to see the loading state
-        </p>
+
+        <p className="text-sm text-gray-600">Click the button to see the loading state</p>
       </div>
     )
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive loading button that shows spinner when active'
-      }
-    }
+        story: 'Interactive loading button that shows spinner when active',
+      },
+    },
   },
 }
 
@@ -232,24 +223,20 @@ export const LoadingButtonVariants: Story = {
           Error Loading
         </LoadingButton>
       </div>
-      
+
       <div className="space-x-2">
         <LoadingButton>Not Loading</LoadingButton>
-        <LoadingButton className="bg-green-600 hover:bg-green-700">
-          Success Button
-        </LoadingButton>
-        <LoadingButton className="bg-red-600 hover:bg-red-700">
-          Error Button
-        </LoadingButton>
+        <LoadingButton className="bg-green-600 hover:bg-green-700">Success Button</LoadingButton>
+        <LoadingButton className="bg-red-600 hover:bg-red-700">Error Button</LoadingButton>
       </div>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Loading buttons in different states and colors'
-      }
-    }
+        story: 'Loading buttons in different states and colors',
+      },
+    },
   },
 }
 
@@ -258,7 +245,7 @@ export const DataFetching: Story = {
   render: () => {
     const [loading, setLoading] = React.useState(true)
     const [data, setData] = React.useState(null)
-    
+
     const fetchData = () => {
       setLoading(true)
       setData(null)
@@ -271,38 +258,39 @@ export const DataFetching: Story = {
         setLoading(false)
       }, 2000)
     }
-    
+
     React.useEffect(() => {
       fetchData()
     }, [])
-    
+
     return (
       <div className="max-w-md border rounded-lg">
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
             <h3 className="font-medium">Users</h3>
-            <Button 
-              onClick={fetchData} 
-              size="sm" 
-              variant="outline"
-              disabled={loading}
-            >
+            <Button onClick={fetchData} size="sm" variant="outline" disabled={loading}>
               {loading ? <Spinner size="xs" className="mr-1" /> : null}
               Refresh
             </Button>
           </div>
         </div>
-        
+
         <div className="min-h-48">
           {loading ? (
             <Loading text="Loading users..." className="h-48" />
           ) : (
             <div className="p-4 space-y-3">
-              {data?.map(user => (
-                <div key={user.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
+              {data?.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded"
+                >
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-blue-600">
-                      {user.name.split(' ').map(n => n[0]).join('')}
+                      {user.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')}
                     </span>
                   </div>
                   <div>
@@ -320,8 +308,8 @@ export const DataFetching: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Data fetching with loading states and refresh functionality'
-      }
-    }
+        story: 'Data fetching with loading states and refresh functionality',
+      },
+    },
   },
 }

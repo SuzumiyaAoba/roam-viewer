@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { NodeCard, NodeCardCompact, NodeCardGrid } from './NodeCard'
 
 // Mock the Button component
@@ -8,26 +8,21 @@ vi.mock('./Button', () => ({
     <button onClick={onClick} className={className} {...props}>
       {children}
     </button>
-  )
+  ),
 }))
 
 // Mock the Badge component
 vi.mock('./Badge', () => ({
   Badge: ({ children, onClick, className, variant, size }: any) => (
-    <span 
-      onClick={onClick} 
-      className={className}
-      data-variant={variant}
-      data-size={size}
-    >
+    <span onClick={onClick} className={className} data-variant={variant} data-size={size}>
       {children}
     </span>
-  )
+  ),
 }))
 
 // Mock the utils
 vi.mock('./utils', () => ({
-  cn: (...classes: any[]) => classes.filter(Boolean).join(' ')
+  cn: (...classes: any[]) => classes.filter(Boolean).join(' '),
 }))
 
 describe('NodeCard', () => {
@@ -51,24 +46,24 @@ describe('NodeCard', () => {
 
   it('should render all variants correctly', () => {
     const variants = ['default', 'elevated', 'minimal', 'accent', 'glass'] as const
-    
+
     variants.forEach((variant) => {
       const { rerender } = render(<NodeCard {...defaultProps} variant={variant} />)
       const card = screen.getByText('Test Node').closest('div')
-      
+
       expect(card).toHaveClass('group', 'relative', 'overflow-hidden', 'rounded-xl')
-      
+
       rerender(<div />)
     })
   })
 
   it('should render all sizes correctly', () => {
     const sizes = ['sm', 'default', 'lg'] as const
-    
+
     sizes.forEach((size) => {
       const { rerender } = render(<NodeCard {...defaultProps} size={size} />)
       const card = screen.getByText('Test Node').closest('div')
-      
+
       switch (size) {
         case 'sm':
           expect(card).toHaveClass('p-4')
@@ -80,7 +75,7 @@ describe('NodeCard', () => {
           expect(card).toHaveClass('p-8')
           break
       }
-      
+
       rerender(<div />)
     })
   })
@@ -110,10 +105,8 @@ describe('NodeCard', () => {
     render(<NodeCard {...defaultProps} onDelete={handleDelete} />)
 
     const buttons = screen.getAllByRole('button')
-    const deleteButton = buttons.find(button => 
-      button.className.includes('text-red-500')
-    )
-    
+    const deleteButton = buttons.find((button) => button.className.includes('text-red-500'))
+
     fireEvent.click(deleteButton!)
     expect(handleDelete).toHaveBeenCalledTimes(1)
   })
@@ -131,14 +124,8 @@ describe('NodeCard', () => {
   it('should not trigger card click when clicking action buttons', () => {
     const handleCardClick = vi.fn()
     const handleEdit = vi.fn()
-    
-    render(
-      <NodeCard 
-        {...defaultProps} 
-        onCardClick={handleCardClick}
-        onEdit={handleEdit}
-      />
-    )
+
+    render(<NodeCard {...defaultProps} onCardClick={handleCardClick} onEdit={handleEdit} />)
 
     const editButton = screen.getByRole('button')
     fireEvent.click(editButton)
@@ -152,7 +139,7 @@ describe('NodeCard', () => {
 
     const card = screen.getByText('Test Node').closest('div')
     expect(card).toHaveClass('ring-2', 'ring-blue-500', 'ring-offset-2')
-    
+
     // Should show status indicator
     const statusIndicator = card?.querySelector('.w-3.h-3.bg-blue-500')
     expect(statusIndicator).toBeInTheDocument()
@@ -199,14 +186,7 @@ describe('NodeCard', () => {
   })
 
   it('should hide actions when showActions is false', () => {
-    render(
-      <NodeCard 
-        {...defaultProps} 
-        onEdit={vi.fn()}
-        onDelete={vi.fn()}
-        showActions={false}
-      />
-    )
+    render(<NodeCard {...defaultProps} onEdit={vi.fn()} onDelete={vi.fn()} showActions={false} />)
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
@@ -264,14 +244,14 @@ describe('NodeCardCompact', () => {
   const defaultProps = {
     title: 'Compact Node',
     file: 'compact.md',
-    tags: ['compact', 'test']
+    tags: ['compact', 'test'],
   }
 
   it('should render with compact styling', () => {
     render(<NodeCardCompact {...defaultProps} />)
 
     expect(screen.getByText('Compact Node')).toBeInTheDocument()
-    
+
     const card = screen.getByText('Compact Node').closest('div')
     expect(card).toHaveClass('py-3', 'px-4', 'hover:scale-100', 'hover:translate-y-0')
   })
@@ -287,14 +267,14 @@ describe('NodeCardCompact', () => {
 describe('NodeCardGrid', () => {
   const defaultProps = {
     title: 'Grid Node',
-    content: 'Grid node content'
+    content: 'Grid node content',
   }
 
   it('should render with grid aspect ratio', () => {
     render(<NodeCardGrid {...defaultProps} />)
 
     expect(screen.getByText('Grid Node')).toBeInTheDocument()
-    
+
     const card = screen.getByText('Grid Node').closest('div')
     expect(card).toHaveClass('aspect-[4/3]', 'flex', 'flex-col')
   })

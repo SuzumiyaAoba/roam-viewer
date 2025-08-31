@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import type { ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { ReactNode } from 'react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Layout } from './Layout'
 
 describe('Layout', () => {
@@ -120,7 +120,7 @@ describe('Layout', () => {
 
     // Create button should have blue background classes
     expect(createButton).toHaveClass('bg-blue-600', 'text-white')
-    
+
     // Regular nav links should have gray text classes
     expect(nodesLink).toHaveClass('text-gray-600')
   })

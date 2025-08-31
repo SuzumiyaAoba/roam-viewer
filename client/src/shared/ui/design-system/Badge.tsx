@@ -1,6 +1,7 @@
-import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from "./utils"
+import type React from 'react'
+import { forwardRef } from 'react'
+import { cn } from './utils'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -54,37 +55,30 @@ export interface BadgeProps
 }
 
 const Badge = forwardRef<HTMLDivElement, BadgeProps>(
-  ({
-    className,
-    variant,
-    size,
-    removable = false,
-    onRemove,
-    startIcon,
-    endIcon,
-    dot = false,
-    children,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      removable = false,
+      onRemove,
+      startIcon,
+      endIcon,
+      dot = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
-      <div
-        ref={ref}
-        className={cn(badgeVariants({ variant, size }), className)}
-        {...props}
-      >
-        {dot && (
-          <span className="mr-1.5 h-2 w-2 rounded-full bg-current opacity-75" />
-        )}
+      <div ref={ref} className={cn(badgeVariants({ variant, size }), className)} {...props}>
+        {dot && <span className="mr-1.5 h-2 w-2 rounded-full bg-current opacity-75" />}
         {startIcon && (
-          <span className="mr-1.5 h-3 w-3 flex items-center justify-center">
-            {startIcon}
-          </span>
+          <span className="mr-1.5 h-3 w-3 flex items-center justify-center">{startIcon}</span>
         )}
         {children}
         {endIcon && (
-          <span className="ml-1.5 h-3 w-3 flex items-center justify-center">
-            {endIcon}
-          </span>
+          <span className="ml-1.5 h-3 w-3 flex items-center justify-center">{endIcon}</span>
         )}
         {removable && (
           <button
@@ -93,12 +87,7 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(
             className="ml-1.5 h-3 w-3 rounded-full hover:bg-black/20 focus:outline-none focus:ring-1 focus:ring-white"
             aria-label="Remove badge"
           >
-            <svg
-              className="h-2.5 w-2.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

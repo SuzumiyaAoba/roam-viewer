@@ -1,26 +1,24 @@
-import React, { forwardRef, useEffect, useRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from "./utils"
+import type React from 'react'
+import { forwardRef, useEffect, useRef } from 'react'
+import { cn } from './utils'
 
-const modalVariants = cva(
-  'relative bg-white rounded-lg shadow-xl transform transition-all',
-  {
-    variants: {
-      size: {
-        sm: 'max-w-sm w-full mx-4',
-        default: 'max-w-md w-full mx-4',
-        lg: 'max-w-lg w-full mx-4',
-        xl: 'max-w-xl w-full mx-4',
-        '2xl': 'max-w-2xl w-full mx-4',
-        '3xl': 'max-w-3xl w-full mx-4',
-        full: 'max-w-none w-full h-full m-0 rounded-none',
-      },
+const modalVariants = cva('relative bg-white rounded-lg shadow-xl transform transition-all', {
+  variants: {
+    size: {
+      sm: 'max-w-sm w-full mx-4',
+      default: 'max-w-md w-full mx-4',
+      lg: 'max-w-lg w-full mx-4',
+      xl: 'max-w-xl w-full mx-4',
+      '2xl': 'max-w-2xl w-full mx-4',
+      '3xl': 'max-w-3xl w-full mx-4',
+      full: 'max-w-none w-full h-full m-0 rounded-none',
     },
-    defaultVariants: {
-      size: 'default',
-    },
-  }
-)
+  },
+  defaultVariants: {
+    size: 'default',
+  },
+})
 
 export interface ModalProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -48,17 +46,20 @@ export interface ModalProps
 }
 
 const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  ({
-    className,
-    size,
-    open = false,
-    onClose,
-    closeOnOverlayClick = true,
-    closeOnEscape = true,
-    animated = true,
-    children,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      size,
+      open = false,
+      onClose,
+      closeOnOverlayClick = true,
+      closeOnEscape = true,
+      animated = true,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const overlayRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -114,47 +115,35 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 )
 Modal.displayName = 'Modal'
 
-const ModalHeader = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'flex items-center justify-between p-6 pb-2',
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </div>
-))
+const ModalHeader = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('flex items-center justify-between p-6 pb-2', className)}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+)
 ModalHeader.displayName = 'ModalHeader'
 
-const ModalTitle = forwardRef<
-  HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h2
-    ref={ref}
-    className={cn(
-      'text-lg font-semibold leading-none tracking-tight text-gray-900',
-      className
-    )}
-    {...props}
-  />
-))
+const ModalTitle = forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h2
+      ref={ref}
+      className={cn('text-lg font-semibold leading-none tracking-tight text-gray-900', className)}
+      {...props}
+    />
+  )
+)
 ModalTitle.displayName = 'ModalTitle'
 
 const ModalDescription = forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn('text-sm text-gray-500 mt-1', className)}
-    {...props}
-  />
+  <p ref={ref} className={cn('text-sm text-gray-500 mt-1', className)} {...props} />
 ))
 ModalDescription.displayName = 'ModalDescription'
 
@@ -173,49 +162,33 @@ const ModalCloseButton = forwardRef<
     onClick={onClick}
     {...props}
   >
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
     <span className="sr-only">Close</span>
   </button>
 ))
 ModalCloseButton.displayName = 'ModalCloseButton'
 
-const ModalContent = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('px-6 py-4', className)}
-    {...props}
-  />
-))
+const ModalContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('px-6 py-4', className)} {...props} />
+  )
+)
 ModalContent.displayName = 'ModalContent'
 
-const ModalFooter = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-6 pt-2',
-      className
-    )}
-    {...props}
-  />
-))
+const ModalFooter = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-6 pt-2',
+        className
+      )}
+      {...props}
+    />
+  )
+)
 ModalFooter.displayName = 'ModalFooter'
 
 export {
