@@ -19,6 +19,10 @@
     "test:vitest": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
+    "typecheck": "tsc --noEmit",
+    "typecheck:client": "cd client && tsc --noEmit",
+    "typecheck:server": "tsc --noEmit --skipLibCheck server.ts",
+    "typecheck:basic": "cd client && tsc --noEmit --skipLibCheck --noUnusedLocals false --noUnusedParameters false",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

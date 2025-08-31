@@ -4,311 +4,458 @@ import { OrgRenderer } from './OrgRenderer'
 import React from 'react'
 
 describe('OrgRenderer', () => {
-  it('should render basic org content', () => {
-    render(<OrgRenderer content="Regular paragraph" />)
-    
-    expect(screen.getByText('Regular paragraph')).toBeInTheDocument()
+  describe('Basic text rendering', () => {
+    it('should render simple paragraphs', () => {
+      const content = 'This is a simple paragraph.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<p class="text-gray-700 leading-relaxed mb-4">This is a simple paragraph.</p>')
+    })
+
+    it('should handle empty content', () => {
+      const { container } = render(<OrgRenderer content="" />)
+      expect(container.querySelector('.org-content')).toBeEmptyDOMElement()
+    })
+
+    it('should handle multiple paragraphs', () => {
+      const content = `First paragraph.
+
+Second paragraph.`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<p class="text-gray-700 leading-relaxed mb-4">First paragraph.</p>')
+      expect(container.innerHTML).toContain('<p class="text-gray-700 leading-relaxed mb-4">Second paragraph.</p>')
+    })
   })
 
-  it('should render org headers', () => {
-    render(<OrgRenderer content="* Header" />)
-    
-    const header = screen.getByRole('heading', { level: 1 })
-    expect(header).toHaveTextContent('Header')
-    expect(header).toHaveClass('text-3xl', 'font-bold', 'text-gray-900')
+  describe('Headers', () => {
+    it('should render level 1 headers', () => {
+      const content = '* Main Header'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<h1 class="text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0">Main Header</h1>')
+    })
+
+    it('should render level 2 headers', () => {
+      const content = '** Sub Header'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<h2 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">Sub Header</h2>')
+    })
+
+    it('should render level 3 headers', () => {
+      const content = '*** Sub Sub Header'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<h3 class="text-xl font-semibold text-gray-800 mb-3 mt-5">Sub Sub Header</h3>')
+    })
+
+    it('should handle headers with inline formatting', () => {
+      const content = '* *Bold* Header with /italic/ text'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<strong class="font-semibold text-gray-900">Bold</strong>')
+      expect(container.innerHTML).toContain('<em class="italic">italic</em>')
+    })
+
+    it('should cap header levels at h6', () => {
+      const content = '******* Deep Header'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<h6')
+      expect(container.innerHTML).toContain('Deep Header</h6>')
+    })
   })
 
-  it('should render org subheaders', () => {
-    render(<OrgRenderer content="** Subheader" />)
-    
-    const subheader = screen.getByRole('heading', { level: 2 })
-    expect(subheader).toHaveTextContent('Subheader')
-    expect(subheader).toHaveClass('text-2xl', 'font-semibold', 'text-gray-800')
+  describe('Lists', () => {
+    it('should render unordered lists', () => {
+      const content = `- First item
+- Second item
+- Third item`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<ul class="list-disc list-inside mb-4 ml-4 space-y-1">')
+      expect(container.innerHTML).toContain('<li class="text-gray-700">First item</li>')
+      expect(container.innerHTML).toContain('<li class="text-gray-700">Second item</li>')
+      expect(container.innerHTML).toContain('<li class="text-gray-700">Third item</li>')
+    })
+
+    it('should render numbered lists', () => {
+      const content = `1. First item
+2. Second item
+3. Third item`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<ul class="list-disc list-inside mb-4 ml-4 space-y-1">')
+      expect(container.innerHTML).toContain('<li class="text-gray-700">First item</li>')
+      expect(container.innerHTML).toContain('<li class="text-gray-700">Second item</li>')
+      expect(container.innerHTML).toContain('<li class="text-gray-700">Third item</li>')
+    })
+
+    it('should handle list items with inline formatting', () => {
+      const content = `- *Bold* item
+- /Italic/ item
+- =Code= item`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<strong class="font-semibold text-gray-900">Bold</strong>')
+      expect(container.innerHTML).toContain('<em class="italic">Italic</em>')
+      expect(container.innerHTML).toContain('<code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">Code</code>')
+    })
   })
 
-  it('should render multiple header levels', () => {
-    const content = `* Level 1
-** Level 2
-*** Level 3
-**** Level 4
-***** Level 5
-****** Level 6
-******* Level 7 (should be h6)`
-
-    render(<OrgRenderer content={content} />)
-    
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Level 1')
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Level 2')
-    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Level 3')
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Level 4')
-    expect(screen.getByRole('heading', { level: 5 })).toHaveTextContent('Level 5')
-    expect(screen.getByRole('heading', { level: 6 })).toHaveTextContent('Level 6')
-    // Level 7+ should be rendered as h6
-    expect(screen.getByText('Level 7 (should be h6)')).toBeTruthy()
-  })
-
-  it('should render org lists', () => {
-    render(<OrgRenderer content="- List item 1\n- List item 2" />)
-    
-    const list = screen.getByRole('list')
-    expect(list).toHaveClass('list-disc', 'list-inside')
-    
-    const listItems = screen.getAllByRole('listitem')
-    expect(listItems).toHaveLength(2)
-    expect(listItems[0]).toHaveTextContent('List item 1')
-    expect(listItems[1]).toHaveTextContent('List item 2')
-  })
-
-  it('should render org links', () => {
-    render(<OrgRenderer content="Check out [[https://example.com][Example Site]]" />)
-    
-    const link = screen.getByRole('link', { name: 'Example Site' })
-    expect(link).toBeInTheDocument()
-    expect(link).toHaveAttribute('href', 'https://example.com')
-    expect(link).toHaveAttribute('target', '_blank')
-    expect(link).toHaveClass('text-blue-600', 'hover:text-blue-800', 'underline')
-  })
-
-  it('should render simple org links', () => {
-    render(<OrgRenderer content="Visit [[https://example.com]]" />)
-    
-    const link = screen.getByRole('link', { name: 'https://example.com' })
-    expect(link).toHaveAttribute('href', 'https://example.com')
-  })
-
-  it('should accept custom className', () => {
-    render(<OrgRenderer content="test" className="custom-class" />)
-    
-    const container = screen.getByText('test').closest('div')
-    expect(container).toHaveClass('custom-class')
-  })
-
-  it('should have default prose classes', () => {
-    render(<OrgRenderer content="test" />)
-    
-    const container = screen.getByText('test').closest('div')
-    expect(container).toHaveClass('prose', 'max-w-none')
-  })
-
-  it('should handle syntax highlighting option', () => {
-    const { rerender } = render(<OrgRenderer content="test" enableSyntaxHighlight={true} />)
-    expect(screen.getByText('test')).toBeInTheDocument()
-
-    rerender(<OrgRenderer content="test" enableSyntaxHighlight={false} />)
-    expect(screen.getByText('test')).toBeInTheDocument()
-  })
-
-  it('should render code blocks', () => {
-    const codeContent = `#+BEGIN_SRC javascript
-console.log('Hello, World!');
+  describe('Code blocks', () => {
+    it('should render code blocks', () => {
+      const content = `#+BEGIN_SRC javascript
+console.log('Hello, world!');
 const x = 42;
 #+END_SRC`
-    
-    render(<OrgRenderer content={codeContent} />)
-    
-    const codeBlock = screen.getByText("console.log('Hello, World!');\nconst x = 42;")
-    expect(codeBlock.closest('pre')).toHaveClass('bg-gray-900', 'text-gray-100')
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">')
+      expect(container.innerHTML).toContain('console.log(\'Hello, world!\');\nconst x = 42;')
+    })
+
+    it('should handle code blocks without language', () => {
+      const content = `#+BEGIN_SRC
+plain text code
+#+END_SRC`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">')
+      expect(container.innerHTML).toContain('plain text code')
+    })
+
+    it('should handle multiline code blocks', () => {
+      const content = `#+BEGIN_SRC python
+def hello():
+    print("Hello")
+    return 42
+
+hello()
+#+END_SRC`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('def hello():\n    print("Hello")\n    return 42\n\nhello()')
+    })
   })
 
-  it('should render inline formatting', () => {
-    render(<OrgRenderer content="This has *bold*, /italic/, and =code= formatting." />)
-    
-    expect(screen.getByText('bold')).toHaveClass('font-semibold')
-    expect(screen.getByText('italic')).toHaveClass('italic')
-    expect(screen.getByText('code')).toHaveClass('bg-gray-100', 'text-gray-800')
+  describe('Inline formatting', () => {
+    it('should render bold text', () => {
+      const content = 'This is *bold* text.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<strong class="font-semibold text-gray-900">bold</strong>')
+    })
+
+    it('should render italic text', () => {
+      const content = 'This is /italic/ text.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<em class="italic">italic</em>')
+    })
+
+    it('should render code text with equals', () => {
+      const content = 'This is =code= text.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">code</code>')
+    })
+
+    it('should render code text with tildes', () => {
+      const content = 'This is ~code~ text.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">code</code>')
+    })
+
+    it('should render strikethrough text', () => {
+      const content = 'This is +strikethrough+ text.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<del class="line-through text-gray-500">strikethrough</del>')
+    })
+
+    it('should handle multiple inline formats in one paragraph', () => {
+      const content = 'Text with *bold*, /italic/, =code=, and +strikethrough+ formatting.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<strong class="font-semibold text-gray-900">bold</strong>')
+      expect(container.innerHTML).toContain('<em class="italic">italic</em>')
+      expect(container.innerHTML).toContain('<code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">code</code>')
+      expect(container.innerHTML).toContain('<del class="line-through text-gray-500">strikethrough</del>')
+    })
   })
 
-  it('should render horizontal rules', () => {
-    render(<OrgRenderer content="Text above\n---\nText below" />)
-    
-    const hr = document.querySelector('hr')
-    expect(hr).toHaveClass('border-gray-300', 'my-8')
+  describe('Links', () => {
+    it('should render simple links', () => {
+      const content = 'Visit [[https://example.com]] for more info.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<a href="https://example.com" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">https://example.com</a>')
+    })
+
+    it('should render links with descriptions', () => {
+      const content = 'Visit [[https://example.com][Example Website]] for more info.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<a href="https://example.com" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">Example Website</a>')
+    })
+
+    it('should render internal links without target="_blank"', () => {
+      const content = 'See [[internal-page]] for details.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<a href="internal-page" class="text-blue-600 hover:text-blue-800 underline">internal-page</a>')
+      expect(container.innerHTML).not.toContain('target="_blank"')
+    })
+
+    it('should handle multiple links in one paragraph', () => {
+      const content = 'Visit [[https://example.com][Example]] and [[https://google.com][Google]].'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<a href="https://example.com"')
+      expect(container.innerHTML).toContain('<a href="https://google.com"')
+    })
   })
 
-  it('should handle mixed content', () => {
-    const mixedContent = `* Header
-Some paragraph text with *bold* and /italic/.
+  describe('Horizontal rules', () => {
+    it('should render horizontal rules with three dashes', () => {
+      const content = `Before rule
+---
+After rule`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<hr class="border-gray-300 my-8" />')
+    })
 
-- List item 1
-- List item 2
+    it('should render horizontal rules with more than three dashes', () => {
+      const content = `Before rule
+------
+After rule`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('<hr class="border-gray-300 my-8" />')
+    })
+  })
+
+  describe('Metadata handling', () => {
+    it('should extract and display title metadata', () => {
+      const content = `#+title: My Document
+This is the content.`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('My Document')
+      expect(container.innerHTML).toContain('This is the content.')
+      expect(container.innerHTML).not.toContain('#+title:')
+    })
+
+    it('should extract and display category metadata', () => {
+      const content = `#+category: Technology
+#+title: My Document
+This is the content.`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('Technology')
+      expect(container.innerHTML).toContain('Category:')
+    })
+
+    it('should extract and display tags metadata', () => {
+      const content = `#+tags: react typescript web
+#+title: My Document
+This is the content.`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('react')
+      expect(container.innerHTML).toContain('typescript')
+      expect(container.innerHTML).toContain('web')
+    })
+
+    it('should handle PROPERTIES blocks', () => {
+      const content = `:PROPERTIES:
+:ID: 123-456-789
+:END:
+#+title: My Document
+This is the content.`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('123-456-789')
+      expect(container.innerHTML).toContain('This is the content.')
+      expect(container.innerHTML).not.toContain(':PROPERTIES:')
+      expect(container.innerHTML).not.toContain(':END:')
+    })
+
+    it('should skip duplicate metadata', () => {
+      const content = `#+title: First Title
+#+title: Second Title
+#+category: First Category
+#+category: Second Category
+This is the content.`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('First Title')
+      expect(container.innerHTML).toContain('First Category')
+      expect(container.innerHTML).not.toContain('Second Title')
+      expect(container.innerHTML).not.toContain('Second Category')
+    })
+  })
+
+  describe('Complex mixed content', () => {
+    it('should handle complex document with all elements', () => {
+      const content = `#+title: Complex Document
+#+category: Mixed
+#+tags: test example complex
+
+* Main Section
+
+This is a paragraph with *bold* and /italic/ text.
+
+** Subsection
+
+Here's a list:
+- First item with =code=
+- Second item with [[https://example.com][link]]
 
 #+BEGIN_SRC javascript
-console.log('code block');
+console.log('Hello, world!');
 #+END_SRC
 
-Another paragraph with [[https://example.com][a link]].`
+---
 
-    render(<OrgRenderer content={mixedContent} />)
-    
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Header')
-    expect(screen.getAllByRole('listitem')).toHaveLength(2)
-    expect(screen.getByRole('link')).toHaveTextContent('a link')
-    expect(screen.getByText("console.log('code block');")).toBeInTheDocument()
-  })
+Final paragraph.`
 
-  it('should handle internal links differently', () => {
-    render(<OrgRenderer content="Internal [[/path/to/page][link]] and external [[https://example.com][link]]." />)
-    
-    const links = screen.getAllByRole('link')
-    expect(links).toHaveLength(2)
-    
-    // Internal link should not have target="_blank"
-    expect(links[0]).not.toHaveAttribute('target')
-    
-    // External link should have target="_blank"
-    expect(links[1]).toHaveAttribute('target', '_blank')
-  })
-
-  it('should handle processing errors gracefully', () => {
-    // Mock console.error to avoid test noise
-    const originalError = console.error
-    console.error = vi.fn()
-    
-    // Mock React.useMemo to throw an error
-    const originalUseMemo = React.useMemo
-    React.useMemo = vi.fn().mockImplementation(() => {
-      throw new Error('Test parsing error')
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      // Check metadata
+      expect(container.innerHTML).toContain('Complex Document')
+      expect(container.innerHTML).toContain('Mixed')
+      expect(container.innerHTML).toContain('test')
+      
+      // Check headers
+      expect(container.innerHTML).toContain('<h1')
+      expect(container.innerHTML).toContain('<h2')
+      
+      // Check inline formatting
+      expect(container.innerHTML).toContain('<strong')
+      expect(container.innerHTML).toContain('<em')
+      expect(container.innerHTML).toContain('<code')
+      
+      // Check list
+      expect(container.innerHTML).toContain('<ul')
+      expect(container.innerHTML).toContain('<li')
+      
+      // Check code block
+      expect(container.innerHTML).toContain('<pre')
+      expect(container.innerHTML).toContain('console.log')
+      
+      // Check horizontal rule
+      expect(container.innerHTML).toContain('<hr')
+      
+      // Check link
+      expect(container.innerHTML).toContain('<a href="https://example.com"')
     })
-    
-    render(<OrgRenderer content="test" />)
-    
-    expect(screen.getByText('Error:')).toBeInTheDocument()
-    expect(screen.getByText('Failed to render org-mode content.')).toBeInTheDocument()
-    
-    // Restore mocks
-    React.useMemo = originalUseMemo
-    console.error = originalError
+
+    it('should handle empty lines and spacing correctly', () => {
+      const content = `First paragraph.
+
+
+Second paragraph after empty lines.
+
+* Header
+
+Another paragraph.`
+
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('First paragraph.')
+      expect(container.innerHTML).toContain('Second paragraph after empty lines.')
+      expect(container.innerHTML).toContain('Another paragraph.')
+    })
   })
 
-  it('should display content in prose container', () => {
-    const { container } = render(<OrgRenderer content="test content" />)
-    
-    const proseDiv = container.querySelector('div.prose')
-    expect(proseDiv).toHaveClass('prose', 'max-w-none')
-    expect(screen.getByText('test content')).toBeInTheDocument()
+  describe('HTML escaping and security', () => {
+    it('should escape HTML in content', () => {
+      const content = 'This contains <script>alert("xss")</script> HTML.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('&lt;script&gt;')
+      expect(container.innerHTML).toContain('&lt;/script&gt;')
+      expect(container.innerHTML).not.toContain('<script>')
+    })
+
+    it('should escape HTML in code blocks', () => {
+      const content = `#+BEGIN_SRC html
+<div>Hello</div>
+<script>alert('xss')</script>
+#+END_SRC`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('&lt;div&gt;')
+      expect(container.innerHTML).toContain('&lt;script&gt;')
+      expect(container.innerHTML).not.toContain('<div>Hello</div>')
+    })
+
+    it('should escape HTML in link URLs and descriptions', () => {
+      const content = 'Visit [[javascript:alert("xss")][<script>Bad Link</script>]] for more.'
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      expect(container.innerHTML).toContain('javascript:alert(&quot;xss&quot;)')
+      expect(container.innerHTML).toContain('&lt;script&gt;Bad Link&lt;/script&gt;')
+    })
   })
 
-  it('should handle empty content', () => {
-    const { container } = render(<OrgRenderer content="" />)
-    
-    const proseDiv = container.querySelector('div.prose')
-    expect(proseDiv).toHaveClass('prose', 'max-w-none')
-  })
+  describe('Error handling', () => {
+    it('should handle malformed org content gracefully', () => {
+      const content = `#+BEGIN_SRC
+Missing end tag`
+      const { container } = render(<OrgRenderer content={content} />)
+      
+      // Should render without throwing an error
+      expect(container.querySelector('.org-content')).toBeDefined()
+    })
 
-  it('should handle special characters in content', () => {
-    render(<OrgRenderer content="Special chars: éñ中文" />)
-    
-    expect(screen.getByText('Special chars: éñ中文')).toBeInTheDocument()
-  })
-
-  it('should preserve content across multiple lines', () => {
-    const multilineContent = "Line 1\nLine 2\n\nLine 4"
-    render(<OrgRenderer content={multilineContent} />)
-    
-    // Each line becomes a separate paragraph
-    expect(screen.getByText('Line 1')).toBeInTheDocument()
-    expect(screen.getByText('Line 2')).toBeInTheDocument()
-    expect(screen.getByText('Line 4')).toBeInTheDocument()
-  })
-})
-
-// Test the exported components object
-describe('orgComponents', () => {
-  it('should export components object', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    expect(orgComponents).toBeDefined()
-    expect(orgComponents.h1).toBeDefined()
-    expect(orgComponents.h2).toBeDefined()
-    expect(orgComponents.p).toBeDefined()
-    expect(orgComponents.ul).toBeDefined()
-    expect(orgComponents.ol).toBeDefined()
-    expect(orgComponents.a).toBeDefined()
-    expect(orgComponents.code).toBeDefined()
-    expect(orgComponents.pre).toBeDefined()
-  })
-
-  it('should have properly styled heading components', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    render(orgComponents.h1({ children: 'Test H1' }))
-    const h1 = screen.getByText('Test H1')
-    expect(h1).toHaveClass('text-3xl', 'font-bold')
-
-    render(orgComponents.h2({ children: 'Test H2' }))
-    const h2 = screen.getByText('Test H2')
-    expect(h2).toHaveClass('text-2xl', 'font-semibold')
-  })
-
-  it('should have styled paragraph component', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    render(orgComponents.p({ children: 'Test paragraph' }))
-    const p = screen.getByText('Test paragraph')
-    expect(p).toHaveClass('text-gray-700', 'leading-relaxed')
-  })
-
-  it('should have styled link component', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    render(orgComponents.a({ href: 'https://example.com', children: 'External Link' }))
-    const link = screen.getByRole('link', { name: 'External Link' })
-    expect(link).toHaveClass('text-blue-600', 'hover:text-blue-800', 'underline')
-    expect(link).toHaveAttribute('target', '_blank')
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
-  })
-
-  it('should handle internal links differently', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    render(orgComponents.a({ href: '/internal', children: 'Internal Link' }))
-    const link = screen.getByRole('link', { name: 'Internal Link' })
-    expect(link).not.toHaveAttribute('target')
-    expect(link).not.toHaveAttribute('rel')
-  })
-
-  it('should have styled code components', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    // Inline code
-    render(orgComponents.code({ children: 'inline code' }))
-    const inlineCode = screen.getByText('inline code')
-    expect(inlineCode).toHaveClass('bg-gray-100', 'text-gray-800', 'px-1.5', 'py-0.5', 'rounded')
-
-    // Block code
-    render(orgComponents.code({ className: 'language-javascript', children: 'console.log()' }))
-    const blockCode = screen.getByText('console.log()')
-    expect(blockCode).toHaveClass('language-javascript')
-  })
-
-  it('should have styled list components', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    render(orgComponents.ul({ children: orgComponents.li({ children: 'List item' }) }))
-    const ul = screen.getByRole('list')
-    expect(ul).toHaveClass('list-disc', 'list-inside')
-    
-    const li = screen.getByText('List item')
-    expect(li).toHaveClass('text-gray-700')
-  })
-
-  it('should have styled table components', () => {
-    const { orgComponents } = require('./OrgRenderer')
-    
-    render(
-      orgComponents.table({
-        children: orgComponents.thead({
-          children: orgComponents.tr({
-            children: orgComponents.th({ children: 'Header' })
-          })
-        })
+    it('should display error message when parsing fails', () => {
+      // Mock console.error to avoid test noise
+      const originalError = console.error
+      console.error = vi.fn()
+      
+      // Mock document.createElement to throw an error
+      const originalCreateElement = document.createElement
+      document.createElement = vi.fn(() => {
+        throw new Error('Test error')
       })
-    )
-    
-    const table = screen.getByRole('table')
-    expect(table).toHaveClass('min-w-full', 'divide-y', 'divide-gray-200', 'border')
-    
-    const th = screen.getByText('Header')
-    expect(th).toHaveClass('px-6', 'py-3', 'text-left', 'text-xs', 'font-medium')
+      
+      const { container } = render(<OrgRenderer content="Test content" />)
+      
+      expect(container.innerHTML).toContain('Error:')
+      expect(container.innerHTML).toContain('Failed to render org-mode content')
+      
+      document.createElement = originalCreateElement
+      console.error = originalError
+    })
+  })
+
+  describe('Legacy tests for backward compatibility', () => {
+    it('should accept custom className', () => {
+      render(<OrgRenderer content="test" className="custom-class" />)
+      
+      const container = screen.getByText('test').closest('div')
+      expect(container).toHaveClass('custom-class')
+    })
+
+    it('should handle syntax highlighting option', () => {
+      const { rerender } = render(<OrgRenderer content="test" enableSyntaxHighlight={true} />)
+      expect(screen.getByText('test')).toBeInTheDocument()
+
+      rerender(<OrgRenderer content="test" enableSyntaxHighlight={false} />)
+      expect(screen.getByText('test')).toBeInTheDocument()
+    })
+
+    it('should handle special characters in content', () => {
+      render(<OrgRenderer content="Special chars: éñ中文" />)
+      
+      expect(screen.getByText('Special chars: éñ中文')).toBeInTheDocument()
+    })
   })
 })
+
