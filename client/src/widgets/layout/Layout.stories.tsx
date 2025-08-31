@@ -138,8 +138,9 @@ export const FormLayout: Story = {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                 <input
+                  id="lastName"
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Doe"
@@ -148,8 +149,9 @@ export const FormLayout: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
               <input
+                id="email"
                 type="email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="john.doe@example.com"
@@ -157,8 +159,9 @@ export const FormLayout: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
               <textarea
+                id="bio"
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Tell us about yourself..."
@@ -166,10 +169,16 @@ export const FormLayout: Story = {
             </div>
 
             <div className="flex space-x-4">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
+              <button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
+              >
                 Save Changes
               </button>
-              <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-md">
+              <button
+                type="button"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-md"
+              >
                 Cancel
               </button>
             </div>
@@ -221,8 +230,8 @@ export const DataTable: Story = {
                   role: "Viewer",
                   status: "Inactive",
                 },
-              ].map((user, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+              ].map((user, _index) => (
+                <tr key={user.email} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="font-medium text-gray-900">{user.name}</div>
                   </td>
@@ -246,8 +255,12 @@ export const DataTable: Story = {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                    <button className="text-blue-600 hover:text-blue-900">Edit</button>
-                    <button className="text-red-600 hover:text-red-900">Delete</button>
+                    <button type="button" className="text-blue-600 hover:text-blue-900">
+                      Edit
+                    </button>
+                    <button type="button" className="text-red-600 hover:text-red-900">
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -284,7 +297,10 @@ export const EmptyState: Story = {
           Get started by creating your first project. Projects help you organize your work and
           collaborate with others.
         </p>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
+        <button
+          type="button"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
+        >
           Create Project
         </button>
       </div>

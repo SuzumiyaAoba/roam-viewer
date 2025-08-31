@@ -115,7 +115,7 @@ export const Disabled: Story = {
   },
 };
 
-export const Error: Story = {
+export const ErrorState: Story = {
   args: {
     variant: "error",
     options: basicOptions,
@@ -205,6 +205,7 @@ export const Interactive: Story = {
               Selected value: <strong>{selectedValue}</strong>
             </p>
             <button
+              type="button"
               onClick={() => setSelectedValue("")}
               className="mt-2 text-xs text-blue-600 hover:text-blue-800"
             >

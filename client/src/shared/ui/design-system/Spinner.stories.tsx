@@ -246,7 +246,7 @@ export const DataFetching: Story = {
     const [loading, setLoading] = React.useState(true);
     const [data, setData] = React.useState(null);
 
-    const fetchData = () => {
+    const fetchData = React.useCallback(() => {
       setLoading(true);
       setData(null);
       setTimeout(() => {
@@ -257,7 +257,7 @@ export const DataFetching: Story = {
         ]);
         setLoading(false);
       }, 2000);
-    };
+    }, []);
 
     React.useEffect(() => {
       fetchData();

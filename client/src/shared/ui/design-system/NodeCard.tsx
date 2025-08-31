@@ -153,6 +153,15 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
       onCardClick?.();
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if ((e.key === 'Enter' || e.key === ' ') && onCardClick) {
+        e.preventDefault();
+        if (!(e.target as HTMLElement).closest("[data-action-button]")) {
+          onCardClick();
+        }
+      }
+    };
+
     return (
       <div
         ref={ref}
@@ -162,6 +171,10 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
           className,
         )}
         onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        role={onCardClick ? "button" : undefined}
+        tabIndex={onCardClick ? 0 : undefined}
+        aria-label={onCardClick ? `View ${title} node` : undefined}
         {...props}
       >
         {/* Status indicator for selected state */}
@@ -199,7 +212,9 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
+                        aria-hidden="true"
                       >
+                        <title>Edit node</title>
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -225,7 +240,9 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
+                        aria-hidden="true"
                       >
+                        <title>Delete node</title>
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -245,7 +262,8 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         {todo && (
           <div className="mb-3">
             <Badge variant="warning" className="text-xs">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <title>TODO icon</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -268,9 +286,9 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         {/* Tags */}
         {displayTags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {displayTags.map((tag, index) => (
+            {displayTags.map((tag, _index) => (
               <Badge
-                key={index}
+                key={tag}
                 variant="secondary"
                 size="sm"
                 className={cn(

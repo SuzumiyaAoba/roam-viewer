@@ -96,7 +96,16 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           "bg-black bg-opacity-50 backdrop-blur-sm",
           animated && "animate-in fade-in-0 duration-300",
         )}
+        // biome-ignore lint/a11y/useSemanticElements: Modal overlay needs div for proper styling
+        role="button"
+        tabIndex={0}
         onClick={handleOverlayClick}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+            handleOverlayClick(e as React.MouseEvent<HTMLDivElement>);
+          }
+        }}
+        aria-label="Close modal"
       >
         <div
           ref={ref}
@@ -162,7 +171,14 @@ const ModalCloseButton = forwardRef<
     onClick={onClick}
     {...props}
   >
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <title>Close button</title>
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
     <span className="sr-only">Close</span>
