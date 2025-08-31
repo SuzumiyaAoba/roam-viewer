@@ -216,6 +216,47 @@ Just a simple paragraph with some text.`,
   },
 }
 
+const todoLabelsContent = `* TODO プロジェクトの企画書を作成
+新しいプロジェクトの企画書を作成する必要があります。
+
+* DONE 要件定義書のレビュー
+要件定義書のレビューが完了しました。✓
+
+* DOING APIの実装
+現在進行中のAPIの実装作業です。
+
+** TODO データベース設計
+** DONE 認証機能の実装
+
+* NEXT テストケースの作成
+次に取り組む予定のタスクです。
+
+* WAITING クライアントからの承認待ち
+クライアントからの最終承認を待っています。
+
+* CANCELLED 不要な機能の実装
+この機能は不要になったためキャンセルしました。
+
+** Subtasks with different states
+** TODO サブタスク1
+** DONE 完了したサブタスク
+** DOING 進行中のサブタスク
+
+通常のテキスト。ここにある TODO は単なる文字列です。`
+
+export const TodoLabels: Story = {
+  args: {
+    content: todoLabelsContent,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates TODO keyword labels with different states: TODO (orange), DONE (green), DOING (blue), NEXT (purple), WAITING (yellow), and CANCELLED (gray). The labels are styled as small badges next to the headers.',
+      },
+    },
+  },
+}
+
 export const ErrorHandling: Story = {
   render: () => (
     <div className="space-y-4">
