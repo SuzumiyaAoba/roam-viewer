@@ -192,7 +192,7 @@ async function parseOrgContent(content: string): Promise<{ metadata: OrgMetadata
     // First, extract metadata and get cleaned content
     const { metadata, cleanedContent } = extractMetadata(content)
     
-    // Create uniorg processor - use default handlers first to ensure it works
+    // Create uniorg processor - let it handle TODO keywords naturally, then enhance with post-processing
     const processor = unified()
       .use(uniorgParse)
       .use(uniorg2rehype)
@@ -202,8 +202,8 @@ async function parseOrgContent(content: string): Promise<{ metadata: OrgMetadata
     const result = await processor.process(cleanedContent)
     let htmlContent = String(result)
     
-    // Apply Tailwind CSS classes post-processing
-    htmlContent = addTailwindClasses(htmlContent)
+    // Apply enhanced Tailwind CSS classes including TODO keyword styling
+    htmlContent = addEnhancedTailwindClasses(htmlContent)
 
     return { metadata, htmlContent }
   } catch (error) {
@@ -247,45 +247,40 @@ function getHeaderClass(level: string): string {
   return classes[level] || 'text-base font-semibold text-gray-700'
 }
 
-// Post-process HTML to add Tailwind CSS classes
-function addTailwindClasses(html: string): string {
+// Apply enhanced Tailwind CSS classes with improved TODO keyword handling
+function addEnhancedTailwindClasses(html: string): string {
   let processedHtml = html
   
-  // Handle TODO keywords that uniorg detected - using simple string replace
-  const todoReplacements = [
-    { from: '<span class="todo-keyword TODO">TODO</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full mr-2">TODO</span>' },
-    { from: '<span class="todo-keyword DONE">DONE</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full mr-2">DONE</span>' },
-    { from: '<span class="todo-keyword DOING">DOING</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full mr-2">DOING</span>' },
-    { from: '<span class="todo-keyword NEXT">NEXT</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full mr-2">NEXT</span>' },
-    { from: '<span class="todo-keyword WAITING">WAITING</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full mr-2">WAITING</span>' },
-    { from: '<span class="todo-keyword CANCELLED">CANCELLED</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full mr-2">CANCELLED</span>' },
-    { from: '<span class="todo-keyword CANCELED">CANCELED</span>', to: '<span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full mr-2">CANCELED</span>' }
-  ]
-  
-  todoReplacements.forEach(replacement => {
-    processedHtml = processedHtml.replace(new RegExp(replacement.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replacement.to)
+  // Step 1: Replace uniorg's default TODO keyword spans with styled badges
+  const todoKeywords = ['TODO', 'DONE', 'DOING', 'NEXT', 'WAITING', 'CANCELLED', 'CANCELED']
+  todoKeywords.forEach(keyword => {
+    const defaultSpan = `<span class="todo-keyword ${keyword}">${keyword}</span>`
+    const styledSpan = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${getTodoKeywordColor(keyword)} rounded-full mr-2">${keyword}</span>`
+    processedHtml = processedHtml.replace(new RegExp(defaultSpan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), styledSpan)
   })
   
-  // Handle TODO keywords that uniorg might not detect (like DOING)
+  // Step 2: Handle additional TODO keywords that uniorg might not detect
   const additionalKeywords = ['DOING', 'NEXT', 'WAITING', 'CANCELLED', 'CANCELED']
   additionalKeywords.forEach(keyword => {
-    const pattern = new RegExp(`<h([1-6])([^>]*)>\\s*${keyword}\\s+([^<]*)</h[1-6]>`, 'g')
-    processedHtml = processedHtml.replace(pattern, (match, level, attrs, text) => {
-      const colors = getTodoKeywordColor(keyword)
+    // Pattern: <h1>DOING some task</h1> -> <h1 class="..."><span class="...">DOING</span>some task</h1>
+    const pattern = new RegExp(`<h([1-6])>${keyword}\\s+([^<]*)</h([1-6])>`, 'g')
+    processedHtml = processedHtml.replace(pattern, (match, level, text, closingLevel) => {
       const headerClass = getHeaderClass(level)
-      return `<h${level}${attrs} class="${headerClass}"><span class="inline-flex items-center px-2 py-1 text-xs font-medium ${colors} rounded-full mr-2">${keyword}</span>${text.trim()}</h${level}>`
+      const todoColors = getTodoKeywordColor(keyword)
+      const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} rounded-full mr-2">${keyword}</span>`
+      return `<h${level} class="${headerClass}">${styledKeyword}${text.trim()}</h${closingLevel}>`
     })
   })
   
-  // Apply standard Tailwind classes  
+  // Step 3: Apply standard Tailwind classes
   return processedHtml
-    // Headers
-    .replace(/<h1([^>]*)>/g, '<h1$1 class="text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0">')
-    .replace(/<h2([^>]*)>/g, '<h2$1 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">')
-    .replace(/<h3([^>]*)>/g, '<h3$1 class="text-xl font-semibold text-gray-800 mb-3 mt-5">')
-    .replace(/<h4([^>]*)>/g, '<h4$1 class="text-lg font-semibold text-gray-700 mb-2 mt-4">')
-    .replace(/<h5([^>]*)>/g, '<h5$1 class="text-base font-semibold text-gray-700 mb-2 mt-3">')
-    .replace(/<h6([^>]*)>/g, '<h6$1 class="text-sm font-semibold text-gray-700 mb-2 mt-3">')
+    // Headers (only add classes if not already present)
+    .replace(/<h1(?![^>]*class=)([^>]*)>/g, '<h1$1 class="text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0">')
+    .replace(/<h2(?![^>]*class=)([^>]*)>/g, '<h2$1 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">')
+    .replace(/<h3(?![^>]*class=)([^>]*)>/g, '<h3$1 class="text-xl font-semibold text-gray-800 mb-3 mt-5">')
+    .replace(/<h4(?![^>]*class=)([^>]*)>/g, '<h4$1 class="text-lg font-semibold text-gray-700 mb-2 mt-4">')
+    .replace(/<h5(?![^>]*class=)([^>]*)>/g, '<h5$1 class="text-base font-semibold text-gray-700 mb-2 mt-3">')
+    .replace(/<h6(?![^>]*class=)([^>]*)>/g, '<h6$1 class="text-sm font-semibold text-gray-700 mb-2 mt-3">')
     // Paragraphs
     .replace(/<p([^>]*)>/g, '<p$1 class="text-gray-700 leading-relaxed mb-4">')
     // Lists
