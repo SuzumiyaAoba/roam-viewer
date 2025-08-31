@@ -293,6 +293,7 @@ export function NodeListPage() {
                   <tr key={node.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => navigate(`/nodes/${node.id}`)}
                         className="text-sm font-medium text-gray-900 hover:text-blue-600 text-left"
                       >

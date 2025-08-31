@@ -8,7 +8,7 @@ export interface Node {
   scheduled?: string;
   deadline?: string;
   tags?: string[];
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   olp?: string[];
 }
 
@@ -43,7 +43,7 @@ export interface BacklinkNode {
   title: string;
   file: string;
   pos?: number;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   source?: string;
   dest?: string;
   type?: "backlink" | "forwardlink";
@@ -77,7 +77,7 @@ export interface BacklinkNode {
   title: string;
   file: string;
   pos?: number;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   source?: string;
   dest?: string;
   type?: "backlink" | "forwardlink";

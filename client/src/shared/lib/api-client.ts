@@ -69,7 +69,7 @@ export class ApiClient {
 
   // Node Operations
   async getNodes(): Promise<Node[]> {
-    const result = await this.request<any>("/api/nodes");
+    const result = await this.request<Node[]>("/api/nodes");
 
     // Handle new API response format
     if (result && Array.isArray(result.data)) {
@@ -107,7 +107,7 @@ export class ApiClient {
 
   // Search Operations
   async searchNodes(query: string): Promise<SearchResult> {
-    const result = await this.request<any>(`/api/search/${encodeURIComponent(query)}`);
+    const result = await this.request<{ nodes: Node[]; count: number } | { nodes: Node[]; total: number }>(`/api/search/${encodeURIComponent(query)}`);
 
     // Handle new API response format
     if (result && result.nodes !== undefined) {

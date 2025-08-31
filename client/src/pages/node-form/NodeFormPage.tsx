@@ -1,4 +1,4 @@
-import React, { useId, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { CreateNodeRequest, UpdateNodeRequest } from "../../entities/node";
 import { useCreateNode, useNode, useUpdateNode } from "../../entities/node";
@@ -54,12 +54,6 @@ function stripMetadataFromContent(content: string): string {
 export function NodeCreatePage() {
   const navigate = useNavigate();
   const createNodeMutation = useCreateNode();
-  const titleId = useId();
-  const fileTypeId = useId();
-  const contentId = useId();
-  const tagsId = useId();
-  const aliasesId = useId();
-  const refsId = useId();
 
   const [formData, setFormData] = useState<NodeFormData>({
     title: "",
@@ -240,11 +234,6 @@ export function NodeEditPage() {
   const navigate = useNavigate();
   const { data: node, isLoading, error } = useNode(id || "");
   const updateNodeMutation = useUpdateNode();
-  const titleId = useId();
-  const contentId = useId();
-  const tagsId = useId();
-  const aliasesId = useId();
-  const refsId = useId();
 
   if (!id) {
     return <div>Node ID is required</div>;
