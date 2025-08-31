@@ -1,7 +1,7 @@
 import { getPort } from 'get-port-please'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import type { CreateNodeRequest, UpdateNodeRequest } from './client/src/types/api'
+import type { CreateNodeRequest, UpdateNodeRequest } from './client/src/shared/types/api'
 
 // Direct md-roam API client for server-side use
 class MdRoamApiClient {
@@ -476,7 +476,7 @@ app.delete('/api/nodes/:id', async (c) => {
   try {
     const id = c.req.param('id')
     await apiClient.deleteNode(id)
-    return c.text('', 204)
+    return new Response('', { status: 204 })
   } catch (error) {
     console.error('Error deleting node:', error)
     return c.json({ error: 'Failed to delete node' }, 500)
@@ -537,12 +537,11 @@ app.get('/api/search/tag/:tag', async (c) => {
   }
 })
 
-const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001
-const port = await getPort({ port: preferredPort, portRange: [3001, 3011] })
-
-console.log(`🔥 Bun server starting on port ${port}`)
-
-export default {
-  port: port,
-  fetch: app.fetch,
+async function startServer() {
+  const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001
+  const port = await getPort({ port: preferredPort, portRange: [3001, 3011] })
+  console.log(`🔥 Bun server starting on port ${port}`)
+  return { port, fetch: app.fetch }
 }
+
+export default startServer()

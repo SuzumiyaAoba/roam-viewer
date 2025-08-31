@@ -26,5 +26,16 @@
       "@/*": ["client/src/*"]
     }
   },
-  "include": ["client/src"]
+  "include": ["client/src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.tsx",
+    "client/src/shared/ui/design-system",
+    "client/src/test"
+  ]
 }
