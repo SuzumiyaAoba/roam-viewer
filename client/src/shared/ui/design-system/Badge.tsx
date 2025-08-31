@@ -87,7 +87,13 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(
             className="ml-1.5 h-3 w-3 rounded-full hover:bg-black/20 focus:outline-none focus:ring-1 focus:ring-white"
             aria-label="Remove badge"
           >
-            <svg className="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="h-2.5 w-2.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

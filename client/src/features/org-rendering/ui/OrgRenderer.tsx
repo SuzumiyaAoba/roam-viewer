@@ -180,9 +180,9 @@ function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
             <Icon icon="lucide:tags" className="w-4 h-4 text-indigo-600 mt-0.5" />
             <span className="text-gray-600">Tags:</span>
             <div className="flex flex-wrap gap-1">
-              {metadata.tags.map((tag, index) => (
+              {metadata.tags.map((tag, _index) => (
                 <span
-                  key={index}
+                  key={tag}
                   className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
                 >
                   {tag}
@@ -352,7 +352,7 @@ function addEnhancedTailwindClasses(html: string): string {
 export function OrgRenderer({
   content,
   className = "",
-  enableSyntaxHighlight = true,
+  _enableSyntaxHighlight = true,
 }: OrgRendererProps) {
   const [metadata, setMetadata] = useState<OrgMetadata>({});
   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -398,6 +398,7 @@ export function OrgRenderer({
   return (
     <div className={`max-w-none ${className}`}>
       <MetadataDisplay metadata={metadata} />
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: OrgRenderer needs to render parsed HTML content */}
       <div className="org-content" dangerouslySetInnerHTML={{ __html: htmlContent }} />
     </div>
   );

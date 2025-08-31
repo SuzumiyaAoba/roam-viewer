@@ -78,7 +78,12 @@ class MdRoamApiClient {
   }
 
   async getNodes() {
-    const result = await this.request<any>("/nodes");
+    const result = await this.request<{
+      status: string;
+      data?: unknown[];
+      nodes?: unknown[];
+      count?: number;
+    }>("/nodes");
     // New API format: {"status":"success", "data":[...], "count":N}
     if (result && result.status === "success" && Array.isArray(result.data)) {
       return result.data;
@@ -95,7 +100,13 @@ class MdRoamApiClient {
   }
 
   async getNode(id: string) {
-    const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/content`);
+    const result = await this.request<{
+      status: string;
+      node_id?: string;
+      title?: string;
+      content?: string;
+      [key: string]: unknown;
+    }>(`/nodes/${encodeURIComponent(id)}/content`);
     // New API format: {"status":"success", "node_id":"...", "title":"...", "content":"...", ...}
     if (result && result.status === "success") {
       // Convert new format to expected format
@@ -116,7 +127,9 @@ class MdRoamApiClient {
 
   async getNodeRefs(id: string) {
     try {
-      const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/refs`);
+      const result = await this.request<{ refs?: string[] }>(
+        `/nodes/${encodeURIComponent(id)}/refs`,
+      );
       if (result && Array.isArray(result.refs)) {
         return result.refs;
       } else if (Array.isArray(result)) {
@@ -135,7 +148,7 @@ class MdRoamApiClient {
 
   async getBacklinks(id: string) {
     try {
-      const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/backlinks`);
+      const result = await this.request<unknown[]>(`/nodes/${encodeURIComponent(id)}/backlinks`);
       if (Array.isArray(result)) {
         return result;
       } else if (result && Array.isArray(result.backlinks)) {
@@ -154,7 +167,7 @@ class MdRoamApiClient {
 
   async getForwardLinks(id: string) {
     try {
-      const result = await this.request<any>(`/nodes/${encodeURIComponent(id)}/links`);
+      const result = await this.request<unknown[]>(`/nodes/${encodeURIComponent(id)}/links`);
       if (Array.isArray(result)) {
         return result;
       } else if (result && Array.isArray(result.links)) {
@@ -172,7 +185,12 @@ class MdRoamApiClient {
   }
 
   async searchNodes(query: string) {
-    const result = await this.request<any>(`/search/${encodeURIComponent(query)}`);
+    const result = await this.request<{
+      status: string;
+      query?: string;
+      nodes?: unknown[];
+      count?: number;
+    }>(`/search/${encodeURIComponent(query)}`);
     // New API format: {"status":"success", "query":"...", "nodes":[...], "count":N}
     if (result && result.status === "success" && Array.isArray(result.nodes)) {
       return {
@@ -189,10 +207,10 @@ class MdRoamApiClient {
 
     // Remove refs field as md-roam API doesn't support it in node creation
     // Keep file_type as it's supported by md-roam API
-    const { refs, ...apiNodeData } = nodeData;
+    const { refs: _refs, ...apiNodeData } = nodeData;
     console.log("Sending to md-roam API (without refs):", JSON.stringify(apiNodeData, null, 2));
 
-    return this.request<any>("/nodes", {
+    return this.request<{ status: string; node_id?: string; [key: string]: unknown }>("/nodes", {
       method: "POST",
       body: JSON.stringify(apiNodeData),
     });
@@ -202,13 +220,16 @@ class MdRoamApiClient {
     console.log("Updating node with data:", JSON.stringify(nodeData, null, 2));
 
     // Remove refs field as md-roam API doesn't support it in node updates
-    const { refs, ...apiNodeData } = nodeData;
+    const { refs: _refs, ...apiNodeData } = nodeData;
     console.log("Sending to md-roam API (without refs):", JSON.stringify(apiNodeData, null, 2));
 
-    return this.request<any>(`/nodes/${encodeURIComponent(id)}`, {
-      method: "PUT",
-      body: JSON.stringify(apiNodeData),
-    });
+    return this.request<{ status: string; [key: string]: unknown }>(
+      `/nodes/${encodeURIComponent(id)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(apiNodeData),
+      },
+    );
   }
 
   async deleteNode(id: string) {
@@ -218,7 +239,7 @@ class MdRoamApiClient {
   }
 
   async getTags() {
-    const result = await this.request<any>("/tags");
+    const result = await this.request<{ tags?: { tag: string; count: number }[] }>("/tags");
     // New API format: {"status":"success", "tags":[...], "total_tags":N}
     if (result && result.status === "success" && Array.isArray(result.tags)) {
       // Convert new format to expected format, mapping tag objects to {tag, count}
@@ -501,7 +522,9 @@ app.get("/api/search/tag/:tag", async (c) => {
 
     // Try to use the new tags API with node_ids first
     try {
-      const tagsResult = await apiClient.request<any>("/tags");
+      const tagsResult = await apiClient.request<{
+        tags?: { tag: string; count: number; node_ids: string[] }[];
+      }>("/tags");
       if (tagsResult && tagsResult.status === "success" && Array.isArray(tagsResult.tags)) {
         // Find the specific tag and get its node_ids
         const tagInfo = tagsResult.tags.find((t) => t.tag === tag);

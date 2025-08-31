@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import type { Node } from "../../entities/node";
@@ -25,6 +25,40 @@ export function NodeListPage() {
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery);
   const { data: availableTags, isLoading: tagsLoading } = useTags(showTagSelector);
   const deleteNodeMutation = useDeleteNode();
+
+  // Update URL parameters helper
+  const updateURLParams = useCallback(
+    (newTag?: string | null, newSearch?: string, newTags?: string[]) => {
+      const newParams = new URLSearchParams(searchParams);
+
+      if (newTag !== undefined) {
+        if (newTag === null) {
+          newParams.delete("tag");
+        } else {
+          newParams.set("tag", encodeURIComponent(newTag));
+        }
+      }
+
+      if (newTags !== undefined) {
+        if (newTags.length === 0) {
+          newParams.delete("tags");
+        } else {
+          newParams.set("tags", encodeURIComponent(newTags.join(",")));
+        }
+      }
+
+      if (newSearch !== undefined) {
+        if (newSearch === "") {
+          newParams.delete("search");
+        } else {
+          newParams.set("search", encodeURIComponent(newSearch));
+        }
+      }
+
+      setSearchParams(newParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
   // Initialize state from URL parameters
   useEffect(() => {
@@ -65,9 +99,8 @@ export function NodeListPage() {
 
   // Update URL when debounced query changes (but not on initial load)
   useEffect(() => {
-    const isInitialLoad =
-      searchParams.get("search") &&
-      debouncedQuery === decodeURIComponent(searchParams.get("search")!);
+    const searchParam = searchParams.get("search");
+    const isInitialLoad = searchParam && debouncedQuery === decodeURIComponent(searchParam);
     if (!isInitialLoad) {
       updateURLParams(undefined, debouncedQuery);
     }
@@ -154,37 +187,6 @@ export function NodeListPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Search is handled by debounced effect
-  };
-
-  // Update URL parameters helper
-  const updateURLParams = (newTag?: string | null, newSearch?: string, newTags?: string[]) => {
-    const newParams = new URLSearchParams(searchParams);
-
-    if (newTag !== undefined) {
-      if (newTag === null) {
-        newParams.delete("tag");
-      } else {
-        newParams.set("tag", encodeURIComponent(newTag));
-      }
-    }
-
-    if (newTags !== undefined) {
-      if (newTags.length === 0) {
-        newParams.delete("tags");
-      } else {
-        newParams.set("tags", encodeURIComponent(newTags.join(",")));
-      }
-    }
-
-    if (newSearch !== undefined) {
-      if (newSearch === "") {
-        newParams.delete("search");
-      } else {
-        newParams.set("search", encodeURIComponent(newSearch));
-      }
-    }
-
-    setSearchParams(newParams, { replace: true });
   };
 
   const handleTagClick = (tag: string) => {
@@ -307,6 +309,7 @@ export function NodeListPage() {
                       <div className="flex flex-wrap gap-1">
                         {node.tags?.slice(0, 3).map((tag) => (
                           <button
+                            type="button"
                             key={tag}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -433,6 +436,7 @@ export function NodeListPage() {
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-gray-700">Filter by Tags:</span>
             <button
+              type="button"
               onClick={() => setShowTagSelector(!showTagSelector)}
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
             >
@@ -453,6 +457,7 @@ export function NodeListPage() {
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map((tagInfo) => (
                     <button
+                      type="button"
                       key={tagInfo.tag}
                       onClick={() => handleTagToggle(tagInfo.tag)}
                       className={cn(
@@ -483,6 +488,7 @@ export function NodeListPage() {
                 <div className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                   <span>Tag: {selectedTag}</span>
                   <button
+                    type="button"
                     onClick={() => {
                       setSelectedTag(null);
                       updateURLParams(null);
@@ -500,6 +506,7 @@ export function NodeListPage() {
                 >
                   <span>Tag: {tag}</span>
                   <button
+                    type="button"
                     onClick={() => handleTagToggle(tag)}
                     className="ml-2 text-indigo-600 hover:text-indigo-800"
                   >
@@ -511,6 +518,7 @@ export function NodeListPage() {
                 <div className="flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                   <span>Search: "{debouncedQuery}"</span>
                   <button
+                    type="button"
                     onClick={() => {
                       setSearchQuery("");
                       setDebouncedQuery("");
@@ -523,6 +531,7 @@ export function NodeListPage() {
                 </div>
               )}
               <button
+                type="button"
                 onClick={clearFilters}
                 className="text-sm text-red-600 hover:text-red-800 underline"
               >
@@ -558,6 +567,7 @@ export function NodeListPage() {
             )}
             {(debouncedQuery || selectedTag || selectedTags.length > 0) && (
               <button
+                type="button"
                 onClick={clearFilters}
                 className="mt-4 text-blue-600 hover:text-blue-800 underline"
               >

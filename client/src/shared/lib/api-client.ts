@@ -107,7 +107,9 @@ export class ApiClient {
 
   // Search Operations
   async searchNodes(query: string): Promise<SearchResult> {
-    const result = await this.request<{ nodes: Node[]; count: number } | { nodes: Node[]; total: number }>(`/api/search/${encodeURIComponent(query)}`);
+    const result = await this.request<
+      { nodes: Node[]; count: number } | { nodes: Node[]; total: number }
+    >(`/api/search/${encodeURIComponent(query)}`);
 
     // Handle new API response format
     if (result && result.nodes !== undefined) {

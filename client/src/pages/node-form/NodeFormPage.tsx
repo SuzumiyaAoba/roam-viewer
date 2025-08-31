@@ -54,6 +54,12 @@ function stripMetadataFromContent(content: string): string {
 export function NodeCreatePage() {
   const navigate = useNavigate();
   const createNodeMutation = useCreateNode();
+  const titleId = useId();
+  const fileTypeId = useId();
+  const contentId = useId();
+  const tagsId = useId();
+  const aliasesId = useId();
+  const refsId = useId();
 
   const [formData, setFormData] = useState<NodeFormData>({
     title: "",
@@ -102,12 +108,12 @@ export function NodeCreatePage() {
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={titleId} className="block text-sm font-medium text-gray-700 mb-2">
               Title *
             </label>
             <input
               type="text"
-              id="title"
+              id={titleId}
               name="title"
               required
               value={formData.title}
@@ -118,11 +124,11 @@ export function NodeCreatePage() {
           </div>
 
           <div>
-            <label htmlFor="file_type" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={fileTypeId} className="block text-sm font-medium text-gray-700 mb-2">
               File Format
             </label>
             <select
-              id="file_type"
+              id={fileTypeId}
               name="file_type"
               value={formData.file_type}
               onChange={(e) =>
@@ -137,11 +143,11 @@ export function NodeCreatePage() {
           </div>
 
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={contentId} className="block text-sm font-medium text-gray-700 mb-2">
               Content
             </label>
             <textarea
-              id="content"
+              id={contentId}
               name="content"
               rows={10}
               value={formData.content}
@@ -152,12 +158,12 @@ export function NodeCreatePage() {
           </div>
 
           <div>
-            <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={tagsId} className="block text-sm font-medium text-gray-700 mb-2">
               Tags
             </label>
             <input
               type="text"
-              id="tags"
+              id={tagsId}
               name="tags"
               value={formData.tags}
               onChange={handleChange}
@@ -170,12 +176,12 @@ export function NodeCreatePage() {
           </div>
 
           <div>
-            <label htmlFor="aliases" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={aliasesId} className="block text-sm font-medium text-gray-700 mb-2">
               Aliases
             </label>
             <input
               type="text"
-              id="aliases"
+              id={aliasesId}
               name="aliases"
               value={formData.aliases}
               onChange={handleChange}
@@ -185,12 +191,12 @@ export function NodeCreatePage() {
           </div>
 
           <div>
-            <label htmlFor="refs" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={refsId} className="block text-sm font-medium text-gray-700 mb-2">
               References
             </label>
             <input
               type="text"
-              id="refs"
+              id={refsId}
               name="refs"
               value={formData.refs}
               onChange={handleChange}
@@ -234,10 +240,12 @@ export function NodeEditPage() {
   const navigate = useNavigate();
   const { data: node, isLoading, error } = useNode(id || "");
   const updateNodeMutation = useUpdateNode();
-
-  if (!id) {
-    return <div>Node ID is required</div>;
-  }
+  const titleId = useId();
+  const _fileTypeId = useId();
+  const contentId = useId();
+  const tagsId = useId();
+  const aliasesId = useId();
+  const refsId = useId();
 
   const [formData, setFormData] = useState<NodeFormData>({
     title: "",
@@ -329,12 +337,12 @@ export function NodeEditPage() {
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={titleId} className="block text-sm font-medium text-gray-700 mb-2">
               Title *
             </label>
             <input
               type="text"
-              id="title"
+              id={titleId}
               name="title"
               required
               value={formData.title}
@@ -345,11 +353,11 @@ export function NodeEditPage() {
           </div>
 
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={contentId} className="block text-sm font-medium text-gray-700 mb-2">
               Content
             </label>
             <textarea
-              id="content"
+              id={contentId}
               name="content"
               rows={10}
               value={formData.content}
@@ -360,12 +368,12 @@ export function NodeEditPage() {
           </div>
 
           <div>
-            <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={tagsId} className="block text-sm font-medium text-gray-700 mb-2">
               Tags
             </label>
             <input
               type="text"
-              id="tags"
+              id={tagsId}
               name="tags"
               value={formData.tags}
               onChange={handleChange}
@@ -378,12 +386,12 @@ export function NodeEditPage() {
           </div>
 
           <div>
-            <label htmlFor="aliases" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={aliasesId} className="block text-sm font-medium text-gray-700 mb-2">
               Aliases
             </label>
             <input
               type="text"
-              id="aliases"
+              id={aliasesId}
               name="aliases"
               value={formData.aliases}
               onChange={handleChange}
@@ -393,12 +401,12 @@ export function NodeEditPage() {
           </div>
 
           <div>
-            <label htmlFor="refs" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={refsId} className="block text-sm font-medium text-gray-700 mb-2">
               References
             </label>
             <input
               type="text"
-              id="refs"
+              id={refsId}
               name="refs"
               value={formData.refs}
               onChange={handleChange}

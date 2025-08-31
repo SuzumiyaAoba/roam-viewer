@@ -101,6 +101,7 @@ const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -196,7 +197,14 @@ const EmptyStateError = forwardRef<
     ref={ref}
     variant="muted"
     icon={
-      <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-16 h-16"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Warning triangle icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -239,7 +247,14 @@ const EmptyStateOffline = forwardRef<
   <EmptyState
     ref={ref}
     icon={
-      <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-16 h-16"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Offline connection icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"

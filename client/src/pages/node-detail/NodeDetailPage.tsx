@@ -204,6 +204,7 @@ export function NodeDetailPage() {
             <Icon icon="lucide:edit" width={16} height={16} />
           </Link>
           <button
+            type="button"
             onClick={handleDelete}
             disabled={deleteNodeMutation.isPending}
             className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md transition-colors disabled:opacity-50 flex items-center justify-center"
@@ -225,6 +226,7 @@ export function NodeDetailPage() {
             <div className="flex items-center justify-end mb-4">
               <div className="flex space-x-2">
                 <button
+                  type="button"
                   onClick={() => setShowRaw(!showRaw)}
                   className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded border"
                 >
@@ -366,8 +368,8 @@ export function NodeDetailPage() {
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Aliases</h2>
               <div className="space-y-2">
-                {node.aliases.map((alias, index) => (
-                  <div key={index} className="text-sm text-gray-600">
+                {node.aliases.map((alias, _index) => (
+                  <div key={alias} className="text-sm text-gray-600">
                     {alias}
                   </div>
                 ))}
@@ -382,8 +384,8 @@ export function NodeDetailPage() {
                 References ({node.refs.length})
               </h2>
               <div className="space-y-3">
-                {node.refs.map((refValue, index) => (
-                  <div key={index} className="bg-gray-50 p-3 rounded-md">
+                {node.refs.map((refValue, _index) => (
+                  <div key={refValue} className="bg-gray-50 p-3 rounded-md">
                     <div className="text-sm font-mono text-gray-700 break-all">
                       {refValue.startsWith("https://") ? (
                         <a

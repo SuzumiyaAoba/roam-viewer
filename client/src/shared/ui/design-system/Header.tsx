@@ -99,6 +99,7 @@ const Header = forwardRef<HTMLElement, HeaderProps>(
             {/* Mobile menu button */}
             {showMobileMenu && (
               <button
+                type="button"
                 onClick={onMobileMenuToggle}
                 className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                 aria-expanded={isMobileMenuOpen}
@@ -112,7 +113,9 @@ const Header = forwardRef<HTMLElement, HeaderProps>(
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
+                  <title>Menu toggle icon</title>
                   {isMobileMenuOpen ? (
                     <path
                       strokeLinecap="round"

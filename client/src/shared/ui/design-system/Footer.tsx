@@ -186,7 +186,7 @@ const FooterSocialLink = forwardRef<
     )}
     target="_blank"
     rel="noopener noreferrer"
-    aria-label={platform}
+    {...(platform && { "aria-label": platform })}
     {...props}
   >
     {icon || children}
