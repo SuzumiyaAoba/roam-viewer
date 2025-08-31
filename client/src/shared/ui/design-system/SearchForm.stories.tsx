@@ -1,77 +1,82 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React, { useState } from 'react'
-import { QuickSearch, SearchForm, type SearchSuggestion, SearchWithSuggestions } from './SearchForm'
+import type { Meta, StoryObj } from "@storybook/react";
+import React, { useState } from "react";
+import {
+  QuickSearch,
+  SearchForm,
+  type SearchSuggestion,
+  SearchWithSuggestions,
+} from "./SearchForm";
 
 const meta = {
-  title: 'Design System/SearchForm',
+  title: "Design System/SearchForm",
   component: SearchForm,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A comprehensive search form component with multiple variants, suggestions support, and advanced features. Perfect for implementing search functionality with great user experience.',
+          "A comprehensive search form component with multiple variants, suggestions support, and advanced features. Perfect for implementing search functionality with great user experience.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'elevated', 'minimal', 'prominent'],
-      description: 'The visual variant of the search form',
+      control: { type: "select" },
+      options: ["default", "elevated", "minimal", "prominent"],
+      description: "The visual variant of the search form",
     },
     inputVariant: {
-      control: { type: 'select' },
-      options: ['default', 'filled', 'outlined', 'minimal'],
-      description: 'The input field variant style',
+      control: { type: "select" },
+      options: ["default", "filled", "outlined", "minimal"],
+      description: "The input field variant style",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the search form',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the search form",
     },
     placeholder: {
-      control: 'text',
-      description: 'Placeholder text for the search input',
+      control: "text",
+      description: "Placeholder text for the search input",
     },
     buttonText: {
-      control: 'text',
-      description: 'Text for the search button',
+      control: "text",
+      description: "Text for the search button",
     },
     showButton: {
-      control: 'boolean',
-      description: 'Whether to show the search button',
+      control: "boolean",
+      description: "Whether to show the search button",
     },
     showClearButton: {
-      control: 'boolean',
-      description: 'Whether to show clear button when input has value',
+      control: "boolean",
+      description: "Whether to show clear button when input has value",
     },
     loading: {
-      control: 'boolean',
-      description: 'Loading state',
+      control: "boolean",
+      description: "Loading state",
     },
     disabled: {
-      control: 'boolean',
-      description: 'Disabled state',
+      control: "boolean",
+      description: "Disabled state",
     },
   },
-} satisfies Meta<typeof SearchForm>
+} satisfies Meta<typeof SearchForm>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic examples
 export const Default: Story = {
   args: {
-    placeholder: 'Search nodes...',
+    placeholder: "Search nodes...",
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const WithIcon: Story = {
   args: {
-    placeholder: 'Search with icon...',
+    placeholder: "Search with icon...",
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -84,11 +89,11 @@ export const WithIcon: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const WithoutButton: Story = {
   args: {
-    placeholder: 'Search without button...',
+    placeholder: "Search without button...",
     showButton: false,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,13 +107,13 @@ export const WithoutButton: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 // Variants
 export const Elevated: Story = {
   args: {
-    variant: 'elevated',
-    placeholder: 'Elevated search form...',
+    variant: "elevated",
+    placeholder: "Elevated search form...",
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -121,14 +126,14 @@ export const Elevated: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const Prominent: Story = {
   args: {
-    variant: 'prominent',
-    size: 'lg',
-    placeholder: 'Search everything...',
-    buttonText: 'Find',
+    variant: "prominent",
+    size: "lg",
+    placeholder: "Search everything...",
+    buttonText: "Find",
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -141,13 +146,13 @@ export const Prominent: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 // Input variants
 export const FilledInput: Story = {
   args: {
-    inputVariant: 'filled',
-    placeholder: 'Filled input style...',
+    inputVariant: "filled",
+    placeholder: "Filled input style...",
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -160,12 +165,12 @@ export const FilledInput: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const OutlinedInput: Story = {
   args: {
-    inputVariant: 'outlined',
-    placeholder: 'Outlined input style...',
+    inputVariant: "outlined",
+    placeholder: "Outlined input style...",
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -178,12 +183,12 @@ export const OutlinedInput: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const MinimalInput: Story = {
   args: {
-    inputVariant: 'minimal',
-    placeholder: 'Minimal input style...',
+    inputVariant: "minimal",
+    placeholder: "Minimal input style...",
     showButton: false,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,13 +202,13 @@ export const MinimalInput: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 // Sizes
 export const Small: Story = {
   args: {
-    size: 'sm',
-    placeholder: 'Small search...',
+    size: "sm",
+    placeholder: "Small search...",
     icon: (
       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -216,12 +221,12 @@ export const Small: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const Large: Story = {
   args: {
-    size: 'lg',
-    placeholder: 'Large search form...',
+    size: "lg",
+    placeholder: "Large search form...",
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -234,12 +239,12 @@ export const Large: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 // States
 export const Loading: Story = {
   args: {
-    placeholder: 'Loading state...',
+    placeholder: "Loading state...",
     loading: true,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,11 +258,11 @@ export const Loading: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 export const Disabled: Story = {
   args: {
-    placeholder: 'Disabled state...',
+    placeholder: "Disabled state...",
     disabled: true,
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,7 +276,7 @@ export const Disabled: Story = {
     ),
     onSubmit: (query) => alert(`Searching for: ${query}`),
   },
-}
+};
 
 // QuickSearch component
 export const QuickSearchExample: Story = {
@@ -286,16 +291,16 @@ export const QuickSearchExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'QuickSearch component for minimal search interfaces without a button',
+        story: "QuickSearch component for minimal search interfaces without a button",
       },
     },
   },
-}
+};
 
 // Controlled example
 export const ControlledExample: Story = {
   render: () => {
-    const [searchValue, setSearchValue] = useState('')
+    const [searchValue, setSearchValue] = useState("");
 
     return (
       <div className="w-80 space-y-4">
@@ -319,60 +324,60 @@ export const ControlledExample: Story = {
           Current value: <code>{searchValue}</code>
         </p>
       </div>
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Controlled search form example with external state management',
+        story: "Controlled search form example with external state management",
       },
     },
   },
-}
+};
 
 // Search with suggestions
 export const WithSuggestions: Story = {
   render: () => {
-    const [searchValue, setSearchValue] = useState('')
+    const [searchValue, setSearchValue] = useState("");
 
     const suggestions: SearchSuggestion[] = [
       {
-        id: '1',
-        text: 'React Components',
-        category: 'Programming',
+        id: "1",
+        text: "React Components",
+        category: "Programming",
         icon: <span>⚛️</span>,
       },
       {
-        id: '2',
-        text: 'TypeScript Basics',
-        category: 'Programming',
+        id: "2",
+        text: "TypeScript Basics",
+        category: "Programming",
         icon: <span>📘</span>,
       },
       {
-        id: '3',
-        text: 'Design Systems',
-        category: 'Design',
+        id: "3",
+        text: "Design Systems",
+        category: "Design",
         icon: <span>🎨</span>,
       },
       {
-        id: '4',
-        text: 'Node.js Server',
-        category: 'Backend',
+        id: "4",
+        text: "Node.js Server",
+        category: "Backend",
         icon: <span>🖥️</span>,
       },
       {
-        id: '5',
-        text: 'Database Design',
-        category: 'Data',
+        id: "5",
+        text: "Database Design",
+        category: "Data",
         icon: <span>🗄️</span>,
       },
       {
-        id: '6',
-        text: 'API Documentation',
-        category: 'Documentation',
+        id: "6",
+        text: "API Documentation",
+        category: "Documentation",
         icon: <span>📚</span>,
       },
-    ]
+    ];
 
     return (
       <div className="w-96">
@@ -393,20 +398,20 @@ export const WithSuggestions: Story = {
           }
           onSubmit={(query) => alert(`Searching for: ${query}`)}
           onSuggestionSelect={(suggestion) => {
-            alert(`Selected: ${suggestion.text}`)
+            alert(`Selected: ${suggestion.text}`);
           }}
         />
       </div>
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Search form with dropdown suggestions and keyboard navigation',
+        story: "Search form with dropdown suggestions and keyboard navigation",
       },
     },
   },
-}
+};
 
 // Real-world examples
 export const NodeSearchExample: Story = {
@@ -468,14 +473,14 @@ export const NodeSearchExample: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Examples of how search forms might be used in the Roam Web application',
+        story: "Examples of how search forms might be used in the Roam Web application",
       },
     },
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -556,14 +561,14 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available search form variants',
+        story: "Overview of all available search form variants",
       },
     },
   },
-}
+};
 
 // Height alignment test - to verify button and input alignment
 export const HeightAlignmentTest: Story = {
@@ -699,12 +704,12 @@ export const HeightAlignmentTest: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
         story:
-          'Test story to verify proper height alignment between input fields and buttons across all variants and sizes.',
+          "Test story to verify proper height alignment between input fields and buttons across all variants and sizes.",
       },
     },
   },
-}
+};

@@ -1,136 +1,136 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Textarea } from './textarea'
+import type { Meta, StoryObj } from "@storybook/react";
+import { Textarea } from "./textarea";
 
 const meta: Meta<typeof Textarea> = {
-  title: 'UI/Textarea',
+  title: "UI/Textarea",
   component: Textarea,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A styled textarea component built with Tailwind CSS. Perfect for multiline text input with automatic resizing and consistent styling.',
+          "A styled textarea component built with Tailwind CSS. Perfect for multiline text input with automatic resizing and consistent styling.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     placeholder: {
-      control: 'text',
-      description: 'Placeholder text for the textarea',
+      control: "text",
+      description: "Placeholder text for the textarea",
     },
     disabled: {
-      control: 'boolean',
-      description: 'Whether the textarea is disabled',
+      control: "boolean",
+      description: "Whether the textarea is disabled",
     },
     required: {
-      control: 'boolean',
-      description: 'Whether the textarea is required',
+      control: "boolean",
+      description: "Whether the textarea is required",
     },
     readOnly: {
-      control: 'boolean',
-      description: 'Whether the textarea is read-only',
+      control: "boolean",
+      description: "Whether the textarea is read-only",
     },
     rows: {
-      control: 'number',
-      description: 'Number of visible text lines',
+      control: "number",
+      description: "Number of visible text lines",
     },
     cols: {
-      control: 'number',
-      description: 'Number of visible character widths',
+      control: "number",
+      description: "Number of visible character widths",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS classes',
+      control: "text",
+      description: "Additional CSS classes",
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    placeholder: 'Enter your message...',
+    placeholder: "Enter your message...",
   },
-}
+};
 
 export const WithValue: Story = {
   args: {
     value:
-      'This is a sample text that spans multiple lines.\n\nIt demonstrates how the textarea component handles multiline content with proper spacing and formatting.',
-    placeholder: 'Enter your message...',
+      "This is a sample text that spans multiple lines.\n\nIt demonstrates how the textarea component handles multiline content with proper spacing and formatting.",
+    placeholder: "Enter your message...",
   },
-}
+};
 
 export const Small: Story = {
   args: {
     rows: 3,
-    placeholder: 'Short message...',
+    placeholder: "Short message...",
   },
-}
+};
 
 export const Large: Story = {
   args: {
     rows: 10,
-    placeholder: 'Long form content...',
+    placeholder: "Long form content...",
   },
-}
+};
 
 export const Disabled: Story = {
   args: {
     disabled: true,
-    value: 'This textarea is disabled and cannot be edited.',
-    placeholder: 'Disabled textarea',
+    value: "This textarea is disabled and cannot be edited.",
+    placeholder: "Disabled textarea",
   },
-}
+};
 
 export const Required: Story = {
   args: {
     required: true,
-    placeholder: 'This field is required*',
+    placeholder: "This field is required*",
   },
-}
+};
 
 export const ReadOnly: Story = {
   args: {
     readOnly: true,
-    value: 'This is read-only content that cannot be modified by the user.',
+    value: "This is read-only content that cannot be modified by the user.",
     rows: 4,
   },
-}
+};
 
 export const WithError: Story = {
   args: {
-    placeholder: 'Enter text...',
-    className: 'border-red-500 focus:ring-red-500',
-    value: 'This content has validation errors',
+    placeholder: "Enter text...",
+    className: "border-red-500 focus:ring-red-500",
+    value: "This content has validation errors",
   },
-}
+};
 
 export const WithSuccess: Story = {
   args: {
-    placeholder: 'Enter text...',
-    className: 'border-green-500 focus:ring-green-500',
-    value: 'This content is valid!',
+    placeholder: "Enter text...",
+    className: "border-green-500 focus:ring-green-500",
+    value: "This content is valid!",
   },
-}
+};
 
 export const Resizable: Story = {
   args: {
-    placeholder: 'This textarea can be resized...',
-    style: { resize: 'vertical' },
+    placeholder: "This textarea can be resized...",
+    style: { resize: "vertical" },
     rows: 4,
   },
-}
+};
 
 export const NonResizable: Story = {
   args: {
-    placeholder: 'This textarea cannot be resized...',
-    style: { resize: 'none' },
+    placeholder: "This textarea cannot be resized...",
+    style: { resize: "none" },
     rows: 4,
   },
-}
+};
 
 // Example showing different use cases
 export const FormExample: Story = {
@@ -172,12 +172,12 @@ export const FormExample: Story = {
           id="notes"
           placeholder="Any additional information..."
           rows={3}
-          style={{ resize: 'vertical' }}
+          style={{ resize: "vertical" }}
         />
       </div>
     </div>
   ),
-}
+};
 
 export const ChatExample: Story = {
   render: () => (
@@ -196,7 +196,7 @@ export const ChatExample: Story = {
           placeholder="Type your message..."
           rows={3}
           className="flex-1"
-          style={{ resize: 'none' }}
+          style={{ resize: "none" }}
         />
         <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
           Send
@@ -204,4 +204,4 @@ export const ChatExample: Story = {
       </div>
     </div>
   ),
-}
+};

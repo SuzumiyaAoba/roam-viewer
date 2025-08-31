@@ -1,152 +1,152 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Badge } from './Badge'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Badge } from "./Badge";
 
 const meta = {
-  title: 'Design System/Badge',
+  title: "Design System/Badge",
   component: Badge,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A versatile badge component for displaying status, categories, or short pieces of information. Supports various styles, sizes, and interactive features.',
+          "A versatile badge component for displaying status, categories, or short pieces of information. Supports various styles, sizes, and interactive features.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'secondary', 'destructive', 'success', 'warning', 'outline', 'ghost'],
-      description: 'The visual variant of the badge',
+      control: { type: "select" },
+      options: ["default", "secondary", "destructive", "success", "warning", "outline", "ghost"],
+      description: "The visual variant of the badge",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the badge',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the badge",
     },
     removable: {
-      control: 'boolean',
-      description: 'Whether the badge can be removed',
+      control: "boolean",
+      description: "Whether the badge can be removed",
     },
     dot: {
-      control: 'boolean',
-      description: 'Whether to show a dot indicator',
+      control: "boolean",
+      description: "Whether to show a dot indicator",
     },
     children: {
-      control: 'text',
-      description: 'The content of the badge',
+      control: "text",
+      description: "The content of the badge",
     },
   },
-} satisfies Meta<typeof Badge>
+} satisfies Meta<typeof Badge>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic variants
 export const Default: Story = {
   args: {
-    children: 'Badge',
+    children: "Badge",
   },
-}
+};
 
 export const Secondary: Story = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary',
+    variant: "secondary",
+    children: "Secondary",
   },
-}
+};
 
 export const Destructive: Story = {
   args: {
-    variant: 'destructive',
-    children: 'Error',
+    variant: "destructive",
+    children: "Error",
   },
-}
+};
 
 export const Success: Story = {
   args: {
-    variant: 'success',
-    children: 'Success',
+    variant: "success",
+    children: "Success",
   },
-}
+};
 
 export const Warning: Story = {
   args: {
-    variant: 'warning',
-    children: 'Warning',
+    variant: "warning",
+    children: "Warning",
   },
-}
+};
 
 export const Outline: Story = {
   args: {
-    variant: 'outline',
-    children: 'Outline',
+    variant: "outline",
+    children: "Outline",
   },
-}
+};
 
 export const Ghost: Story = {
   args: {
-    variant: 'ghost',
-    children: 'Ghost',
+    variant: "ghost",
+    children: "Ghost",
   },
-}
+};
 
 // Sizes
 export const Small: Story = {
   args: {
-    size: 'sm',
-    children: 'Small',
+    size: "sm",
+    children: "Small",
   },
-}
+};
 
 export const Large: Story = {
   args: {
-    size: 'lg',
-    children: 'Large',
+    size: "lg",
+    children: "Large",
   },
-}
+};
 
 // Interactive features
 export const WithDot: Story = {
   args: {
     dot: true,
-    children: 'Online',
-    variant: 'success',
+    children: "Online",
+    variant: "success",
   },
-}
+};
 
 export const WithStartIcon: Story = {
   args: {
-    startIcon: '🏷️',
-    children: 'Tagged',
+    startIcon: "🏷️",
+    children: "Tagged",
   },
-}
+};
 
 export const WithEndIcon: Story = {
   args: {
-    endIcon: '→',
-    children: 'Next',
+    endIcon: "→",
+    children: "Next",
   },
-}
+};
 
 export const Removable: Story = {
   args: {
     removable: true,
-    children: 'Removable',
-    onRemove: () => alert('Badge removed!'),
+    children: "Removable",
+    onRemove: () => alert("Badge removed!"),
   },
-}
+};
 
 export const RemovableWithIcon: Story = {
   args: {
     removable: true,
-    startIcon: '🏷️',
-    children: 'Tag',
-    onRemove: () => alert('Tag removed!'),
+    startIcon: "🏷️",
+    children: "Tag",
+    onRemove: () => alert("Tag removed!"),
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -165,14 +165,14 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available badge variants and sizes',
+        story: "Overview of all available badge variants and sizes",
       },
     },
   },
-}
+};
 
 // All sizes showcase
 export const AllSizes: Story = {
@@ -184,11 +184,11 @@ export const AllSizes: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Comparison of all available badge sizes',
+        story: "Comparison of all available badge sizes",
       },
     },
   },
-}
+};

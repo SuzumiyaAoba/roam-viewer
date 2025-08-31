@@ -34,13 +34,6 @@
       }
     }
   },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single",
-      "semicolons": "asNeeded",
-      "trailingCommas": "es5"
-    }
-  },
   "assist": {
     "enabled": true,
     "actions": {

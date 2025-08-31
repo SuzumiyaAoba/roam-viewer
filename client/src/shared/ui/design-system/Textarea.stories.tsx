@@ -1,179 +1,179 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
-import { AutoTextarea, InlineTextarea, Textarea } from './Textarea'
+import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
+import { AutoTextarea, InlineTextarea, Textarea } from "./Textarea";
 
 const meta = {
-  title: 'Design System/Textarea',
+  title: "Design System/Textarea",
   component: Textarea,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A flexible textarea component with multiple variants, auto-resize functionality, character counting, and form validation states. Perfect for multi-line text input with enhanced user experience.',
+          "A flexible textarea component with multiple variants, auto-resize functionality, character counting, and form validation states. Perfect for multi-line text input with enhanced user experience.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'filled', 'outlined', 'minimal', 'error', 'success'],
-      description: 'The visual variant of the textarea',
+      control: { type: "select" },
+      options: ["default", "filled", "outlined", "minimal", "error", "success"],
+      description: "The visual variant of the textarea",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the textarea',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the textarea",
     },
     resize: {
-      control: { type: 'select' },
-      options: ['none', 'vertical', 'horizontal', 'both'],
-      description: 'Resize behavior',
+      control: { type: "select" },
+      options: ["none", "vertical", "horizontal", "both"],
+      description: "Resize behavior",
     },
     label: {
-      control: 'text',
-      description: 'Label for the textarea',
+      control: "text",
+      description: "Label for the textarea",
     },
     helperText: {
-      control: 'text',
-      description: 'Helper text displayed below the textarea',
+      control: "text",
+      description: "Helper text displayed below the textarea",
     },
     placeholder: {
-      control: 'text',
-      description: 'Placeholder text',
+      control: "text",
+      description: "Placeholder text",
     },
     showCharCount: {
-      control: 'boolean',
-      description: 'Whether to show character count',
+      control: "boolean",
+      description: "Whether to show character count",
     },
     autoResize: {
-      control: 'boolean',
-      description: 'Auto-resize based on content',
+      control: "boolean",
+      description: "Auto-resize based on content",
     },
   },
-} satisfies Meta<typeof Textarea>
+} satisfies Meta<typeof Textarea>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic examples
 export const Default: Story = {
   args: {
-    placeholder: 'Enter your text here...',
+    placeholder: "Enter your text here...",
     rows: 4,
   },
-}
+};
 
 export const WithLabel: Story = {
   args: {
-    label: 'Description',
-    placeholder: 'Enter a detailed description...',
+    label: "Description",
+    placeholder: "Enter a detailed description...",
     rows: 4,
   },
-}
+};
 
 export const WithHelperText: Story = {
   args: {
-    label: 'Content',
-    placeholder: 'Write your content...',
-    helperText: 'Markdown formatting is supported',
+    label: "Content",
+    placeholder: "Write your content...",
+    helperText: "Markdown formatting is supported",
     rows: 6,
   },
-}
+};
 
 export const Required: Story = {
   args: {
-    label: 'Message',
-    placeholder: 'Enter your message...',
+    label: "Message",
+    placeholder: "Enter your message...",
     required: true,
-    helperText: 'This field is required',
+    helperText: "This field is required",
     rows: 4,
   },
-}
+};
 
 // Variants
 export const Filled: Story = {
   args: {
-    variant: 'filled',
-    label: 'Notes',
-    placeholder: 'Your notes...',
+    variant: "filled",
+    label: "Notes",
+    placeholder: "Your notes...",
     rows: 4,
   },
-}
+};
 
 export const Outlined: Story = {
   args: {
-    variant: 'outlined',
-    label: 'Comments',
-    placeholder: 'Add your comments...',
+    variant: "outlined",
+    label: "Comments",
+    placeholder: "Add your comments...",
     rows: 4,
   },
-}
+};
 
 export const Minimal: Story = {
   args: {
-    variant: 'minimal',
-    placeholder: 'Type here...',
+    variant: "minimal",
+    placeholder: "Type here...",
     rows: 3,
   },
-}
+};
 
 export const Error: Story = {
   args: {
-    label: 'Feedback',
-    placeholder: 'Please provide feedback...',
-    errorMessage: 'Feedback is required and must be at least 10 characters long',
-    value: 'Too short',
+    label: "Feedback",
+    placeholder: "Please provide feedback...",
+    errorMessage: "Feedback is required and must be at least 10 characters long",
+    value: "Too short",
     rows: 4,
   },
-}
+};
 
 export const Success: Story = {
   args: {
-    label: 'Review',
-    placeholder: 'Write your review...',
-    successMessage: 'Review looks great!',
-    value: 'This is an excellent product with great features and outstanding customer service.',
+    label: "Review",
+    placeholder: "Write your review...",
+    successMessage: "Review looks great!",
+    value: "This is an excellent product with great features and outstanding customer service.",
     rows: 4,
   },
-}
+};
 
 // Sizes
 export const Small: Story = {
   args: {
-    size: 'sm',
-    label: 'Quick Note',
-    placeholder: 'Brief note...',
+    size: "sm",
+    label: "Quick Note",
+    placeholder: "Brief note...",
     rows: 3,
   },
-}
+};
 
 export const Large: Story = {
   args: {
-    size: 'lg',
-    label: 'Detailed Description',
-    placeholder: 'Provide a comprehensive description...',
+    size: "lg",
+    label: "Detailed Description",
+    placeholder: "Provide a comprehensive description...",
     rows: 6,
   },
-}
+};
 
 // Character counting
 export const WithCharCount: Story = {
   args: {
-    label: 'Tweet',
+    label: "Tweet",
     placeholder: "What's happening?",
     showCharCount: true,
     maxLength: 280,
     rows: 4,
   },
-}
+};
 
 export const CharCountOverLimit: Story = {
   render: () => {
     const [value, setValue] = useState(
-      'This is a very long message that exceeds the maximum character limit. It demonstrates how the component handles character count validation and displays warnings when limits are exceeded.'
-    )
+      "This is a very long message that exceeds the maximum character limit. It demonstrates how the component handles character count validation and displays warnings when limits are exceeded.",
+    );
 
     return (
       <Textarea
@@ -186,16 +186,16 @@ export const CharCountOverLimit: Story = {
         rows={4}
         helperText="Please keep your message under 100 characters"
       />
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Textarea with character limit exceeded showing validation styling',
+        story: "Textarea with character limit exceeded showing validation styling",
       },
     },
   },
-}
+};
 
 // Auto-resize
 export const AutoResize: Story = {
@@ -209,11 +209,11 @@ export const AutoResize: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Auto-resizing textarea that expands with content',
+        story: "Auto-resizing textarea that expands with content",
       },
     },
   },
-}
+};
 
 export const InlineEditing: Story = {
   render: () => (
@@ -230,17 +230,17 @@ export const InlineEditing: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Minimal textarea for inline editing scenarios',
+        story: "Minimal textarea for inline editing scenarios",
       },
     },
   },
-}
+};
 
 // Controlled example
 export const Controlled: Story = {
   render: () => {
-    const [value, setValue] = useState('')
-    const wordCount = value.trim() ? value.trim().split(/\s+/).length : 0
+    const [value, setValue] = useState("");
+    const wordCount = value.trim() ? value.trim().split(/\s+/).length : 0;
 
     return (
       <div className="space-y-4">
@@ -254,23 +254,23 @@ export const Controlled: Story = {
           helperText={`Words: ${wordCount}`}
         />
         <div className="text-sm text-gray-600">
-          Current value:{' '}
+          Current value:{" "}
           <code>
             {value.substring(0, 50)}
-            {value.length > 50 ? '...' : ''}
+            {value.length > 50 ? "..." : ""}
           </code>
         </div>
       </div>
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Controlled textarea with external state management and word counting',
+        story: "Controlled textarea with external state management and word counting",
       },
     },
   },
-}
+};
 
 // Resize options
 export const ResizeOptions: Story = {
@@ -312,11 +312,11 @@ export const ResizeOptions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Different resize behavior options for the textarea',
+        story: "Different resize behavior options for the textarea",
       },
     },
   },
-}
+};
 
 // Form examples
 export const FormExample: Story = {
@@ -347,14 +347,14 @@ export const FormExample: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Example of textareas used in a contact form',
+        story: "Example of textareas used in a contact form",
       },
     },
   },
-}
+};
 
 // Node editing example
 export const NodeEditingExample: Story = {
@@ -417,14 +417,14 @@ Here are some key principles for using React Hooks effectively:
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Example of how textareas might be used in the Roam Web node editor',
+        story: "Example of how textareas might be used in the Roam Web node editor",
       },
     },
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -504,11 +504,11 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available textarea variants, states, and sizes',
+        story: "Overview of all available textarea variants, states, and sizes",
       },
     },
   },
-}
+};

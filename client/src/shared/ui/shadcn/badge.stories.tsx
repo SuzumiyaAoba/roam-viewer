@@ -1,65 +1,65 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Badge } from './badge'
+import type { Meta, StoryObj } from "@storybook/react";
+import { Badge } from "./badge";
 
 const meta: Meta<typeof Badge> = {
-  title: 'UI/Badge',
+  title: "UI/Badge",
   component: Badge,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A versatile badge component for displaying status, categories, or other metadata. Supports multiple variants and sizes.',
+          "A versatile badge component for displaying status, categories, or other metadata. Supports multiple variants and sizes.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['default', 'secondary', 'destructive', 'outline'],
-      description: 'The visual style variant of the badge',
+      control: "select",
+      options: ["default", "secondary", "destructive", "outline"],
+      description: "The visual style variant of the badge",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS classes',
+      control: "text",
+      description: "Additional CSS classes",
     },
     children: {
-      control: 'text',
-      description: 'The content of the badge',
+      control: "text",
+      description: "The content of the badge",
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    children: 'Badge',
+    children: "Badge",
   },
-}
+};
 
 export const Secondary: Story = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary',
+    variant: "secondary",
+    children: "Secondary",
   },
-}
+};
 
 export const Destructive: Story = {
   args: {
-    variant: 'destructive',
-    children: 'Error',
+    variant: "destructive",
+    children: "Error",
   },
-}
+};
 
 export const Outline: Story = {
   args: {
-    variant: 'outline',
-    children: 'Outline',
+    variant: "outline",
+    children: "Outline",
   },
-}
+};
 
 // Show all variants together
 export const AllVariants: Story = {
@@ -71,7 +71,7 @@ export const AllVariants: Story = {
       <Badge variant="outline">Outline</Badge>
     </div>
   ),
-}
+};
 
 // Status badges
 export const StatusBadges: Story = {
@@ -83,7 +83,7 @@ export const StatusBadges: Story = {
       <Badge variant="outline">Draft</Badge>
     </div>
   ),
-}
+};
 
 // Count badges
 export const CountBadges: Story = {
@@ -109,7 +109,7 @@ export const CountBadges: Story = {
       </div>
     </div>
   ),
-}
+};
 
 // Interactive badges
 export const InteractiveBadges: Story = {
@@ -117,27 +117,27 @@ export const InteractiveBadges: Story = {
     <div className="flex flex-wrap gap-2">
       <Badge
         className="cursor-pointer hover:bg-primary/80 transition-colors"
-        onClick={() => alert('Default badge clicked!')}
+        onClick={() => alert("Default badge clicked!")}
       >
         Click me
       </Badge>
       <Badge
         variant="secondary"
         className="cursor-pointer hover:bg-secondary/80 transition-colors"
-        onClick={() => alert('Secondary badge clicked!')}
+        onClick={() => alert("Secondary badge clicked!")}
       >
         Clickable
       </Badge>
       <Badge
         variant="outline"
         className="cursor-pointer hover:bg-gray-100 transition-colors"
-        onClick={() => alert('Outline badge clicked!')}
+        onClick={() => alert("Outline badge clicked!")}
       >
         Interactive
       </Badge>
     </div>
   ),
-}
+};
 
 // Tags example
 export const TagsExample: Story = {
@@ -173,7 +173,7 @@ export const TagsExample: Story = {
       </div>
     </div>
   ),
-}
+};
 
 // With icons
 export const WithIcons: Story = {
@@ -213,7 +213,7 @@ export const WithIcons: Story = {
       </Badge>
     </div>
   ),
-}
+};
 
 // Sizes example
 export const Sizes: Story = {
@@ -225,7 +225,7 @@ export const Sizes: Story = {
       <Badge className="text-base px-4 py-2">Extra Large</Badge>
     </div>
   ),
-}
+};
 
 // Custom styling
 export const CustomStyling: Story = {
@@ -237,4 +237,4 @@ export const CustomStyling: Story = {
       <Badge className="bg-gray-900 text-white">Dark</Badge>
     </div>
   ),
-}
+};

@@ -1,59 +1,59 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Button } from './Button'
-import { Loading, LoadingButton, Spinner } from './Spinner'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Button } from "./Button";
+import { Loading, LoadingButton, Spinner } from "./Spinner";
 
 const meta = {
-  title: 'Design System/Spinner & Loading',
+  title: "Design System/Spinner & Loading",
   component: Spinner,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'Loading indicators including spinners, loading states, and loading buttons for showing progress and async operations.',
+          "Loading indicators including spinners, loading states, and loading buttons for showing progress and async operations.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     size: {
-      control: { type: 'select' },
-      options: ['xs', 'sm', 'default', 'lg', 'xl', '2xl'],
-      description: 'The size of the spinner',
+      control: { type: "select" },
+      options: ["xs", "sm", "default", "lg", "xl", "2xl"],
+      description: "The size of the spinner",
     },
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'primary', 'secondary', 'success', 'warning', 'destructive', 'white'],
-      description: 'The color variant of the spinner',
+      control: { type: "select" },
+      options: ["default", "primary", "secondary", "success", "warning", "destructive", "white"],
+      description: "The color variant of the spinner",
     },
     label: {
-      control: 'text',
-      description: 'Accessible label for screen readers',
+      control: "text",
+      description: "Accessible label for screen readers",
     },
   },
-} satisfies Meta<typeof Spinner>
+} satisfies Meta<typeof Spinner>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic Spinner
 export const DefaultSpinner: Story = {
   args: {},
-}
+};
 
 export const PrimarySpinner: Story = {
   args: {
-    variant: 'primary',
+    variant: "primary",
   },
-}
+};
 
 export const LargeSpinner: Story = {
   args: {
-    size: 'xl',
-    variant: 'primary',
+    size: "xl",
+    variant: "primary",
   },
-}
+};
 
 // All sizes
 export const AllSizes: Story = {
@@ -86,14 +86,14 @@ export const AllSizes: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'All available spinner sizes',
+        story: "All available spinner sizes",
       },
     },
   },
-}
+};
 
 // All variants
 export const AllVariants: Story = {
@@ -130,14 +130,14 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'All available spinner color variants',
+        story: "All available spinner color variants",
       },
     },
   },
-}
+};
 
 // Loading Component
 export const BasicLoading: Story = {
@@ -145,22 +145,22 @@ export const BasicLoading: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Basic loading component with text',
+        story: "Basic loading component with text",
       },
     },
   },
-}
+};
 
 export const LoadingWithoutText: Story = {
   render: () => <Loading text="" />,
   parameters: {
     docs: {
       description: {
-        story: 'Loading component without text',
+        story: "Loading component without text",
       },
     },
   },
-}
+};
 
 export const LoadingOverlay: Story = {
   render: () => (
@@ -176,21 +176,21 @@ export const LoadingOverlay: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Loading overlay that covers existing content',
+        story: "Loading overlay that covers existing content",
       },
     },
   },
-}
+};
 
 // Loading Button
 export const LoadingButtonStory: Story = {
   render: () => {
-    const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = React.useState(false);
 
     const handleClick = () => {
-      setLoading(true)
-      setTimeout(() => setLoading(false), 2000)
-    }
+      setLoading(true);
+      setTimeout(() => setLoading(false), 2000);
+    };
 
     return (
       <div className="space-y-4">
@@ -200,16 +200,16 @@ export const LoadingButtonStory: Story = {
 
         <p className="text-sm text-gray-600">Click the button to see the loading state</p>
       </div>
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive loading button that shows spinner when active',
+        story: "Interactive loading button that shows spinner when active",
       },
     },
   },
-}
+};
 
 export const LoadingButtonVariants: Story = {
   render: () => (
@@ -234,34 +234,34 @@ export const LoadingButtonVariants: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Loading buttons in different states and colors',
+        story: "Loading buttons in different states and colors",
       },
     },
   },
-}
+};
 
 // Interactive examples
 export const DataFetching: Story = {
   render: () => {
-    const [loading, setLoading] = React.useState(true)
-    const [data, setData] = React.useState(null)
+    const [loading, setLoading] = React.useState(true);
+    const [data, setData] = React.useState(null);
 
     const fetchData = () => {
-      setLoading(true)
-      setData(null)
+      setLoading(true);
+      setData(null);
       setTimeout(() => {
         setData([
-          { id: 1, name: 'John Doe', email: 'john@example.com' },
-          { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-          { id: 3, name: 'Bob Johnson', email: 'bob@example.com' },
-        ])
-        setLoading(false)
-      }, 2000)
-    }
+          { id: 1, name: "John Doe", email: "john@example.com" },
+          { id: 2, name: "Jane Smith", email: "jane@example.com" },
+          { id: 3, name: "Bob Johnson", email: "bob@example.com" },
+        ]);
+        setLoading(false);
+      }, 2000);
+    };
 
     React.useEffect(() => {
-      fetchData()
-    }, [])
+      fetchData();
+    }, []);
 
     return (
       <div className="max-w-md border rounded-lg">
@@ -288,9 +288,9 @@ export const DataFetching: Story = {
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-blue-600">
                       {user.name
-                        .split(' ')
+                        .split(" ")
                         .map((n) => n[0])
-                        .join('')}
+                        .join("")}
                     </span>
                   </div>
                   <div>
@@ -303,13 +303,13 @@ export const DataFetching: Story = {
           )}
         </div>
       </div>
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Data fetching with loading states and refresh functionality',
+        story: "Data fetching with loading states and refresh functionality",
       },
     },
   },
-}
+};

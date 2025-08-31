@@ -1,7 +1,7 @@
-import { Icon } from '@iconify/react'
-import { Link } from 'react-router-dom'
-import { useTags } from '../../entities/tag'
-import { Layout } from '../../widgets/layout'
+import { Icon } from "@iconify/react";
+import { Link } from "react-router-dom";
+import { useTags } from "../../entities/tag";
+import { Layout } from "../../widgets/layout";
 
 function TagCard({ tag, count }: { tag: string; count: number }) {
   return (
@@ -15,7 +15,7 @@ function TagCard({ tag, count }: { tag: string; count: number }) {
             <div>
               <h3 className="font-medium text-gray-900">#{tag}</h3>
               <p className="text-sm text-gray-500">
-                {count} node{count !== 1 ? 's' : ''}
+                {count} node{count !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
@@ -40,7 +40,7 @@ function TagCard({ tag, count }: { tag: string; count: number }) {
         </Link>
       </div>
     </div>
-  )
+  );
 }
 
 function EmptyState() {
@@ -59,11 +59,11 @@ function EmptyState() {
         <span>Create Node</span>
       </Link>
     </div>
-  )
+  );
 }
 
 export function TagListPage() {
-  const { data: tags, isLoading, error } = useTags()
+  const { data: tags, isLoading, error } = useTags();
 
   if (isLoading) {
     return (
@@ -75,7 +75,7 @@ export function TagListPage() {
           </div>
         </div>
       </Layout>
-    )
+    );
   }
 
   if (error) {
@@ -87,7 +87,7 @@ export function TagListPage() {
           </div>
         </div>
       </Layout>
-    )
+    );
   }
 
   if (!tags || tags.length === 0) {
@@ -95,7 +95,7 @@ export function TagListPage() {
       <Layout title="Tags">
         <EmptyState />
       </Layout>
-    )
+    );
   }
 
   return (
@@ -103,7 +103,7 @@ export function TagListPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-gray-600">
-            Browse {tags.length} tag{tags.length !== 1 ? 's' : ''} across your knowledge base
+            Browse {tags.length} tag{tags.length !== 1 ? "s" : ""} across your knowledge base
           </p>
         </div>
         <Link
@@ -121,5 +121,5 @@ export function TagListPage() {
         ))}
       </div>
     </Layout>
-  )
+  );
 }

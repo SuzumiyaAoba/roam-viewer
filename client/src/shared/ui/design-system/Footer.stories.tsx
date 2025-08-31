@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Button } from './Button'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Button } from "./Button";
 import {
   Footer,
   FooterBottom,
@@ -9,49 +9,49 @@ import {
   FooterSection,
   FooterSocial,
   FooterSocialLink,
-} from './Footer'
+} from "./Footer";
 
 const meta = {
-  title: 'Design System/Footer',
+  title: "Design System/Footer",
   component: Footer,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
     docs: {
       description: {
         component:
-          'A flexible footer component with multiple variants and composable parts. Perfect for displaying site information, links, and calls-to-action with proper spacing and visual hierarchy.',
+          "A flexible footer component with multiple variants and composable parts. Perfect for displaying site information, links, and calls-to-action with proper spacing and visual hierarchy.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'minimal', 'dark', 'accent'],
-      description: 'The visual variant of the footer',
+      control: { type: "select" },
+      options: ["default", "minimal", "dark", "accent"],
+      description: "The visual variant of the footer",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the footer',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the footer",
     },
     layout: {
-      control: { type: 'select' },
-      options: ['simple', 'multi', 'centered'],
-      description: 'The layout style of the footer',
+      control: { type: "select" },
+      options: ["simple", "multi", "centered"],
+      description: "The layout style of the footer",
     },
   },
-} satisfies Meta<typeof Footer>
+} satisfies Meta<typeof Footer>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic examples
 export const Default: Story = {
   render: () => (
     <Footer bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
   ),
-}
+};
 
 export const Minimal: Story = {
   render: () => (
@@ -60,7 +60,7 @@ export const Minimal: Story = {
       bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
     />
   ),
-}
+};
 
 export const Dark: Story = {
   render: () => (
@@ -69,7 +69,7 @@ export const Dark: Story = {
       bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
     />
   ),
-}
+};
 
 export const Accent: Story = {
   render: () => (
@@ -78,20 +78,20 @@ export const Accent: Story = {
       bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />}
     />
   ),
-}
+};
 
 // Size variations
 export const Small: Story = {
   render: () => (
     <Footer size="sm" bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
   ),
-}
+};
 
 export const Large: Story = {
   render: () => (
     <Footer size="lg" bottom={<FooterBottom copyright="© 2024 Roam Web. All rights reserved." />} />
   ),
-}
+};
 
 // Complete footer with sections
 export const WithSections: Story = {
@@ -153,7 +153,7 @@ export const WithSections: Story = {
       }
     />
   ),
-}
+};
 
 // Centered layout
 export const Centered: Story = {
@@ -193,7 +193,7 @@ export const Centered: Story = {
       }
     />
   ),
-}
+};
 
 // App footer example
 export const AppFooter: Story = {
@@ -252,11 +252,11 @@ export const AppFooter: Story = {
     docs: {
       description: {
         story:
-          'Footer specifically designed for the Roam Web application with relevant links and sections',
+          "Footer specifically designed for the Roam Web application with relevant links and sections",
       },
     },
   },
-}
+};
 
 // Dark theme footer
 export const DarkTheme: Story = {
@@ -362,11 +362,11 @@ export const DarkTheme: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Dark theme footer with custom styling for dark backgrounds',
+        story: "Dark theme footer with custom styling for dark backgrounds",
       },
     },
   },
-}
+};
 
 // Simple footer variations
 export const SimpleFooter: Story = {
@@ -389,7 +389,7 @@ export const SimpleFooter: Story = {
       }
     />
   ),
-}
+};
 
 // Newsletter focused footer
 export const NewsletterFocus: Story = {
@@ -435,11 +435,11 @@ export const NewsletterFocus: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Footer focused on newsletter signup with accent styling',
+        story: "Footer focused on newsletter signup with accent styling",
       },
     },
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -476,11 +476,11 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available footer variants',
+        story: "Overview of all available footer variants",
       },
     },
   },
-}
+};

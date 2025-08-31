@@ -1,41 +1,41 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import type React from 'react'
-import { forwardRef } from 'react'
-import { Badge } from './Badge'
-import { Button } from './Button'
-import { cn } from './utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
+import { forwardRef } from "react";
+import { Badge } from "./Badge";
+import { Button } from "./Button";
+import { cn } from "./utils";
 
 const nodeCardVariants = cva(
-  'group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer',
+  "group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer",
   {
     variants: {
       variant: {
-        default: 'bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg',
-        elevated: 'bg-white shadow-md hover:shadow-xl border-0',
+        default: "bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg",
+        elevated: "bg-white shadow-md hover:shadow-xl border-0",
         minimal:
-          'bg-gray-50 border border-gray-100 hover:bg-white hover:border-gray-200 hover:shadow-md',
+          "bg-gray-50 border border-gray-100 hover:bg-white hover:border-gray-200 hover:shadow-md",
         accent:
-          'bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 hover:from-blue-100 hover:to-indigo-100 hover:shadow-lg',
+          "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 hover:from-blue-100 hover:to-indigo-100 hover:shadow-lg",
         glass:
-          'bg-white/70 backdrop-blur-sm border border-white/20 hover:bg-white/80 hover:shadow-lg',
+          "bg-white/70 backdrop-blur-sm border border-white/20 hover:bg-white/80 hover:shadow-lg",
       },
       size: {
-        sm: 'p-4',
-        default: 'p-6',
-        lg: 'p-8',
+        sm: "p-4",
+        default: "p-6",
+        lg: "p-8",
       },
       interactive: {
-        true: 'hover:scale-[1.02] hover:-translate-y-1',
-        false: '',
+        true: "hover:scale-[1.02] hover:-translate-y-1",
+        false: "",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: "default",
+      size: "default",
       interactive: true,
     },
-  }
-)
+  },
+);
 
 export interface NodeCardProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -43,63 +43,63 @@ export interface NodeCardProps
   /**
    * Node title
    */
-  title: string
+  title: string;
   /**
    * Node content preview
    */
-  content?: string
+  content?: string;
   /**
    * Node file path
    */
-  file?: string
+  file?: string;
   /**
    * Node tags
    */
-  tags?: string[]
+  tags?: string[];
   /**
    * TODO item text
    */
-  todo?: string
+  todo?: string;
   /**
    * Node creation/modification date
    */
-  date?: string | Date
+  date?: string | Date;
   /**
    * Whether the card is selected/active
    */
-  selected?: boolean
+  selected?: boolean;
   /**
    * Click handler for the card
    */
-  onCardClick?: () => void
+  onCardClick?: () => void;
   /**
    * Edit button click handler
    */
-  onEdit?: () => void
+  onEdit?: () => void;
   /**
    * Delete button click handler
    */
-  onDelete?: () => void
+  onDelete?: () => void;
   /**
    * Tag click handler
    */
-  onTagClick?: (tag: string) => void
+  onTagClick?: (tag: string) => void;
   /**
    * Show action buttons
    */
-  showActions?: boolean
+  showActions?: boolean;
   /**
    * Custom actions content
    */
-  actions?: React.ReactNode
+  actions?: React.ReactNode;
   /**
    * Maximum number of tags to show
    */
-  maxTags?: number
+  maxTags?: number;
   /**
    * Maximum length of content preview
    */
-  maxContentLength?: number
+  maxContentLength?: number;
 }
 
 const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
@@ -127,39 +127,39 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const displayTags = (tags || []).slice(0, maxTags)
-    const extraTagsCount = Math.max(0, (tags || []).length - maxTags)
+    const displayTags = (tags || []).slice(0, maxTags);
+    const extraTagsCount = Math.max(0, (tags || []).length - maxTags);
 
     const displayContent =
       content && content.length > maxContentLength
-        ? content.substring(0, maxContentLength) + '...'
-        : content
+        ? content.substring(0, maxContentLength) + "..."
+        : content;
 
     const formattedDate = date
-      ? new Date(date).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
+      ? new Date(date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
         })
-      : null
+      : null;
 
     const handleCardClick = (e: React.MouseEvent) => {
       // Don't trigger card click if clicking on action buttons
-      if ((e.target as HTMLElement).closest('[data-action-button]')) {
-        return
+      if ((e.target as HTMLElement).closest("[data-action-button]")) {
+        return;
       }
-      onCardClick?.()
-    }
+      onCardClick?.();
+    };
 
     return (
       <div
         ref={ref}
         className={cn(
           nodeCardVariants({ variant, size, interactive }),
-          selected && 'ring-2 ring-blue-500 ring-offset-2',
-          className
+          selected && "ring-2 ring-blue-500 ring-offset-2",
+          className,
         )}
         onClick={handleCardClick}
         {...props}
@@ -188,8 +188,8 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
                       size="sm"
                       variant="ghost"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        onEdit()
+                        e.stopPropagation();
+                        onEdit();
                       }}
                       data-action-button
                       className="h-8 w-8 p-0"
@@ -214,8 +214,8 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
                       size="sm"
                       variant="ghost"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        onDelete()
+                        e.stopPropagation();
+                        onDelete();
                       }}
                       data-action-button
                       className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
@@ -274,13 +274,13 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
                 variant="secondary"
                 size="sm"
                 className={cn(
-                  'text-xs',
-                  onTagClick && 'cursor-pointer hover:bg-blue-200 transition-colors'
+                  "text-xs",
+                  onTagClick && "cursor-pointer hover:bg-blue-200 transition-colors",
                 )}
                 onClick={(e) => {
                   if (onTagClick) {
-                    e.stopPropagation()
-                    onTagClick(tag)
+                    e.stopPropagation();
+                    onTagClick(tag);
                   }
                 }}
               >
@@ -306,10 +306,10 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         {/* Hover effect overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5 transition-all duration-300 pointer-events-none rounded-xl" />
       </div>
-    )
-  }
-)
-NodeCard.displayName = 'NodeCard'
+    );
+  },
+);
+NodeCard.displayName = "NodeCard";
 
 // Compact variant for list views
 const NodeCardCompact = forwardRef<HTMLDivElement, NodeCardProps>(
@@ -319,17 +319,17 @@ const NodeCardCompact = forwardRef<HTMLDivElement, NodeCardProps>(
       size="sm"
       variant="minimal"
       interactive={false}
-      className={cn('py-3 px-4 hover:scale-100 hover:translate-y-0', className)}
+      className={cn("py-3 px-4 hover:scale-100 hover:translate-y-0", className)}
       {...props}
     />
-  )
-)
-NodeCardCompact.displayName = 'NodeCardCompact'
+  ),
+);
+NodeCardCompact.displayName = "NodeCardCompact";
 
 // Grid variant with fixed aspect ratio
 const NodeCardGrid = forwardRef<HTMLDivElement, NodeCardProps>(({ className, ...props }, ref) => (
-  <NodeCard ref={ref} className={cn('aspect-[4/3] flex flex-col', className)} {...props} />
-))
-NodeCardGrid.displayName = 'NodeCardGrid'
+  <NodeCard ref={ref} className={cn("aspect-[4/3] flex flex-col", className)} {...props} />
+));
+NodeCardGrid.displayName = "NodeCardGrid";
 
-export { NodeCard, NodeCardCompact, NodeCardGrid, nodeCardVariants }
+export { NodeCard, NodeCardCompact, NodeCardGrid, nodeCardVariants };

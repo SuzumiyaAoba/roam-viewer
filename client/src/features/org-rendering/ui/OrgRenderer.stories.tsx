@@ -1,37 +1,37 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { OrgRenderer } from './OrgRenderer'
+import type { Meta, StoryObj } from "@storybook/react";
+import { OrgRenderer } from "./OrgRenderer";
 
 const meta: Meta<typeof OrgRenderer> = {
-  title: 'Components/OrgRenderer',
+  title: "Components/OrgRenderer",
   component: OrgRenderer,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A component for rendering Org-mode content using uniorg. Supports headers, lists, links, code blocks, tables, and more with consistent styling.',
+          "A component for rendering Org-mode content using uniorg. Supports headers, lists, links, code blocks, tables, and more with consistent styling.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     content: {
-      control: 'text',
-      description: 'The org-mode content to render',
+      control: "text",
+      description: "The org-mode content to render",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS classes',
+      control: "text",
+      description: "Additional CSS classes",
     },
     enableSyntaxHighlight: {
-      control: 'boolean',
-      description: 'Whether to enable syntax highlighting for code blocks',
+      control: "boolean",
+      description: "Whether to enable syntax highlighting for code blocks",
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Sample org content for stories
 const basicOrgContent = `* Introduction
@@ -47,7 +47,7 @@ Here's a subsection with some /italic/ and *bold* text.
   - Nested item
   - Another nested item
 
-Some regular paragraph text with a [[https://orgmode.org][link to Org-mode]].`
+Some regular paragraph text with a [[https://orgmode.org][link to Org-mode]].`;
 
 const codeBlockContent = `* Code Examples
 
@@ -73,7 +73,7 @@ def quicksort(arr):
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
     return quicksort(left) + middle + quicksort(right)
-#+END_SRC`
+#+END_SRC`;
 
 const tableContent = `* Data Tables
 
@@ -87,7 +87,7 @@ Here's a sample table with data:
 | Diana    |  28 | Sydney      | Australia |
 
 ** Summary
-The table above shows information about four individuals from different countries.`
+The table above shows information about four individuals from different countries.`;
 
 const listAndTaskContent = `* Task Management
 
@@ -113,7 +113,7 @@ const listAndTaskContent = `* Task Management
 ** Priorities
 - [#A] High priority task
 - [#B] Medium priority task  
-- [#C] Low priority task`
+- [#C] Low priority task`;
 
 const quotesAndNotesContent = `* Quotes and Notes
 
@@ -137,7 +137,7 @@ The =OrgRenderer= component supports:
 - =Code= spans and blocks
 - Links: [[https://example.com][Example]]
 - Lists (ordered and unordered)
-- Tables with proper formatting`
+- Tables with proper formatting`;
 
 const mathAndSymbolsContent = `* Mathematical Content
 
@@ -157,65 +157,65 @@ em-dash: —
 en-dash: –
 Ellipsis: …
 Copyright: ©
-Trademark: ™`
+Trademark: ™`;
 
 export const Default: Story = {
   args: {
     content: basicOrgContent,
   },
-}
+};
 
 export const CodeBlocks: Story = {
   args: {
     content: codeBlockContent,
     enableSyntaxHighlight: true,
   },
-}
+};
 
 export const Tables: Story = {
   args: {
     content: tableContent,
   },
-}
+};
 
 export const ListsAndTasks: Story = {
   args: {
     content: listAndTaskContent,
   },
-}
+};
 
 export const QuotesAndNotes: Story = {
   args: {
     content: quotesAndNotesContent,
   },
-}
+};
 
 export const MathAndSymbols: Story = {
   args: {
     content: mathAndSymbolsContent,
   },
-}
+};
 
 export const NoSyntaxHighlighting: Story = {
   args: {
     content: codeBlockContent,
     enableSyntaxHighlight: false,
   },
-}
+};
 
 export const CustomStyling: Story = {
   args: {
     content: basicOrgContent,
-    className: 'bg-gray-50 p-6 rounded-lg border',
+    className: "bg-gray-50 p-6 rounded-lg border",
   },
-}
+};
 
 export const MinimalContent: Story = {
   args: {
     content: `* Simple Header
 Just a simple paragraph with some text.`,
   },
-}
+};
 
 const todoLabelsContent = `* TODO プロジェクトの企画書を作成
 新しいプロジェクトの企画書を作成する必要があります。
@@ -243,7 +243,7 @@ const todoLabelsContent = `* TODO プロジェクトの企画書を作成
 ** DONE 完了したサブタスク
 ** DOING 進行中のサブタスク
 
-通常のテキスト。ここにある TODO は単なる文字列です。`
+通常のテキスト。ここにある TODO は単なる文字列です。`;
 
 export const TodoLabels: Story = {
   args: {
@@ -253,11 +253,11 @@ export const TodoLabels: Story = {
     docs: {
       description: {
         story:
-          'Demonstrates TODO keyword labels with different states: TODO (orange), DONE (green), DOING (blue), NEXT (purple), WAITING (yellow), and CANCELLED (gray). The labels are styled as small badges next to the headers.',
+          "Demonstrates TODO keyword labels with different states: TODO (orange), DONE (green), DOING (blue), NEXT (purple), WAITING (yellow), and CANCELLED (gray). The labels are styled as small badges next to the headers.",
       },
     },
   },
-}
+};
 
 export const ErrorHandling: Story = {
   render: () => (
@@ -272,7 +272,7 @@ export const ErrorHandling: Story = {
       </p>
     </div>
   ),
-}
+};
 
 // Comprehensive example showcasing all features
 export const ComprehensiveExample: Story = {
@@ -364,7 +364,7 @@ It preserves formatting exactly.
 
 This concludes the comprehensive example of Org-mode rendering capabilities.`,
   },
-}
+};
 
 // Comparison with Markdown
 export const ComparisonExample: Story = {
@@ -417,4 +417,4 @@ console.log('Code block');
       </div>
     </div>
   ),
-}
+};

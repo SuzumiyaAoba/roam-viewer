@@ -1,181 +1,181 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Button } from './Button'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Button } from "./Button";
 
 const meta = {
-  title: 'Design System/Button',
+  title: "Design System/Button",
   component: Button,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A versatile button component with multiple variants, sizes, and states. Built with accessibility in mind and designed to handle loading states gracefully.',
+          "A versatile button component with multiple variants, sizes, and states. Built with accessibility in mind and designed to handle loading states gracefully.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
+      control: { type: "select" },
       options: [
-        'default',
-        'destructive',
-        'outline',
-        'secondary',
-        'ghost',
-        'link',
-        'success',
-        'warning',
+        "default",
+        "destructive",
+        "outline",
+        "secondary",
+        "ghost",
+        "link",
+        "success",
+        "warning",
       ],
-      description: 'The visual variant of the button',
+      description: "The visual variant of the button",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg', 'icon'],
-      description: 'The size of the button',
+      control: { type: "select" },
+      options: ["sm", "default", "lg", "icon"],
+      description: "The size of the button",
     },
     fullWidth: {
-      control: 'boolean',
-      description: 'Whether the button should take full width of its container',
+      control: "boolean",
+      description: "Whether the button should take full width of its container",
     },
     loading: {
-      control: 'boolean',
-      description: 'Whether the button is in a loading state',
+      control: "boolean",
+      description: "Whether the button is in a loading state",
     },
     disabled: {
-      control: 'boolean',
-      description: 'Whether the button is disabled',
+      control: "boolean",
+      description: "Whether the button is disabled",
     },
     children: {
-      control: 'text',
-      description: 'The content of the button',
+      control: "text",
+      description: "The content of the button",
     },
   },
-} satisfies Meta<typeof Button>
+} satisfies Meta<typeof Button>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic stories
 export const Default: Story = {
   args: {
-    children: 'Button',
+    children: "Button",
   },
-}
+};
 
 export const Destructive: Story = {
   args: {
-    variant: 'destructive',
-    children: 'Delete',
+    variant: "destructive",
+    children: "Delete",
   },
-}
+};
 
 export const Outline: Story = {
   args: {
-    variant: 'outline',
-    children: 'Outline',
+    variant: "outline",
+    children: "Outline",
   },
-}
+};
 
 export const Secondary: Story = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary',
+    variant: "secondary",
+    children: "Secondary",
   },
-}
+};
 
 export const Ghost: Story = {
   args: {
-    variant: 'ghost',
-    children: 'Ghost',
+    variant: "ghost",
+    children: "Ghost",
   },
-}
+};
 
 export const Link: Story = {
   args: {
-    variant: 'link',
-    children: 'Link',
+    variant: "link",
+    children: "Link",
   },
-}
+};
 
 export const Success: Story = {
   args: {
-    variant: 'success',
-    children: 'Success',
+    variant: "success",
+    children: "Success",
   },
-}
+};
 
 export const Warning: Story = {
   args: {
-    variant: 'warning',
-    children: 'Warning',
+    variant: "warning",
+    children: "Warning",
   },
-}
+};
 
 // Size variations
 export const Small: Story = {
   args: {
-    size: 'sm',
-    children: 'Small',
+    size: "sm",
+    children: "Small",
   },
-}
+};
 
 export const Large: Story = {
   args: {
-    size: 'lg',
-    children: 'Large',
+    size: "lg",
+    children: "Large",
   },
-}
+};
 
 export const Icon: Story = {
   args: {
-    size: 'icon',
-    children: '🔍',
+    size: "icon",
+    children: "🔍",
   },
-}
+};
 
 // State variations
 export const Loading: Story = {
   args: {
     loading: true,
-    children: 'Loading...',
+    children: "Loading...",
   },
-}
+};
 
 export const Disabled: Story = {
   args: {
     disabled: true,
-    children: 'Disabled',
+    children: "Disabled",
   },
-}
+};
 
 export const FullWidth: Story = {
   args: {
     fullWidth: true,
-    children: 'Full Width Button',
+    children: "Full Width Button",
   },
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
-}
+};
 
 // Interactive examples
 export const WithIcons: Story = {
   args: {
-    children: 'Save Changes',
-    leftIcon: '💾',
-    rightIcon: '→',
+    children: "Save Changes",
+    leftIcon: "💾",
+    rightIcon: "→",
   },
-}
+};
 
 export const LoadingWithText: Story = {
   args: {
     loading: true,
-    children: 'Saving...',
-    variant: 'default',
+    children: "Saving...",
+    variant: "default",
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -192,14 +192,14 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available button variants',
+        story: "Overview of all available button variants",
       },
     },
   },
-}
+};
 
 // All sizes showcase
 export const AllSizes: Story = {
@@ -212,11 +212,11 @@ export const AllSizes: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available button sizes',
+        story: "Overview of all available button sizes",
       },
     },
   },
-}
+};

@@ -1,66 +1,66 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import type React from 'react'
-import { forwardRef, useEffect, useRef, useState } from 'react'
-import { cn } from './utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
+import { cn } from "./utils";
 
 const selectTriggerVariants = cva(
-  'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+  "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: 'border-gray-300',
-        error: 'border-red-300 focus:ring-red-500',
+        default: "border-gray-300",
+        error: "border-red-300 focus:ring-red-500",
       },
       size: {
-        sm: 'h-8 px-2 text-xs',
-        default: 'h-10 px-3 text-sm',
-        lg: 'h-12 px-4 text-base',
+        sm: "h-8 px-2 text-xs",
+        default: "h-10 px-3 text-sm",
+        lg: "h-12 px-4 text-base",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: "default",
+      size: "default",
     },
-  }
-)
+  },
+);
 
 export interface SelectOption {
-  value: string
-  label: string
-  disabled?: boolean
+  value: string;
+  label: string;
+  disabled?: boolean;
 }
 
 export interface SelectProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect">,
     VariantProps<typeof selectTriggerVariants> {
   /**
    * The options to display in the select
    */
-  options: SelectOption[]
+  options: SelectOption[];
   /**
    * The selected value
    */
-  value?: string
+  value?: string;
   /**
    * Callback when selection changes
    */
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: string) => void;
   /**
    * Placeholder text when no option is selected
    */
-  placeholder?: string
+  placeholder?: string;
   /**
    * Whether the select is disabled
    */
-  disabled?: boolean
+  disabled?: boolean;
   /**
    * Whether the select is required
    */
-  required?: boolean
+  required?: boolean;
   /**
    * Name attribute for form handling
    */
-  name?: string
+  name?: string;
 }
 
 const Select = forwardRef<HTMLDivElement, SelectProps>(
@@ -72,87 +72,87 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       options,
       value,
       onValueChange,
-      placeholder = 'Select an option...',
+      placeholder = "Select an option...",
       disabled = false,
       required = false,
       name,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [selectedValue, setSelectedValue] = useState(value || '')
-    const selectRef = useRef<HTMLDivElement>(null)
-    const listRef = useRef<HTMLUListElement>(null)
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedValue, setSelectedValue] = useState(value || "");
+    const selectRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLUListElement>(null);
 
-    const selectedOption = options.find((option) => option.value === selectedValue)
+    const selectedOption = options.find((option) => option.value === selectedValue);
 
     useEffect(() => {
       if (value !== undefined) {
-        setSelectedValue(value)
+        setSelectedValue(value);
       }
-    }, [value])
+    }, [value]);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-          setIsOpen(false)
+          setIsOpen(false);
         }
-      }
+      };
 
       const handleEscape = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
-          setIsOpen(false)
+        if (event.key === "Escape") {
+          setIsOpen(false);
         }
-      }
+      };
 
       if (isOpen) {
-        document.addEventListener('mousedown', handleClickOutside)
-        document.addEventListener('keydown', handleEscape)
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleEscape);
       }
 
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside)
-        document.removeEventListener('keydown', handleEscape)
-      }
-    }, [isOpen])
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("keydown", handleEscape);
+      };
+    }, [isOpen]);
 
     const handleSelect = (optionValue: string) => {
-      setSelectedValue(optionValue)
-      setIsOpen(false)
-      onValueChange?.(optionValue)
-    }
+      setSelectedValue(optionValue);
+      setIsOpen(false);
+      onValueChange?.(optionValue);
+    };
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
-      if (disabled) return
+      if (disabled) return;
 
       switch (event.key) {
-        case 'Enter':
-        case 'Space':
-          event.preventDefault()
-          setIsOpen(!isOpen)
-          break
-        case 'ArrowDown':
-          event.preventDefault()
+        case "Enter":
+        case "Space":
+          event.preventDefault();
+          setIsOpen(!isOpen);
+          break;
+        case "ArrowDown":
+          event.preventDefault();
           if (!isOpen) {
-            setIsOpen(true)
+            setIsOpen(true);
           } else {
             // Focus next option logic would go here
           }
-          break
-        case 'ArrowUp':
-          event.preventDefault()
+          break;
+        case "ArrowUp":
+          event.preventDefault();
           if (!isOpen) {
-            setIsOpen(true)
+            setIsOpen(true);
           } else {
             // Focus previous option logic would go here
           }
-          break
-        case 'Escape':
-          setIsOpen(false)
-          break
+          break;
+        case "Escape":
+          setIsOpen(false);
+          break;
       }
-    }
+    };
 
     return (
       <div ref={selectRef} className="relative w-full" {...props}>
@@ -168,13 +168,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           aria-disabled={disabled}
           aria-required={required}
         >
-          <span className={cn('block truncate', !selectedOption && 'text-gray-500')}>
+          <span className={cn("block truncate", !selectedOption && "text-gray-500")}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <svg
             className={cn(
-              'h-4 w-4 transition-transform text-gray-400',
-              isOpen && 'transform rotate-180'
+              "h-4 w-4 transition-transform text-gray-400",
+              isOpen && "transform rotate-180",
             )}
             fill="none"
             stroke="currentColor"
@@ -194,9 +194,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               <li
                 key={option.value}
                 className={cn(
-                  'relative cursor-pointer select-none py-2 px-3 hover:bg-blue-50',
-                  option.disabled && 'cursor-not-allowed opacity-50',
-                  selectedValue === option.value && 'bg-blue-100 text-blue-900'
+                  "relative cursor-pointer select-none py-2 px-3 hover:bg-blue-50",
+                  option.disabled && "cursor-not-allowed opacity-50",
+                  selectedValue === option.value && "bg-blue-100 text-blue-900",
                 )}
                 onClick={() => !option.disabled && handleSelect(option.value)}
                 role="option"
@@ -222,34 +222,34 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
         {name && <input type="hidden" name={name} value={selectedValue} />}
       </div>
-    )
-  }
-)
-Select.displayName = 'Select'
+    );
+  },
+);
+Select.displayName = "Select";
 
 const SelectLabel = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
   ({ className, ...props }, ref) => (
     <label
       ref={ref}
-      className={cn('block text-sm font-medium text-gray-700 mb-1', className)}
+      className={cn("block text-sm font-medium text-gray-700 mb-1", className)}
       {...props}
     />
-  )
-)
-SelectLabel.displayName = 'SelectLabel'
+  ),
+);
+SelectLabel.displayName = "SelectLabel";
 
 const SelectHelperText = forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement> & {
-    error?: boolean
+    error?: boolean;
   }
 >(({ className, error, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('mt-1 text-xs', error ? 'text-red-600' : 'text-gray-500', className)}
+    className={cn("mt-1 text-xs", error ? "text-red-600" : "text-gray-500", className)}
     {...props}
   />
-))
-SelectHelperText.displayName = 'SelectHelperText'
+));
+SelectHelperText.displayName = "SelectHelperText";
 
-export { Select, SelectLabel, SelectHelperText, selectTriggerVariants }
+export { Select, SelectLabel, SelectHelperText, selectTriggerVariants };

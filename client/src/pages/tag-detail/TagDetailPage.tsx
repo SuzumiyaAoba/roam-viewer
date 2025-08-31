@@ -1,9 +1,9 @@
-import { Icon } from '@iconify/react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { Node } from '../../entities/node'
-import { useNodesByTag } from '../../entities/node'
-import { NodeCard } from '../../shared/ui'
-import { Layout } from '../../widgets/layout'
+import { Icon } from "@iconify/react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import type { Node } from "../../entities/node";
+import { useNodesByTag } from "../../entities/node";
+import { NodeCard } from "../../shared/ui";
+import { Layout } from "../../widgets/layout";
 
 function EmptyState({ tag }: { tag: string }) {
   return (
@@ -23,13 +23,13 @@ function EmptyState({ tag }: { tag: string }) {
         <span>Create Node</span>
       </Link>
     </div>
-  )
+  );
 }
 
 export function TagDetailPage() {
-  const { tag } = useParams<{ tag: string }>()
-  const navigate = useNavigate()
-  const { data: nodes, isLoading, error } = useNodesByTag(tag!)
+  const { tag } = useParams<{ tag: string }>();
+  const navigate = useNavigate();
+  const { data: nodes, isLoading, error } = useNodesByTag(tag!);
 
   if (isLoading) {
     return (
@@ -41,7 +41,7 @@ export function TagDetailPage() {
           </div>
         </div>
       </Layout>
-    )
+    );
   }
 
   if (error) {
@@ -56,7 +56,7 @@ export function TagDetailPage() {
           </Link>
         </div>
       </Layout>
-    )
+    );
   }
 
   if (!nodes || nodes.length === 0) {
@@ -73,7 +73,7 @@ export function TagDetailPage() {
         </div>
         <EmptyState tag={tag!} />
       </Layout>
-    )
+    );
   }
 
   return (
@@ -94,7 +94,7 @@ export function TagDetailPage() {
             <h1 className="text-3xl font-bold text-gray-900">#{tag}</h1>
           </div>
           <p className="text-gray-600">
-            {nodes.length} node{nodes.length !== 1 ? 's' : ''} tagged with #{tag}
+            {nodes.length} node{nodes.length !== 1 ? "s" : ""} tagged with #{tag}
           </p>
         </div>
         <div className="flex items-center space-x-3">
@@ -127,5 +127,5 @@ export function TagDetailPage() {
         ))}
       </div>
     </Layout>
-  )
+  );
 }

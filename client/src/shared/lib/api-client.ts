@@ -5,32 +5,32 @@ import type {
   NodeDetail,
   SearchResult,
   UpdateNodeRequest,
-} from '../types/api'
+} from "../types/api";
 
 export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public response?: Response
+    public response?: Response,
   ) {
-    super(message)
-    this.name = 'ApiError'
+    super(message);
+    this.name = "ApiError";
   }
 }
 
 export class ApiClient {
-  private baseUrl: string
+  private baseUrl: string;
 
-  constructor(baseUrl: string = 'http://localhost:3001') {
-    this.baseUrl = baseUrl.replace(/\/$/, '')
+  constructor(baseUrl: string = "http://localhost:3001") {
+    this.baseUrl = baseUrl.replace(/\/$/, "");
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`
+    const url = `${this.baseUrl}${endpoint}`;
 
     const defaultHeaders = {
-      'Content-Type': 'application/json',
-    }
+      "Content-Type": "application/json",
+    };
 
     const config: RequestInit = {
       ...options,
@@ -38,132 +38,132 @@ export class ApiClient {
         ...defaultHeaders,
         ...options.headers,
       },
-    }
+    };
 
     try {
-      const response = await fetch(url, config)
+      const response = await fetch(url, config);
 
       if (!response.ok) {
         throw new ApiError(
           `HTTP ${response.status}: ${response.statusText}`,
           response.status,
-          response
-        )
+          response,
+        );
       }
 
-      const contentType = response.headers.get('content-type')
-      if (contentType?.includes('application/json')) {
-        return await response.json()
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
+        return await response.json();
       } else {
-        return (await response.text()) as unknown as T
+        return (await response.text()) as unknown as T;
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        throw error
+        throw error;
       }
       throw new ApiError(
-        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
+        `Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
 
   // Node Operations
   async getNodes(): Promise<Node[]> {
-    const result = await this.request<any>('/api/nodes')
+    const result = await this.request<any>("/api/nodes");
 
     // Handle new API response format
     if (result && Array.isArray(result.data)) {
-      return result.data
+      return result.data;
     } else if (Array.isArray(result)) {
-      return result
+      return result;
     }
 
-    return []
+    return [];
   }
 
   async getNode(id: string): Promise<NodeDetail> {
-    return this.request<NodeDetail>(`/api/nodes/${encodeURIComponent(id)}`)
+    return this.request<NodeDetail>(`/api/nodes/${encodeURIComponent(id)}`);
   }
 
   async createNode(nodeData: CreateNodeRequest): Promise<NodeDetail> {
-    return this.request<NodeDetail>('/api/nodes', {
-      method: 'POST',
+    return this.request<NodeDetail>("/api/nodes", {
+      method: "POST",
       body: JSON.stringify(nodeData),
-    })
+    });
   }
 
   async updateNode(id: string, nodeData: UpdateNodeRequest): Promise<NodeDetail> {
     return this.request<NodeDetail>(`/api/nodes/${encodeURIComponent(id)}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(nodeData),
-    })
+    });
   }
 
   async deleteNode(id: string): Promise<void> {
     await this.request<void>(`/api/nodes/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   }
 
   // Search Operations
   async searchNodes(query: string): Promise<SearchResult> {
-    const result = await this.request<any>(`/api/search/${encodeURIComponent(query)}`)
+    const result = await this.request<any>(`/api/search/${encodeURIComponent(query)}`);
 
     // Handle new API response format
     if (result && result.nodes !== undefined) {
       return {
         nodes: Array.isArray(result.nodes) ? result.nodes : [],
         total: result.count || 0,
-      }
+      };
     } else if (result && Array.isArray(result)) {
       return {
         nodes: result,
         total: result.length,
-      }
+      };
     }
 
-    return { nodes: [], total: 0 }
+    return { nodes: [], total: 0 };
   }
 
   // Tags
   async getTags(): Promise<{ tag: string; count: number }[]> {
-    const result = await this.request<any>('/api/tags')
+    const result = await this.request<any>("/api/tags");
 
     // Handle new API response format
     if (result && Array.isArray(result.tags)) {
       return result.tags.map((tagInfo: any) => ({
         tag: tagInfo.tag,
         count: tagInfo.count,
-      }))
+      }));
     } else if (Array.isArray(result)) {
-      return result
+      return result;
     }
 
-    return []
+    return [];
   }
 
   async searchNodesByTag(tag: string): Promise<Node[]> {
-    const result = await this.request<any>(`/api/search/tag/${encodeURIComponent(tag)}`)
+    const result = await this.request<any>(`/api/search/tag/${encodeURIComponent(tag)}`);
 
     // Handle new API response format
     if (result && Array.isArray(result.nodes)) {
-      return result.nodes
+      return result.nodes;
     } else if (Array.isArray(result)) {
-      return result
+      return result;
     }
 
-    return []
+    return [];
   }
 
   // Relationships
   async getBacklinks(id: string): Promise<BacklinkNode[]> {
-    return this.request<BacklinkNode[]>(`/api/nodes/${encodeURIComponent(id)}/backlinks`)
+    return this.request<BacklinkNode[]>(`/api/nodes/${encodeURIComponent(id)}/backlinks`);
   }
 
   async getForwardLinks(id: string): Promise<BacklinkNode[]> {
-    return this.request<BacklinkNode[]>(`/api/nodes/${encodeURIComponent(id)}/links`)
+    return this.request<BacklinkNode[]>(`/api/nodes/${encodeURIComponent(id)}/links`);
   }
 }
 
 // Default instance
-export const apiClient = new ApiClient(import.meta.env.VITE_API_URL || 'http://localhost:3001')
+export const apiClient = new ApiClient(import.meta.env.VITE_API_URL || "http://localhost:3001");

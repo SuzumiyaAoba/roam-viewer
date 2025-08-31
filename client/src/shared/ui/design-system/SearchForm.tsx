@@ -1,71 +1,71 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import type React from 'react'
-import { forwardRef, useState } from 'react'
-import { Button } from '../shadcn/button'
-import { Input } from '../shadcn/input'
-import { cn } from './utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
+import { forwardRef, useState } from "react";
+import { Button } from "../shadcn/button";
+import { Input } from "../shadcn/input";
+import { cn } from "./utils";
 
-const searchFormVariants = cva('relative w-full', {
+const searchFormVariants = cva("relative w-full", {
   variants: {
     variant: {
-      default: '',
-      elevated: 'bg-white rounded-lg shadow-sm border border-gray-200 p-4',
-      minimal: '',
-      prominent: 'bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100',
+      default: "",
+      elevated: "bg-white rounded-lg shadow-sm border border-gray-200 p-4",
+      minimal: "",
+      prominent: "bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100",
     },
   },
   defaultVariants: {
-    variant: 'default',
+    variant: "default",
   },
-})
+});
 
 export interface SearchFormProps
-  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange'>,
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "onChange">,
     VariantProps<typeof searchFormVariants> {
   /**
    * Input variant style
    */
-  inputVariant?: 'default' | 'outline'
+  inputVariant?: "default" | "outline";
   /**
    * Placeholder text for the search input
    */
-  placeholder?: string
+  placeholder?: string;
   /**
    * Search button text
    */
-  buttonText?: string
+  buttonText?: string;
   /**
    * Whether to show the search button
    */
-  showButton?: boolean
+  showButton?: boolean;
   /**
    * Search input value
    */
-  value?: string
+  value?: string;
   /**
    * Default value for uncontrolled usage
    */
-  defaultValue?: string
+  defaultValue?: string;
   /**
    * Callback when search is submitted
    */
-  onSubmit?: (query: string) => void
+  onSubmit?: (query: string) => void;
   /**
    * Callback when input value changes
    */
-  onChange?: (value: string) => void
+  onChange?: (value: string) => void;
   /**
    * Search icon element
    */
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
   /**
    * Loading state
    */
-  loading?: boolean
+  loading?: boolean;
   /**
    * Disabled state
    */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
@@ -73,9 +73,9 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
     {
       className,
       variant,
-      inputVariant = 'default',
-      placeholder = 'Search...',
-      buttonText = 'Search',
+      inputVariant = "default",
+      placeholder = "Search...",
+      buttonText = "Search",
       showButton = true,
       value,
       defaultValue,
@@ -86,26 +86,26 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
       disabled = false,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const [internalValue, setInternalValue] = useState(defaultValue || '')
-    const isControlled = value !== undefined
-    const searchValue = isControlled ? value : internalValue
+    const [internalValue, setInternalValue] = useState(defaultValue || "");
+    const isControlled = value !== undefined;
+    const searchValue = isControlled ? value : internalValue;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value
+      const newValue = e.target.value;
       if (!isControlled) {
-        setInternalValue(newValue)
+        setInternalValue(newValue);
       }
-      onChange?.(newValue)
-    }
+      onChange?.(newValue);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
+      e.preventDefault();
       if (onSubmit && searchValue.trim()) {
-        onSubmit(searchValue.trim())
+        onSubmit(searchValue.trim());
       }
-    }
+    };
 
     return (
       <form
@@ -129,7 +129,7 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
             onChange={handleInputChange}
             placeholder={placeholder}
             disabled={disabled || loading}
-            className={cn(icon && 'pl-10', showButton && 'rounded-r-none border-r-0')}
+            className={cn(icon && "pl-10", showButton && "rounded-r-none border-r-0")}
           />
 
           {/* Loading Spinner */}
@@ -166,27 +166,27 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
               className="rounded-l-none border-l-0"
               variant="default"
             >
-              {loading ? 'Searching...' : buttonText}
+              {loading ? "Searching..." : buttonText}
             </Button>
           )}
         </div>
       </form>
-    )
-  }
-)
-SearchForm.displayName = 'SearchForm'
+    );
+  },
+);
+SearchForm.displayName = "SearchForm";
 
 // Quick Search variant for minimal use cases
 const QuickSearch = forwardRef<
   HTMLInputElement,
-  Omit<SearchFormProps, 'showButton'> & {
-    onSearch?: (query: string) => void
+  Omit<SearchFormProps, "showButton"> & {
+    onSearch?: (query: string) => void;
   }
 >(
   (
     {
       className,
-      placeholder = 'Quick search...',
+      placeholder = "Quick search...",
       icon = (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -201,12 +201,12 @@ const QuickSearch = forwardRef<
       onSubmit,
       ...props
     },
-    ref
+    ref,
   ) => {
     const handleSubmit = (query: string) => {
-      onSearch?.(query)
-      onSubmit?.(query)
-    }
+      onSearch?.(query);
+      onSubmit?.(query);
+    };
 
     return (
       <SearchForm
@@ -218,24 +218,24 @@ const QuickSearch = forwardRef<
         onSubmit={handleSubmit}
         {...props}
       />
-    )
-  }
-)
-QuickSearch.displayName = 'QuickSearch'
+    );
+  },
+);
+QuickSearch.displayName = "QuickSearch";
 
 // Search with suggestions dropdown
 interface SearchSuggestion {
-  id: string
-  text: string
-  category?: string
-  icon?: React.ReactNode
+  id: string;
+  text: string;
+  category?: string;
+  icon?: React.ReactNode;
 }
 
 interface SearchWithSuggestionsProps extends SearchFormProps {
-  suggestions?: SearchSuggestion[]
-  onSuggestionSelect?: (suggestion: SearchSuggestion) => void
-  showSuggestions?: boolean
-  maxSuggestions?: number
+  suggestions?: SearchSuggestion[];
+  onSuggestionSelect?: (suggestion: SearchSuggestion) => void;
+  showSuggestions?: boolean;
+  maxSuggestions?: number;
 }
 
 const SearchWithSuggestions = forwardRef<HTMLFormElement, SearchWithSuggestionsProps>(
@@ -249,48 +249,48 @@ const SearchWithSuggestions = forwardRef<HTMLFormElement, SearchWithSuggestionsP
       onChange,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [selectedIndex, setSelectedIndex] = useState(-1)
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const filteredSuggestions = suggestions
       .filter((suggestion) =>
-        value ? suggestion.text.toLowerCase().includes(value.toLowerCase()) : true
+        value ? suggestion.text.toLowerCase().includes(value.toLowerCase()) : true,
       )
-      .slice(0, maxSuggestions)
+      .slice(0, maxSuggestions);
 
     const handleSuggestionClick = (suggestion: SearchSuggestion) => {
-      onSuggestionSelect?.(suggestion)
-      onChange?.(suggestion.text)
-      setIsOpen(false)
-      setSelectedIndex(-1)
-    }
+      onSuggestionSelect?.(suggestion);
+      onChange?.(suggestion.text);
+      setIsOpen(false);
+      setSelectedIndex(-1);
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (!isOpen || filteredSuggestions.length === 0) return
+      if (!isOpen || filteredSuggestions.length === 0) return;
 
       switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault()
-          setSelectedIndex((prev) => (prev < filteredSuggestions.length - 1 ? prev + 1 : 0))
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filteredSuggestions.length - 1))
-          break
-        case 'Enter':
+        case "ArrowDown":
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev < filteredSuggestions.length - 1 ? prev + 1 : 0));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filteredSuggestions.length - 1));
+          break;
+        case "Enter":
           if (selectedIndex >= 0 && selectedIndex < filteredSuggestions.length) {
-            e.preventDefault()
-            handleSuggestionClick(filteredSuggestions[selectedIndex])
+            e.preventDefault();
+            handleSuggestionClick(filteredSuggestions[selectedIndex]);
           }
-          break
-        case 'Escape':
-          setIsOpen(false)
-          setSelectedIndex(-1)
-          break
+          break;
+        case "Escape":
+          setIsOpen(false);
+          setSelectedIndex(-1);
+          break;
       }
-    }
+    };
 
     return (
       <div className="relative">
@@ -298,9 +298,9 @@ const SearchWithSuggestions = forwardRef<HTMLFormElement, SearchWithSuggestionsP
           ref={ref}
           value={value}
           onChange={(newValue) => {
-            onChange?.(newValue)
-            setIsOpen(showSuggestions && newValue.length > 0)
-            setSelectedIndex(-1)
+            onChange?.(newValue);
+            setIsOpen(showSuggestions && newValue.length > 0);
+            setSelectedIndex(-1);
           }}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(showSuggestions && (value?.length || 0) > 0)}
@@ -317,8 +317,8 @@ const SearchWithSuggestions = forwardRef<HTMLFormElement, SearchWithSuggestionsP
                 type="button"
                 onClick={() => handleSuggestionClick(suggestion)}
                 className={cn(
-                  'w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center space-x-3 transition-colors',
-                  index === selectedIndex && 'bg-blue-50'
+                  "w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center space-x-3 transition-colors",
+                  index === selectedIndex && "bg-blue-50",
                 )}
               >
                 {suggestion.icon && (
@@ -337,11 +337,11 @@ const SearchWithSuggestions = forwardRef<HTMLFormElement, SearchWithSuggestionsP
           </div>
         )}
       </div>
-    )
-  }
-)
-SearchWithSuggestions.displayName = 'SearchWithSuggestions'
+    );
+  },
+);
+SearchWithSuggestions.displayName = "SearchWithSuggestions";
 
-export { SearchForm, QuickSearch, SearchWithSuggestions, searchFormVariants }
+export { SearchForm, QuickSearch, SearchWithSuggestions, searchFormVariants };
 
-export type { SearchSuggestion, SearchWithSuggestionsProps }
+export type { SearchSuggestion, SearchWithSuggestionsProps };

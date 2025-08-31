@@ -1,9 +1,9 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { NodeDetailPage } from '../../pages/node-detail'
-import { NodeEditPage, NodeFormPage } from '../../pages/node-form'
-import { NodeListPage } from '../../pages/node-list'
-import { TagDetailPage } from '../../pages/tag-detail'
-import { TagListPage } from '../../pages/tag-list'
+import { Navigate, Route, Routes } from "react-router-dom";
+import { NodeDetailPage } from "../../pages/node-detail";
+import { NodeEditPage, NodeFormPage } from "../../pages/node-form";
+import { NodeListPage } from "../../pages/node-list";
+import { TagDetailPage } from "../../pages/tag-detail";
+import { TagListPage } from "../../pages/tag-list";
 
 export function AppRouter() {
   return (
@@ -17,5 +17,5 @@ export function AppRouter() {
       <Route path="/tags/:tag" element={<TagDetailPage />} />
       <Route path="*" element={<Navigate to="/nodes" replace />} />
     </Routes>
-  )
+  );
 }

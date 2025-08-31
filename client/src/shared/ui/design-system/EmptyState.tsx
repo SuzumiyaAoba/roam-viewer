@@ -1,27 +1,27 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import type React from 'react'
-import { forwardRef } from 'react'
-import { Button } from './Button'
-import { cn } from './utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
+import { forwardRef } from "react";
+import { Button } from "./Button";
+import { cn } from "./utils";
 
-const emptyStateVariants = cva('flex flex-col items-center justify-center text-center', {
+const emptyStateVariants = cva("flex flex-col items-center justify-center text-center", {
   variants: {
     variant: {
-      default: 'text-gray-500',
-      muted: 'text-gray-400',
-      accent: 'text-blue-600',
+      default: "text-gray-500",
+      muted: "text-gray-400",
+      accent: "text-blue-600",
     },
     size: {
-      sm: 'py-8 px-4',
-      default: 'py-12 px-6',
-      lg: 'py-16 px-8',
+      sm: "py-8 px-4",
+      default: "py-12 px-6",
+      lg: "py-16 px-8",
     },
   },
   defaultVariants: {
-    variant: 'default',
-    size: 'default',
+    variant: "default",
+    size: "default",
   },
-})
+});
 
 export interface EmptyStateProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -29,35 +29,35 @@ export interface EmptyStateProps
   /**
    * Icon to display (can be emoji, SVG, or React component)
    */
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
   /**
    * Main title text
    */
-  title: string
+  title: string;
   /**
    * Description text
    */
-  description?: string
+  description?: string;
   /**
    * Primary action button
    */
   action?: {
-    label: string
-    onClick: () => void
-    variant?: 'default' | 'outline' | 'ghost'
-  }
+    label: string;
+    onClick: () => void;
+    variant?: "default" | "outline" | "ghost";
+  };
   /**
    * Secondary action button
    */
   secondaryAction?: {
-    label: string
-    onClick: () => void
-    variant?: 'default' | 'outline' | 'ghost'
-  }
+    label: string;
+    onClick: () => void;
+    variant?: "default" | "outline" | "ghost";
+  };
   /**
    * Custom illustration component
    */
-  illustration?: React.ReactNode
+  illustration?: React.ReactNode;
 }
 
 const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
@@ -75,7 +75,7 @@ const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <div ref={ref} className={cn(emptyStateVariants({ variant, size }), className)} {...props}>
@@ -83,7 +83,7 @@ const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
         {illustration ||
           (icon && (
             <div className="mb-6">
-              {typeof icon === 'string' ? (
+              {typeof icon === "string" ? (
                 <div className="text-6xl opacity-50">{icon}</div>
               ) : (
                 <div className="w-16 h-16 flex items-center justify-center text-gray-400">
@@ -125,14 +125,14 @@ const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
         {(action || secondaryAction) && (
           <div className="flex flex-col sm:flex-row gap-3">
             {action && (
-              <Button onClick={action.onClick} variant={action.variant || 'default'}>
+              <Button onClick={action.onClick} variant={action.variant || "default"}>
                 {action.label}
               </Button>
             )}
             {secondaryAction && (
               <Button
                 onClick={secondaryAction.onClick}
-                variant={secondaryAction.variant || 'outline'}
+                variant={secondaryAction.variant || "outline"}
               >
                 {secondaryAction.label}
               </Button>
@@ -140,16 +140,16 @@ const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
           </div>
         )}
       </div>
-    )
-  }
-)
-EmptyState.displayName = 'EmptyState'
+    );
+  },
+);
+EmptyState.displayName = "EmptyState";
 
 // Predefined empty states for common scenarios
 const EmptyStateNoResults = forwardRef<
   HTMLDivElement,
-  Omit<EmptyStateProps, 'icon' | 'title' | 'description'> & {
-    searchQuery?: string
+  Omit<EmptyStateProps, "icon" | "title" | "description"> & {
+    searchQuery?: string;
   }
 >(({ searchQuery, ...props }, ref) => (
   <EmptyState
@@ -159,16 +159,16 @@ const EmptyStateNoResults = forwardRef<
     description={
       searchQuery
         ? `No results found for "${searchQuery}". Try adjusting your search terms.`
-        : 'No results match your search criteria.'
+        : "No results match your search criteria."
     }
     {...props}
   />
-))
-EmptyStateNoResults.displayName = 'EmptyStateNoResults'
+));
+EmptyStateNoResults.displayName = "EmptyStateNoResults";
 
 const EmptyStateNoNodes = forwardRef<
   HTMLDivElement,
-  Omit<EmptyStateProps, 'icon' | 'title' | 'description'>
+  Omit<EmptyStateProps, "icon" | "title" | "description">
 >((props, ref) => (
   <EmptyState
     ref={ref}
@@ -176,20 +176,20 @@ const EmptyStateNoNodes = forwardRef<
     title="No nodes yet"
     description="Get started by creating your first knowledge node. Organize your thoughts, ideas, and information in one place."
     action={{
-      label: 'Create First Node',
+      label: "Create First Node",
       onClick: () => {
         /* handled by parent */
       },
     }}
     {...props}
   />
-))
-EmptyStateNoNodes.displayName = 'EmptyStateNoNodes'
+));
+EmptyStateNoNodes.displayName = "EmptyStateNoNodes";
 
 const EmptyStateError = forwardRef<
   HTMLDivElement,
-  Omit<EmptyStateProps, 'icon' | 'title'> & {
-    error?: string
+  Omit<EmptyStateProps, "icon" | "title"> & {
+    error?: string;
   }
 >(({ error, ...props }, ref) => (
   <EmptyState
@@ -206,20 +206,20 @@ const EmptyStateError = forwardRef<
       </svg>
     }
     title="Something went wrong"
-    description={error || 'We encountered an error. Please try again later.'}
+    description={error || "We encountered an error. Please try again later."}
     action={{
-      label: 'Try Again',
+      label: "Try Again",
       onClick: () => window.location.reload(),
-      variant: 'outline',
+      variant: "outline",
     }}
     {...props}
   />
-))
-EmptyStateError.displayName = 'EmptyStateError'
+));
+EmptyStateError.displayName = "EmptyStateError";
 
 const EmptyStateLoading = forwardRef<
   HTMLDivElement,
-  Omit<EmptyStateProps, 'icon' | 'title' | 'description'>
+  Omit<EmptyStateProps, "icon" | "title" | "description">
 >((props, ref) => (
   <EmptyState
     ref={ref}
@@ -229,12 +229,12 @@ const EmptyStateLoading = forwardRef<
     description="Please wait while we fetch your data."
     {...props}
   />
-))
-EmptyStateLoading.displayName = 'EmptyStateLoading'
+));
+EmptyStateLoading.displayName = "EmptyStateLoading";
 
 const EmptyStateOffline = forwardRef<
   HTMLDivElement,
-  Omit<EmptyStateProps, 'icon' | 'title' | 'description'>
+  Omit<EmptyStateProps, "icon" | "title" | "description">
 >((props, ref) => (
   <EmptyState
     ref={ref}
@@ -251,14 +251,14 @@ const EmptyStateOffline = forwardRef<
     title="You're offline"
     description="Check your internet connection and try again."
     action={{
-      label: 'Retry',
+      label: "Retry",
       onClick: () => window.location.reload(),
-      variant: 'outline',
+      variant: "outline",
     }}
     {...props}
   />
-))
-EmptyStateOffline.displayName = 'EmptyStateOffline'
+));
+EmptyStateOffline.displayName = "EmptyStateOffline";
 
 export {
   EmptyState,
@@ -268,4 +268,4 @@ export {
   EmptyStateLoading,
   EmptyStateOffline,
   emptyStateVariants,
-}
+};

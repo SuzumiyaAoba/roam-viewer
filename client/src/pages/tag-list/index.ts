@@ -1,3 +1,3 @@
 // Tag List Page Export
 
-export { TagListPage } from './TagListPage'
+export { TagListPage } from "./TagListPage";

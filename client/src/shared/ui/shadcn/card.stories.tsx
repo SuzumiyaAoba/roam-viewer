@@ -1,29 +1,29 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'
+import type { Meta, StoryObj } from "@storybook/react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 
 const meta: Meta<typeof Card> = {
-  title: 'UI/Card',
+  title: "UI/Card",
   component: Card,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A flexible card component with composable parts including header, title, description, content, and footer. Perfect for displaying organized content with consistent styling.',
+          "A flexible card component with composable parts including header, title, description, content, and footer. Perfect for displaying organized content with consistent styling.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     className: {
-      control: 'text',
-      description: 'Additional CSS classes',
+      control: "text",
+      description: "Additional CSS classes",
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -42,7 +42,7 @@ export const Default: Story = {
       </CardContent>
     </Card>
   ),
-}
+};
 
 export const WithFooter: Story = {
   render: () => (
@@ -65,7 +65,7 @@ export const WithFooter: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const SimpleCard: Story = {
   render: () => (
@@ -76,7 +76,7 @@ export const SimpleCard: Story = {
       </p>
     </Card>
   ),
-}
+};
 
 export const ProductCard: Story = {
   render: () => (
@@ -96,7 +96,7 @@ export const ProductCard: Story = {
           <span className="text-sm text-gray-500 line-through">$399</span>
         </div>
         <div className="flex items-center mt-2">
-          <div className="flex text-yellow-400">{'★'.repeat(5)}</div>
+          <div className="flex text-yellow-400">{"★".repeat(5)}</div>
           <span className="text-sm text-gray-600 ml-2">(124 reviews)</span>
         </div>
       </CardContent>
@@ -107,7 +107,7 @@ export const ProductCard: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const ProfileCard: Story = {
   render: () => (
@@ -145,7 +145,7 @@ export const ProfileCard: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const StatCard: Story = {
   render: () => (
@@ -194,7 +194,7 @@ export const StatCard: Story = {
       </Card>
     </div>
   ),
-}
+};
 
 export const FormCard: Story = {
   render: () => (
@@ -234,7 +234,7 @@ export const FormCard: Story = {
           Create Account
         </button>
         <p className="text-xs text-center text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <a href="#" className="text-blue-600 hover:underline">
             Sign in
           </a>
@@ -242,7 +242,7 @@ export const FormCard: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const NotificationCard: Story = {
   render: () => (
@@ -265,7 +265,7 @@ export const NotificationCard: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const CompositionExample: Story = {
   render: () => (
@@ -302,4 +302,4 @@ export const CompositionExample: Story = {
       </Card>
     </div>
   ),
-}
+};

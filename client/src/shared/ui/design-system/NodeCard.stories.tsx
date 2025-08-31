@@ -1,226 +1,226 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { NodeCard, NodeCardCompact, NodeCardGrid } from './NodeCard'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { NodeCard, NodeCardCompact, NodeCardGrid } from "./NodeCard";
 
 const meta = {
-  title: 'Design System/NodeCard',
+  title: "Design System/NodeCard",
   component: NodeCard,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
         component:
-          'A modern card component for displaying knowledge nodes with rich metadata, tags, and interactive features. Designed with hover effects and modern UI patterns.',
+          "A modern card component for displaying knowledge nodes with rich metadata, tags, and interactive features. Designed with hover effects and modern UI patterns.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'elevated', 'minimal', 'accent', 'glass'],
-      description: 'The visual variant of the node card',
+      control: { type: "select" },
+      options: ["default", "elevated", "minimal", "accent", "glass"],
+      description: "The visual variant of the node card",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the node card',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the node card",
     },
     interactive: {
-      control: 'boolean',
-      description: 'Whether the card has hover animations',
+      control: "boolean",
+      description: "Whether the card has hover animations",
     },
     title: {
-      control: 'text',
-      description: 'The node title',
+      control: "text",
+      description: "The node title",
     },
     content: {
-      control: 'text',
-      description: 'Content preview text',
+      control: "text",
+      description: "Content preview text",
     },
     file: {
-      control: 'text',
-      description: 'File path of the node',
+      control: "text",
+      description: "File path of the node",
     },
     selected: {
-      control: 'boolean',
-      description: 'Whether the card is selected',
+      control: "boolean",
+      description: "Whether the card is selected",
     },
     showActions: {
-      control: 'boolean',
-      description: 'Whether to show action buttons',
+      control: "boolean",
+      description: "Whether to show action buttons",
     },
   },
-} satisfies Meta<typeof NodeCard>
+} satisfies Meta<typeof NodeCard>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic examples
 export const Default: Story = {
   args: {
-    title: 'React Components Best Practices',
+    title: "React Components Best Practices",
     content:
-      'Learn how to build scalable and maintainable React components with modern patterns, proper state management, and performance optimizations.',
-    file: 'react/components-best-practices.md',
-    tags: ['React', 'Components', 'Best Practices', 'Frontend'],
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+      "Learn how to build scalable and maintainable React components with modern patterns, proper state management, and performance optimizations.",
+    file: "react/components-best-practices.md",
+    tags: ["React", "Components", "Best Practices", "Frontend"],
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const WithTodo: Story = {
   args: {
-    title: 'Database Design Patterns',
+    title: "Database Design Patterns",
     content:
-      'Comprehensive guide to database design patterns including normalization, indexing strategies, and performance optimization techniques.',
-    file: 'database/design-patterns.md',
-    tags: ['Database', 'SQL', 'Design Patterns'],
-    todo: 'Add performance benchmarks',
-    date: new Date('2024-01-15'),
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+      "Comprehensive guide to database design patterns including normalization, indexing strategies, and performance optimization techniques.",
+    file: "database/design-patterns.md",
+    tags: ["Database", "SQL", "Design Patterns"],
+    todo: "Add performance benchmarks",
+    date: new Date("2024-01-15"),
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const LongContent: Story = {
   args: {
-    title: 'Advanced TypeScript Techniques for Large Scale Applications',
+    title: "Advanced TypeScript Techniques for Large Scale Applications",
     content:
-      'This is a very long piece of content that demonstrates how the card handles text truncation. TypeScript provides powerful type safety features that can help prevent runtime errors and improve developer experience. In large applications, proper type definitions, generic constraints, and advanced utility types become essential for maintaining code quality and developer productivity. This content should be truncated with an ellipsis to maintain the card layout.',
-    file: 'typescript/advanced-techniques-for-enterprise-applications.md',
-    tags: ['TypeScript', 'Enterprise', 'Architecture', 'Types', 'Generics', 'Utilities'],
+      "This is a very long piece of content that demonstrates how the card handles text truncation. TypeScript provides powerful type safety features that can help prevent runtime errors and improve developer experience. In large applications, proper type definitions, generic constraints, and advanced utility types become essential for maintaining code quality and developer productivity. This content should be truncated with an ellipsis to maintain the card layout.",
+    file: "typescript/advanced-techniques-for-enterprise-applications.md",
+    tags: ["TypeScript", "Enterprise", "Architecture", "Types", "Generics", "Utilities"],
     date: new Date(),
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 // Variants
 export const Elevated: Story = {
   args: {
-    variant: 'elevated',
-    title: 'Node.js Microservices Architecture',
-    content: 'Building scalable microservices with Node.js, Docker, and Kubernetes.',
-    file: 'nodejs/microservices.md',
-    tags: ['Node.js', 'Microservices', 'Docker', 'Kubernetes'],
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    variant: "elevated",
+    title: "Node.js Microservices Architecture",
+    content: "Building scalable microservices with Node.js, Docker, and Kubernetes.",
+    file: "nodejs/microservices.md",
+    tags: ["Node.js", "Microservices", "Docker", "Kubernetes"],
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const Minimal: Story = {
   args: {
-    variant: 'minimal',
-    title: 'CSS Grid Layout Guide',
-    content: 'Master CSS Grid with practical examples and real-world use cases.',
-    file: 'css/grid-layout.md',
-    tags: ['CSS', 'Grid', 'Layout'],
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    variant: "minimal",
+    title: "CSS Grid Layout Guide",
+    content: "Master CSS Grid with practical examples and real-world use cases.",
+    file: "css/grid-layout.md",
+    tags: ["CSS", "Grid", "Layout"],
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const Accent: Story = {
   args: {
-    variant: 'accent',
-    title: 'Machine Learning Fundamentals',
-    content: 'Introduction to machine learning concepts, algorithms, and practical applications.',
-    file: 'ml/fundamentals.md',
-    tags: ['ML', 'AI', 'Data Science', 'Python'],
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    variant: "accent",
+    title: "Machine Learning Fundamentals",
+    content: "Introduction to machine learning concepts, algorithms, and practical applications.",
+    file: "ml/fundamentals.md",
+    tags: ["ML", "AI", "Data Science", "Python"],
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const Glass: Story = {
   args: {
-    variant: 'glass',
-    title: 'Design Systems at Scale',
-    content: 'How to build and maintain design systems for large organizations.',
-    file: 'design/systems-at-scale.md',
-    tags: ['Design', 'Systems', 'UI/UX'],
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    variant: "glass",
+    title: "Design Systems at Scale",
+    content: "How to build and maintain design systems for large organizations.",
+    file: "design/systems-at-scale.md",
+    tags: ["Design", "Systems", "UI/UX"],
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
   parameters: {
     backgrounds: {
-      default: 'gradient',
-      values: [{ name: 'gradient', value: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)' }],
+      default: "gradient",
+      values: [{ name: "gradient", value: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)" }],
     },
   },
-}
+};
 
 // Sizes
 export const Small: Story = {
   args: {
-    size: 'sm',
-    title: 'Quick Note',
-    content: 'A brief note about something important.',
-    file: 'notes/quick-note.md',
-    tags: ['Notes'],
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    size: "sm",
+    title: "Quick Note",
+    content: "A brief note about something important.",
+    file: "notes/quick-note.md",
+    tags: ["Notes"],
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const Large: Story = {
   args: {
-    size: 'lg',
-    title: 'Comprehensive API Documentation',
+    size: "lg",
+    title: "Comprehensive API Documentation",
     content:
-      'Complete API documentation with examples, authentication methods, rate limiting, and best practices for integration.',
-    file: 'api/documentation.md',
-    tags: ['API', 'Documentation', 'REST', 'GraphQL'],
+      "Complete API documentation with examples, authentication methods, rate limiting, and best practices for integration.",
+    file: "api/documentation.md",
+    tags: ["API", "Documentation", "REST", "GraphQL"],
     date: new Date(),
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 // States
 export const Selected: Story = {
   args: {
-    title: 'Selected Node',
-    content: 'This node is currently selected.',
-    file: 'selected/node.md',
-    tags: ['Selected'],
+    title: "Selected Node",
+    content: "This node is currently selected.",
+    file: "selected/node.md",
+    tags: ["Selected"],
     selected: true,
-    onCardClick: () => alert('Card clicked'),
-    onEdit: () => alert('Edit clicked'),
-    onDelete: () => alert('Delete clicked'),
+    onCardClick: () => alert("Card clicked"),
+    onEdit: () => alert("Edit clicked"),
+    onDelete: () => alert("Delete clicked"),
   },
-}
+};
 
 export const NoActions: Story = {
   args: {
-    title: 'Read-Only Node',
-    content: 'This node has no action buttons visible.',
-    file: 'readonly/node.md',
-    tags: ['Read-Only'],
+    title: "Read-Only Node",
+    content: "This node has no action buttons visible.",
+    file: "readonly/node.md",
+    tags: ["Read-Only"],
     showActions: false,
-    onCardClick: () => alert('Card clicked'),
+    onCardClick: () => alert("Card clicked"),
   },
-}
+};
 
 export const CustomActions: Story = {
   args: {
-    title: 'Custom Actions Node',
-    content: 'This node has custom action buttons.',
-    file: 'custom/actions.md',
-    tags: ['Custom'],
+    title: "Custom Actions Node",
+    content: "This node has custom action buttons.",
+    file: "custom/actions.md",
+    tags: ["Custom"],
     actions: (
       <div className="flex items-center space-x-1">
-        <button className="p-1 text-blue-500 hover:text-blue-700" onClick={() => alert('Share')}>
+        <button className="p-1 text-blue-500 hover:text-blue-700" onClick={() => alert("Share")}>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -232,7 +232,7 @@ export const CustomActions: Story = {
         </button>
         <button
           className="p-1 text-yellow-500 hover:text-yellow-700"
-          onClick={() => alert('Bookmark')}
+          onClick={() => alert("Bookmark")}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -245,7 +245,7 @@ export const CustomActions: Story = {
         </button>
         <button
           className="p-1 text-green-500 hover:text-green-700"
-          onClick={() => alert('Download')}
+          onClick={() => alert("Download")}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -258,9 +258,9 @@ export const CustomActions: Story = {
         </button>
       </div>
     ),
-    onCardClick: () => alert('Card clicked'),
+    onCardClick: () => alert("Card clicked"),
   },
-}
+};
 
 // Compact variant
 export const Compact: Story = {
@@ -270,39 +270,39 @@ export const Compact: Story = {
         title="First Compact Node"
         content="Brief content for the first node."
         file="compact/first.md"
-        tags={['Compact', 'List']}
-        onCardClick={() => alert('First node clicked')}
-        onEdit={() => alert('Edit first')}
-        onDelete={() => alert('Delete first')}
+        tags={["Compact", "List"]}
+        onCardClick={() => alert("First node clicked")}
+        onEdit={() => alert("Edit first")}
+        onDelete={() => alert("Delete first")}
       />
       <NodeCardCompact
         title="Second Compact Node"
         content="Brief content for the second node."
         file="compact/second.md"
-        tags={['Compact', 'List']}
-        onCardClick={() => alert('Second node clicked')}
-        onEdit={() => alert('Edit second')}
-        onDelete={() => alert('Delete second')}
+        tags={["Compact", "List"]}
+        onCardClick={() => alert("Second node clicked")}
+        onEdit={() => alert("Edit second")}
+        onDelete={() => alert("Delete second")}
       />
       <NodeCardCompact
         title="Third Compact Node"
         content="Brief content for the third node."
         file="compact/third.md"
-        tags={['Compact', 'List']}
-        onCardClick={() => alert('Third node clicked')}
-        onEdit={() => alert('Edit third')}
-        onDelete={() => alert('Delete third')}
+        tags={["Compact", "List"]}
+        onCardClick={() => alert("Third node clicked")}
+        onEdit={() => alert("Edit third")}
+        onDelete={() => alert("Delete third")}
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Compact variant for dense list layouts',
+        story: "Compact variant for dense list layouts",
       },
     },
   },
-}
+};
 
 // Grid layout
 export const Grid: Story = {
@@ -312,67 +312,67 @@ export const Grid: Story = {
         title="React Hooks"
         content="Modern React development with hooks."
         file="react/hooks.md"
-        tags={['React', 'Hooks']}
-        onCardClick={() => alert('React Hooks clicked')}
-        onEdit={() => alert('Edit React Hooks')}
-        onDelete={() => alert('Delete React Hooks')}
+        tags={["React", "Hooks"]}
+        onCardClick={() => alert("React Hooks clicked")}
+        onEdit={() => alert("Edit React Hooks")}
+        onDelete={() => alert("Delete React Hooks")}
       />
       <NodeCardGrid
         title="Vue 3 Composition API"
         content="Building components with Vue 3."
         file="vue/composition-api.md"
-        tags={['Vue', 'Composition']}
-        onCardClick={() => alert('Vue clicked')}
-        onEdit={() => alert('Edit Vue')}
-        onDelete={() => alert('Delete Vue')}
+        tags={["Vue", "Composition"]}
+        onCardClick={() => alert("Vue clicked")}
+        onEdit={() => alert("Edit Vue")}
+        onDelete={() => alert("Delete Vue")}
       />
       <NodeCardGrid
         title="Angular Reactive Forms"
         content="Form handling in Angular applications."
         file="angular/reactive-forms.md"
-        tags={['Angular', 'Forms']}
-        onCardClick={() => alert('Angular clicked')}
-        onEdit={() => alert('Edit Angular')}
-        onDelete={() => alert('Delete Angular')}
+        tags={["Angular", "Forms"]}
+        onCardClick={() => alert("Angular clicked")}
+        onEdit={() => alert("Edit Angular")}
+        onDelete={() => alert("Delete Angular")}
       />
       <NodeCardGrid
         title="Svelte Stores"
         content="State management with Svelte stores."
         file="svelte/stores.md"
-        tags={['Svelte', 'State']}
-        onCardClick={() => alert('Svelte clicked')}
-        onEdit={() => alert('Edit Svelte')}
-        onDelete={() => alert('Delete Svelte')}
+        tags={["Svelte", "State"]}
+        onCardClick={() => alert("Svelte clicked")}
+        onEdit={() => alert("Edit Svelte")}
+        onDelete={() => alert("Delete Svelte")}
       />
       <NodeCardGrid
         title="Web Components"
         content="Creating reusable web components."
         file="web/components.md"
-        tags={['Web Components']}
+        tags={["Web Components"]}
         todo="Add browser support table"
-        onCardClick={() => alert('Web Components clicked')}
-        onEdit={() => alert('Edit Web Components')}
-        onDelete={() => alert('Delete Web Components')}
+        onCardClick={() => alert("Web Components clicked")}
+        onEdit={() => alert("Edit Web Components")}
+        onDelete={() => alert("Delete Web Components")}
       />
       <NodeCardGrid
         title="GraphQL Schemas"
         content="Designing GraphQL APIs and schemas."
         file="graphql/schemas.md"
-        tags={['GraphQL', 'API']}
-        onCardClick={() => alert('GraphQL clicked')}
-        onEdit={() => alert('Edit GraphQL')}
-        onDelete={() => alert('Delete GraphQL')}
+        tags={["GraphQL", "API"]}
+        onCardClick={() => alert("GraphQL clicked")}
+        onEdit={() => alert("Edit GraphQL")}
+        onDelete={() => alert("Delete GraphQL")}
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Grid layout with fixed aspect ratio cards',
+        story: "Grid layout with fixed aspect ratio cards",
       },
     },
   },
-}
+};
 
 // Real-world example
 export const RoamWebExample: Story = {
@@ -383,11 +383,11 @@ export const RoamWebExample: Story = {
         title="Knowledge Management Systems"
         content="Exploring different approaches to personal knowledge management, including the Zettelkasten method, Building a Second Brain, and digital gardens. This comprehensive guide covers tools, workflows, and best practices for organizing and connecting ideas."
         file="knowledge/management-systems.md"
-        tags={['PKM', 'Zettelkasten', 'Second Brain', 'Knowledge']}
-        date={new Date('2024-01-10')}
-        onCardClick={() => alert('Navigate to knowledge management')}
-        onEdit={() => alert('Edit knowledge management')}
-        onDelete={() => alert('Delete knowledge management')}
+        tags={["PKM", "Zettelkasten", "Second Brain", "Knowledge"]}
+        date={new Date("2024-01-10")}
+        onCardClick={() => alert("Navigate to knowledge management")}
+        onEdit={() => alert("Edit knowledge management")}
+        onDelete={() => alert("Delete knowledge management")}
       />
 
       <NodeCard
@@ -395,34 +395,34 @@ export const RoamWebExample: Story = {
         title="Roam Research vs Obsidian"
         content="A detailed comparison of two popular knowledge management tools, analyzing their features, workflows, and use cases."
         file="tools/roam-vs-obsidian.md"
-        tags={['Roam Research', 'Obsidian', 'Comparison', 'Tools']}
-        todo={'Update with latest features'}
-        date={new Date('2024-01-05')}
-        onCardClick={() => alert('Navigate to comparison')}
-        onEdit={() => alert('Edit comparison')}
-        onDelete={() => alert('Delete comparison')}
+        tags={["Roam Research", "Obsidian", "Comparison", "Tools"]}
+        todo={"Update with latest features"}
+        date={new Date("2024-01-05")}
+        onCardClick={() => alert("Navigate to comparison")}
+        onEdit={() => alert("Edit comparison")}
+        onDelete={() => alert("Delete comparison")}
       />
 
       <NodeCard
         title="Daily Notes Template"
         content="A structured template for daily note-taking that includes sections for goals, reflections, and key learnings."
         file="templates/daily-notes.md"
-        tags={['Templates', 'Daily Notes', 'Productivity']}
-        date={new Date('2024-01-20')}
-        onCardClick={() => alert('Navigate to template')}
-        onEdit={() => alert('Edit template')}
-        onDelete={() => alert('Delete template')}
+        tags={["Templates", "Daily Notes", "Productivity"]}
+        date={new Date("2024-01-20")}
+        onCardClick={() => alert("Navigate to template")}
+        onEdit={() => alert("Edit template")}
+        onDelete={() => alert("Delete template")}
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Example of how NodeCards might appear in the Roam Web application',
+        story: "Example of how NodeCards might appear in the Roam Web application",
       },
     },
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -433,8 +433,8 @@ export const AllVariants: Story = {
         title="Default Variant"
         content="Standard card with subtle shadow and border."
         file="variants/default.md"
-        tags={['Default']}
-        onCardClick={() => alert('Default clicked')}
+        tags={["Default"]}
+        onCardClick={() => alert("Default clicked")}
       />
 
       <NodeCard
@@ -442,8 +442,8 @@ export const AllVariants: Story = {
         title="Elevated Variant"
         content="Enhanced shadow for more prominence."
         file="variants/elevated.md"
-        tags={['Elevated']}
-        onCardClick={() => alert('Elevated clicked')}
+        tags={["Elevated"]}
+        onCardClick={() => alert("Elevated clicked")}
       />
 
       <NodeCard
@@ -451,8 +451,8 @@ export const AllVariants: Story = {
         title="Minimal Variant"
         content="Clean design with subtle background."
         file="variants/minimal.md"
-        tags={['Minimal']}
-        onCardClick={() => alert('Minimal clicked')}
+        tags={["Minimal"]}
+        onCardClick={() => alert("Minimal clicked")}
       />
 
       <NodeCard
@@ -460,16 +460,16 @@ export const AllVariants: Story = {
         title="Accent Variant"
         content="Blue gradient background for special content."
         file="variants/accent.md"
-        tags={['Accent']}
-        onCardClick={() => alert('Accent clicked')}
+        tags={["Accent"]}
+        onCardClick={() => alert("Accent clicked")}
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Overview of all available NodeCard variants',
+        story: "Overview of all available NodeCard variants",
       },
     },
   },
-}
+};

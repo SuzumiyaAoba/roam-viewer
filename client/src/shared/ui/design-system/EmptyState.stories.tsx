@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 import {
   EmptyState,
   EmptyStateError,
@@ -7,13 +7,13 @@ import {
   EmptyStateNoNodes,
   EmptyStateNoResults,
   EmptyStateOffline,
-} from './EmptyState'
+} from "./EmptyState";
 
 const meta = {
-  title: 'Design System/EmptyState',
+  title: "Design System/EmptyState",
   component: EmptyState,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
@@ -21,122 +21,122 @@ const meta = {
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'muted', 'accent'],
-      description: 'The visual variant of the empty state',
+      control: { type: "select" },
+      options: ["default", "muted", "accent"],
+      description: "The visual variant of the empty state",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the empty state',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the empty state",
     },
     title: {
-      control: 'text',
-      description: 'Main title text',
+      control: "text",
+      description: "Main title text",
     },
     description: {
-      control: 'text',
-      description: 'Description text',
+      control: "text",
+      description: "Description text",
     },
     icon: {
-      control: 'text',
-      description: 'Icon to display (emoji or custom element)',
+      control: "text",
+      description: "Icon to display (emoji or custom element)",
     },
   },
-} satisfies Meta<typeof EmptyState>
+} satisfies Meta<typeof EmptyState>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic examples
 export const Default: Story = {
   args: {
-    icon: '📄',
-    title: 'No items found',
-    description: 'There are no items to display at the moment.',
+    icon: "📄",
+    title: "No items found",
+    description: "There are no items to display at the moment.",
   },
-}
+};
 
 export const WithAction: Story = {
   args: {
-    icon: '➕',
-    title: 'Get started',
-    description: 'Create your first item to get started.',
+    icon: "➕",
+    title: "Get started",
+    description: "Create your first item to get started.",
     action: {
-      label: 'Create Item',
-      onClick: () => alert('Create item clicked'),
+      label: "Create Item",
+      onClick: () => alert("Create item clicked"),
     },
   },
-}
+};
 
 export const WithTwoActions: Story = {
   args: {
-    icon: '🔍',
-    title: 'No search results',
+    icon: "🔍",
+    title: "No search results",
     description: "We couldn't find any results for your search.",
     action: {
-      label: 'Clear Search',
-      onClick: () => alert('Clear search clicked'),
+      label: "Clear Search",
+      onClick: () => alert("Clear search clicked"),
     },
     secondaryAction: {
-      label: 'Browse All',
-      onClick: () => alert('Browse all clicked'),
-      variant: 'outline',
+      label: "Browse All",
+      onClick: () => alert("Browse all clicked"),
+      variant: "outline",
     },
   },
-}
+};
 
 // Variants
 export const Muted: Story = {
   args: {
-    variant: 'muted',
-    icon: '🌫️',
-    title: 'Nothing here yet',
-    description: 'This section is empty but will be populated soon.',
+    variant: "muted",
+    icon: "🌫️",
+    title: "Nothing here yet",
+    description: "This section is empty but will be populated soon.",
   },
-}
+};
 
 export const Accent: Story = {
   args: {
-    variant: 'accent',
-    icon: '⭐',
-    title: 'Featured content',
-    description: 'Special content will appear here when available.',
+    variant: "accent",
+    icon: "⭐",
+    title: "Featured content",
+    description: "Special content will appear here when available.",
   },
-}
+};
 
 // Sizes
 export const Small: Story = {
   args: {
-    size: 'sm',
-    icon: '📋',
-    title: 'Empty list',
-    description: 'No items in this list.',
+    size: "sm",
+    icon: "📋",
+    title: "Empty list",
+    description: "No items in this list.",
   },
-}
+};
 
 export const Large: Story = {
   args: {
-    size: 'lg',
-    icon: '🎯',
-    title: 'Welcome to your dashboard',
+    size: "lg",
+    icon: "🎯",
+    title: "Welcome to your dashboard",
     description:
       "This is where you'll see your important information once you start using the application.",
     action: {
-      label: 'Get Started',
-      onClick: () => alert('Get started clicked'),
+      label: "Get Started",
+      onClick: () => alert("Get started clicked"),
     },
   },
-}
+};
 
 // Custom illustration
 export const WithCustomIllustration: Story = {
   args: {
-    title: 'Custom illustration',
-    description: 'This empty state uses a custom SVG illustration.',
+    title: "Custom illustration",
+    description: "This empty state uses a custom SVG illustration.",
     illustration: (
       <div className="mb-6">
         <svg
@@ -155,11 +155,11 @@ export const WithCustomIllustration: Story = {
       </div>
     ),
     action: {
-      label: 'Create Document',
-      onClick: () => alert('Create document clicked'),
+      label: "Create Document",
+      onClick: () => alert("Create document clicked"),
     },
   },
-}
+};
 
 // Predefined variants
 export const NoResults: Story = {
@@ -167,88 +167,88 @@ export const NoResults: Story = {
     <EmptyStateNoResults
       searchQuery="react components"
       action={{
-        label: 'Clear Search',
-        onClick: () => alert('Clear search clicked'),
-        variant: 'outline',
+        label: "Clear Search",
+        onClick: () => alert("Clear search clicked"),
+        variant: "outline",
       }}
     />
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for no search results',
+        story: "Predefined empty state for no search results",
       },
     },
   },
-}
+};
 
 export const NoNodes: Story = {
   render: () => (
     <EmptyStateNoNodes
       action={{
-        label: 'Create First Node',
-        onClick: () => alert('Create first node clicked'),
+        label: "Create First Node",
+        onClick: () => alert("Create first node clicked"),
       }}
     />
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for when there are no nodes',
+        story: "Predefined empty state for when there are no nodes",
       },
     },
   },
-}
+};
 
 export const ErrorState: Story = {
   render: () => (
     <EmptyStateError
       error="Failed to load data from the server."
       action={{
-        label: 'Try Again',
-        onClick: () => alert('Try again clicked'),
-        variant: 'outline',
+        label: "Try Again",
+        onClick: () => alert("Try again clicked"),
+        variant: "outline",
       }}
     />
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for error scenarios',
+        story: "Predefined empty state for error scenarios",
       },
     },
   },
-}
+};
 
 export const LoadingState: Story = {
   render: () => <EmptyStateLoading />,
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for loading scenarios',
+        story: "Predefined empty state for loading scenarios",
       },
     },
   },
-}
+};
 
 export const OfflineState: Story = {
   render: () => (
     <EmptyStateOffline
       action={{
-        label: 'Retry',
-        onClick: () => alert('Retry clicked'),
-        variant: 'outline',
+        label: "Retry",
+        onClick: () => alert("Retry clicked"),
+        variant: "outline",
       }}
     />
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Predefined empty state for offline scenarios',
+        story: "Predefined empty state for offline scenarios",
       },
     },
   },
-}
+};
 
 // Real-world examples
 export const RoamWebExamples: Story = {
@@ -259,8 +259,8 @@ export const RoamWebExamples: Story = {
         <h3 className="text-lg font-semibold mb-4">No Nodes Scenario</h3>
         <EmptyStateNoNodes
           action={{
-            label: 'Create Your First Node',
-            onClick: () => alert('Navigate to create node'),
+            label: "Create Your First Node",
+            onClick: () => alert("Navigate to create node"),
           }}
         />
       </div>
@@ -271,14 +271,14 @@ export const RoamWebExamples: Story = {
         <EmptyStateNoResults
           searchQuery="machine learning"
           action={{
-            label: 'Clear Search',
-            onClick: () => alert('Clear search'),
-            variant: 'outline',
+            label: "Clear Search",
+            onClick: () => alert("Clear search"),
+            variant: "outline",
           }}
           secondaryAction={{
-            label: 'Browse All Nodes',
-            onClick: () => alert('Browse all'),
-            variant: 'ghost',
+            label: "Browse All Nodes",
+            onClick: () => alert("Browse all"),
+            variant: "ghost",
           }}
         />
       </div>
@@ -289,23 +289,23 @@ export const RoamWebExamples: Story = {
         <EmptyStateError
           error="Unable to connect to the Roam Web server. Please check if the server is running on port 3000."
           action={{
-            label: 'Retry Connection',
-            onClick: () => alert('Retry connection'),
-            variant: 'outline',
+            label: "Retry Connection",
+            onClick: () => alert("Retry connection"),
+            variant: "outline",
           }}
         />
       </div>
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Real-world examples of how empty states might be used in the Roam Web application',
+        story: "Real-world examples of how empty states might be used in the Roam Web application",
       },
     },
   },
-}
+};
 
 // Dashboard scenarios
 export const DashboardScenarios: Story = {
@@ -357,14 +357,14 @@ export const DashboardScenarios: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Dashboard widget scenarios with compact empty states',
+        story: "Dashboard widget scenarios with compact empty states",
       },
     },
   },
-}
+};
 
 // Custom content
 export const WithCustomContent: Story = {
@@ -396,11 +396,11 @@ export const WithCustomContent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Empty state with custom content children',
+        story: "Empty state with custom content children",
       },
     },
   },
-}
+};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -479,11 +479,11 @@ export const AllVariants: Story = {
     </div>
   ),
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     docs: {
       description: {
-        story: 'Overview of all available empty state variants and sizes',
+        story: "Overview of all available empty state variants and sizes",
       },
     },
   },
-}
+};

@@ -1,71 +1,71 @@
-import React, { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { CreateNodeRequest, UpdateNodeRequest } from '../../entities/node'
-import { useCreateNode, useNode, useUpdateNode } from '../../entities/node'
-import { Layout } from '../../widgets/layout'
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import type { CreateNodeRequest, UpdateNodeRequest } from "../../entities/node";
+import { useCreateNode, useNode, useUpdateNode } from "../../entities/node";
+import { Layout } from "../../widgets/layout";
 
 interface NodeFormData {
-  title: string
-  content: string
-  tags: string
-  aliases: string
-  refs: string
-  file_type: 'md' | 'org'
+  title: string;
+  content: string;
+  tags: string;
+  aliases: string;
+  refs: string;
+  file_type: "md" | "org";
 }
 
 function parseTagsString(str: string): string[] {
   return str
-    .split(',')
+    .split(",")
     .map((tag) => tag.trim())
-    .filter((tag) => tag.length > 0)
+    .filter((tag) => tag.length > 0);
 }
 
 // Remove metadata from content to prevent duplication
 function stripMetadataFromContent(content: string): string {
-  const lines = content.split('\n')
-  const cleanedLines: string[] = []
-  let inPropertiesBlock = false
+  const lines = content.split("\n");
+  const cleanedLines: string[] = [];
+  let inPropertiesBlock = false;
 
   for (const line of lines) {
-    const trimmed = line.trim()
+    const trimmed = line.trim();
 
     // Skip PROPERTIES blocks
-    if (trimmed === ':PROPERTIES:') {
-      inPropertiesBlock = true
-      continue
-    } else if (trimmed === ':END:' && inPropertiesBlock) {
-      inPropertiesBlock = false
-      continue
+    if (trimmed === ":PROPERTIES:") {
+      inPropertiesBlock = true;
+      continue;
+    } else if (trimmed === ":END:" && inPropertiesBlock) {
+      inPropertiesBlock = false;
+      continue;
     } else if (inPropertiesBlock) {
-      continue // Skip all properties
+      continue; // Skip all properties
     }
 
     // Skip org metadata lines
-    if (trimmed.startsWith('#+')) {
-      continue
+    if (trimmed.startsWith("#+")) {
+      continue;
     }
 
-    cleanedLines.push(line)
+    cleanedLines.push(line);
   }
 
-  return cleanedLines.join('\n').trim()
+  return cleanedLines.join("\n").trim();
 }
 
 export function NodeCreatePage() {
-  const navigate = useNavigate()
-  const createNodeMutation = useCreateNode()
+  const navigate = useNavigate();
+  const createNodeMutation = useCreateNode();
 
   const [formData, setFormData] = useState<NodeFormData>({
-    title: '',
-    content: '',
-    tags: '',
-    aliases: '',
-    refs: '',
-    file_type: 'org',
-  })
+    title: "",
+    content: "",
+    tags: "",
+    aliases: "",
+    refs: "",
+    file_type: "org",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const nodeRequest: CreateNodeRequest = {
       title: formData.title,
@@ -74,21 +74,21 @@ export function NodeCreatePage() {
       aliases: parseTagsString(formData.aliases),
       refs: parseTagsString(formData.refs),
       file_type: formData.file_type,
-    }
+    };
 
     createNodeMutation.mutate(nodeRequest, {
       onSuccess: (newNode) => {
-        navigate(`/nodes/${encodeURIComponent(newNode.id)}`)
+        navigate(`/nodes/${encodeURIComponent(newNode.id)}`);
       },
-    })
-  }
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   return (
     <Layout>
@@ -126,7 +126,7 @@ export function NodeCreatePage() {
               name="file_type"
               value={formData.file_type}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, file_type: e.target.value as 'md' | 'org' }))
+                setFormData((prev) => ({ ...prev, file_type: e.target.value as "md" | "org" }))
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
@@ -201,10 +201,10 @@ export function NodeCreatePage() {
 
           {createNodeMutation.error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              <strong>Error:</strong> Failed to create node.{' '}
+              <strong>Error:</strong> Failed to create node.{" "}
               {createNodeMutation.error instanceof Error
                 ? createNodeMutation.error.message
-                : 'Unknown error'}
+                : "Unknown error"}
             </div>
           )}
 
@@ -214,7 +214,7 @@ export function NodeCreatePage() {
               disabled={createNodeMutation.isPending}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors disabled:opacity-50"
             >
-              {createNodeMutation.isPending ? 'Creating...' : 'Create Node'}
+              {createNodeMutation.isPending ? "Creating..." : "Create Node"}
             </button>
             <Link
               to="/nodes"
@@ -226,42 +226,42 @@ export function NodeCreatePage() {
         </form>
       </div>
     </Layout>
-  )
+  );
 }
 
 export function NodeEditPage() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const { data: node, isLoading, error } = useNode(id!)
-  const updateNodeMutation = useUpdateNode()
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: node, isLoading, error } = useNode(id!);
+  const updateNodeMutation = useUpdateNode();
 
   const [formData, setFormData] = useState<NodeFormData>({
-    title: '',
-    content: '',
-    tags: '',
-    aliases: '',
-    refs: '',
-    file_type: 'org',
-  })
+    title: "",
+    content: "",
+    tags: "",
+    aliases: "",
+    refs: "",
+    file_type: "org",
+  });
 
   // Update form data when node is loaded
   React.useEffect(() => {
     if (node) {
       setFormData({
-        title: node.title || '',
-        content: stripMetadataFromContent(node.content || ''),
-        tags: (node.tags || []).join(', '),
-        aliases: (node.aliases || []).join(', '),
-        refs: (node.refs || []).join(', '),
-        file_type: 'org', // Default for edit form
-      })
+        title: node.title || "",
+        content: stripMetadataFromContent(node.content || ""),
+        tags: (node.tags || []).join(", "),
+        aliases: (node.aliases || []).join(", "),
+        refs: (node.refs || []).join(", "),
+        file_type: "org", // Default for edit form
+      });
     }
-  }, [node])
+  }, [node]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!id) return
+    if (!id) return;
 
     const nodeRequest: UpdateNodeRequest = {
       title: formData.title,
@@ -269,24 +269,24 @@ export function NodeEditPage() {
       tags: parseTagsString(formData.tags),
       aliases: parseTagsString(formData.aliases),
       refs: parseTagsString(formData.refs),
-    }
+    };
 
     updateNodeMutation.mutate(
       { id, data: nodeRequest },
       {
         onSuccess: () => {
-          navigate(`/nodes/${encodeURIComponent(id)}`)
+          navigate(`/nodes/${encodeURIComponent(id)}`);
         },
-      }
-    )
-  }
+      },
+    );
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   if (isLoading) {
     return (
@@ -295,7 +295,7 @@ export function NodeEditPage() {
           <p className="text-gray-500">Loading node...</p>
         </div>
       </Layout>
-    )
+    );
   }
 
   if (error || !node) {
@@ -310,7 +310,7 @@ export function NodeEditPage() {
           </Link>
         </div>
       </Layout>
-    )
+    );
   }
 
   return (
@@ -408,10 +408,10 @@ export function NodeEditPage() {
 
           {updateNodeMutation.error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              <strong>Error:</strong> Failed to update node.{' '}
+              <strong>Error:</strong> Failed to update node.{" "}
               {updateNodeMutation.error instanceof Error
                 ? updateNodeMutation.error.message
-                : 'Unknown error'}
+                : "Unknown error"}
             </div>
           )}
 
@@ -421,7 +421,7 @@ export function NodeEditPage() {
               disabled={updateNodeMutation.isPending}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors disabled:opacity-50"
             >
-              {updateNodeMutation.isPending ? 'Updating...' : 'Update Node'}
+              {updateNodeMutation.isPending ? "Updating..." : "Update Node"}
             </button>
             <Link
               to={`/nodes/${encodeURIComponent(id!)}`}
@@ -433,5 +433,5 @@ export function NodeEditPage() {
         </form>
       </div>
     </Layout>
-  )
+  );
 }

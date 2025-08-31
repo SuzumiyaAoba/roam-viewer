@@ -1,42 +1,42 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import React, { forwardRef } from 'react'
-import { cn } from './utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import React, { forwardRef } from "react";
+import { cn } from "./utils";
 
 const textareaVariants = cva(
-  'w-full rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y',
+  "w-full rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y",
   {
     variants: {
       variant: {
-        default: 'border border-gray-300 bg-white text-gray-900 placeholder-gray-500',
+        default: "border border-gray-300 bg-white text-gray-900 placeholder-gray-500",
         filled:
-          'border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-500 focus:bg-white',
-        outlined: 'border-2 border-gray-300 bg-white text-gray-900 placeholder-gray-500',
+          "border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-500 focus:bg-white",
+        outlined: "border-2 border-gray-300 bg-white text-gray-900 placeholder-gray-500",
         minimal:
-          'border-0 border-b-2 border-gray-200 rounded-none bg-transparent text-gray-900 placeholder-gray-500 focus:ring-0 focus:border-blue-500 resize-none',
+          "border-0 border-b-2 border-gray-200 rounded-none bg-transparent text-gray-900 placeholder-gray-500 focus:ring-0 focus:border-blue-500 resize-none",
         error:
-          'border border-red-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-red-500 focus:border-red-500',
+          "border border-red-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-red-500 focus:border-red-500",
         success:
-          'border border-green-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-green-500 focus:border-green-500',
+          "border border-green-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-green-500 focus:border-green-500",
       },
       size: {
-        sm: 'px-3 py-2 text-sm min-h-[80px]',
-        default: 'px-4 py-3 text-base min-h-[120px]',
-        lg: 'px-5 py-4 text-lg min-h-[160px]',
+        sm: "px-3 py-2 text-sm min-h-[80px]",
+        default: "px-4 py-3 text-base min-h-[120px]",
+        lg: "px-5 py-4 text-lg min-h-[160px]",
       },
       resize: {
-        none: 'resize-none',
-        vertical: 'resize-y',
-        horizontal: 'resize-x',
-        both: 'resize',
+        none: "resize-none",
+        vertical: "resize-y",
+        horizontal: "resize-x",
+        both: "resize",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
-      resize: 'vertical',
+      variant: "default",
+      size: "default",
+      resize: "vertical",
     },
-  }
-)
+  },
+);
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -44,31 +44,31 @@ export interface TextareaProps
   /**
    * Label for the textarea
    */
-  label?: string
+  label?: string;
   /**
    * Helper text displayed below the textarea
    */
-  helperText?: string
+  helperText?: string;
   /**
    * Error message displayed below the textarea
    */
-  errorMessage?: string
+  errorMessage?: string;
   /**
    * Success message displayed below the textarea
    */
-  successMessage?: string
+  successMessage?: string;
   /**
    * Character count display
    */
-  showCharCount?: boolean
+  showCharCount?: boolean;
   /**
    * Maximum character limit
    */
-  maxLength?: number
+  maxLength?: number;
   /**
    * Auto-resize textarea based on content
    */
-  autoResize?: boolean
+  autoResize?: boolean;
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -90,34 +90,34 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       onChange,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`
-    const hasError = !!errorMessage
-    const hasSuccess = !!successMessage && !hasError
+    const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+    const hasError = !!errorMessage;
+    const hasSuccess = !!successMessage && !hasError;
 
-    const currentVariant = hasError ? 'error' : hasSuccess ? 'success' : variant
-    const charCount = typeof value === 'string' ? value.length : 0
-    const isOverLimit = maxLength && charCount > maxLength
+    const currentVariant = hasError ? "error" : hasSuccess ? "success" : variant;
+    const charCount = typeof value === "string" ? value.length : 0;
+    const isOverLimit = maxLength && charCount > maxLength;
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       if (autoResize) {
-        const target = e.target
-        target.style.height = 'auto'
-        target.style.height = `${target.scrollHeight}px`
+        const target = e.target;
+        target.style.height = "auto";
+        target.style.height = `${target.scrollHeight}px`;
       }
-      onChange?.(e)
-    }
+      onChange?.(e);
+    };
 
     React.useEffect(() => {
-      if (autoResize && ref && typeof ref !== 'function') {
-        const textarea = ref.current
+      if (autoResize && ref && typeof ref !== "function") {
+        const textarea = ref.current;
         if (textarea) {
-          textarea.style.height = 'auto'
-          textarea.style.height = `${textarea.scrollHeight}px`
+          textarea.style.height = "auto";
+          textarea.style.height = `${textarea.scrollHeight}px`;
         }
       }
-    }, [value, autoResize, ref])
+    }, [value, autoResize, ref]);
 
     return (
       <div className="w-full">
@@ -138,9 +138,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
               textareaVariants({
                 variant: currentVariant,
                 size,
-                resize: autoResize ? 'none' : resize,
+                resize: autoResize ? "none" : resize,
               }),
-              className
+              className,
             )}
             value={value}
             onChange={handleChange}
@@ -151,7 +151,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {/* Character count overlay */}
           {showCharCount && (maxLength || charCount > 0) && (
             <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white/90 px-2 py-1 rounded">
-              <span className={isOverLimit ? 'text-red-500' : ''}>{charCount}</span>
+              <span className={isOverLimit ? "text-red-500" : ""}>{charCount}</span>
               {maxLength && (
                 <>
                   <span>/</span>
@@ -198,7 +198,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {/* Character count below textarea */}
         {showCharCount && !errorMessage && !successMessage && (maxLength || charCount > 0) && (
           <div className="mt-1 text-right">
-            <span className={cn('text-xs', isOverLimit ? 'text-red-500' : 'text-gray-400')}>
+            <span className={cn("text-xs", isOverLimit ? "text-red-500" : "text-gray-400")}>
               {charCount}
               {maxLength && (
                 <>
@@ -210,28 +210,28 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           </div>
         )}
       </div>
-    )
-  }
-)
-Textarea.displayName = 'Textarea'
+    );
+  },
+);
+Textarea.displayName = "Textarea";
 
 // Auto-resizing textarea variant
-const AutoTextarea = forwardRef<HTMLTextAreaElement, Omit<TextareaProps, 'autoResize' | 'resize'>>(
-  (props, ref) => <Textarea ref={ref} autoResize resize="none" {...props} />
-)
-AutoTextarea.displayName = 'AutoTextarea'
+const AutoTextarea = forwardRef<HTMLTextAreaElement, Omit<TextareaProps, "autoResize" | "resize">>(
+  (props, ref) => <Textarea ref={ref} autoResize resize="none" {...props} />,
+);
+AutoTextarea.displayName = "AutoTextarea";
 
 // Minimal textarea for inline editing
-const InlineTextarea = forwardRef<HTMLTextAreaElement, Omit<TextareaProps, 'variant' | 'label'>>(
+const InlineTextarea = forwardRef<HTMLTextAreaElement, Omit<TextareaProps, "variant" | "label">>(
   ({ className, ...props }, ref) => (
     <Textarea
       ref={ref}
       variant="minimal"
-      className={cn('min-h-[32px] py-1', className)}
+      className={cn("min-h-[32px] py-1", className)}
       {...props}
     />
-  )
-)
-InlineTextarea.displayName = 'InlineTextarea'
+  ),
+);
+InlineTextarea.displayName = "InlineTextarea";
 
-export { Textarea, AutoTextarea, InlineTextarea, textareaVariants }
+export { Textarea, AutoTextarea, InlineTextarea, textareaVariants };

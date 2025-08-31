@@ -1,3 +1,3 @@
 // Node Form Page Export
 
-export { NodeCreatePage as NodeFormPage, NodeEditPage } from './NodeFormPage'
+export { NodeCreatePage as NodeFormPage, NodeEditPage } from "./NodeFormPage";

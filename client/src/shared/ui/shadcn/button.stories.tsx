@@ -1,88 +1,88 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Button } from './button'
+import type { Meta, StoryObj } from "@storybook/react";
+import { Button } from "./button";
 
 const meta: Meta<typeof Button> = {
-  title: 'UI/Button',
+  title: "UI/Button",
   component: Button,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A versatile button component built with Tailwind CSS and class-variance-authority. Supports multiple variants, sizes, and can render as different elements using the asChild prop.',
+          "A versatile button component built with Tailwind CSS and class-variance-authority. Supports multiple variants, sizes, and can render as different elements using the asChild prop.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
-      description: 'The visual style variant of the button',
+      control: "select",
+      options: ["default", "destructive", "outline", "secondary", "ghost", "link"],
+      description: "The visual style variant of the button",
     },
     size: {
-      control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
-      description: 'The size of the button',
+      control: "select",
+      options: ["default", "sm", "lg", "icon"],
+      description: "The size of the button",
     },
     asChild: {
-      control: 'boolean',
-      description: 'Render as a child element (useful for links)',
+      control: "boolean",
+      description: "Render as a child element (useful for links)",
     },
     disabled: {
-      control: 'boolean',
-      description: 'Whether the button is disabled',
+      control: "boolean",
+      description: "Whether the button is disabled",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS classes',
+      control: "text",
+      description: "Additional CSS classes",
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    children: 'Button',
+    children: "Button",
   },
-}
+};
 
 export const Destructive: Story = {
   args: {
-    variant: 'destructive',
-    children: 'Delete',
+    variant: "destructive",
+    children: "Delete",
   },
-}
+};
 
 export const Outline: Story = {
   args: {
-    variant: 'outline',
-    children: 'Outline',
+    variant: "outline",
+    children: "Outline",
   },
-}
+};
 
 export const Secondary: Story = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary',
+    variant: "secondary",
+    children: "Secondary",
   },
-}
+};
 
 export const Ghost: Story = {
   args: {
-    variant: 'ghost',
-    children: 'Ghost',
+    variant: "ghost",
+    children: "Ghost",
   },
-}
+};
 
 export const Link: Story = {
   args: {
-    variant: 'link',
-    children: 'Link Button',
+    variant: "link",
+    children: "Link Button",
   },
-}
+};
 
 // All variants together
 export const AllVariants: Story = {
@@ -96,7 +96,7 @@ export const AllVariants: Story = {
       <Button variant="link">Link</Button>
     </div>
   ),
-}
+};
 
 // All sizes
 export const AllSizes: Story = {
@@ -116,7 +116,7 @@ export const AllSizes: Story = {
       </Button>
     </div>
   ),
-}
+};
 
 // Disabled states
 export const DisabledStates: Story = {
@@ -140,7 +140,7 @@ export const DisabledStates: Story = {
       </Button>
     </div>
   ),
-}
+};
 
 // With icons
 export const WithIcons: Story = {
@@ -178,7 +178,7 @@ export const WithIcons: Story = {
       </Button>
     </div>
   ),
-}
+};
 
 // Icon only buttons
 export const IconOnly: Story = {
@@ -213,7 +213,7 @@ export const IconOnly: Story = {
       </Button>
     </div>
   ),
-}
+};
 
 // Loading states
 export const LoadingStates: Story = {
@@ -258,7 +258,7 @@ export const LoadingStates: Story = {
       </Button>
     </div>
   ),
-}
+};
 
 // As child (link example)
 export const AsChild: Story = {
@@ -281,7 +281,7 @@ export const AsChild: Story = {
       </Button>
     </div>
   ),
-}
+};
 
 // Form buttons
 export const FormButtons: Story = {
@@ -311,4 +311,4 @@ export const FormButtons: Story = {
       </div>
     </div>
   ),
-}
+};

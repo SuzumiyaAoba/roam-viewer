@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Button } from './Button'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Button } from "./Button";
 import {
   Modal,
   ModalCloseButton,
@@ -9,58 +9,58 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-} from './Modal'
+} from "./Modal";
 
 const meta = {
-  title: 'Design System/Modal',
+  title: "Design System/Modal",
   component: Modal,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
         component:
-          'A modal dialog component that displays content in a layer above the main interface. Supports different sizes, animations, and customizable behavior.',
+          "A modal dialog component that displays content in a layer above the main interface. Supports different sizes, animations, and customizable behavior.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg', 'xl', '2xl', '3xl', 'full'],
-      description: 'The size of the modal',
+      control: { type: "select" },
+      options: ["sm", "default", "lg", "xl", "2xl", "3xl", "full"],
+      description: "The size of the modal",
     },
     open: {
-      control: 'boolean',
-      description: 'Whether the modal is open',
+      control: "boolean",
+      description: "Whether the modal is open",
     },
     closeOnOverlayClick: {
-      control: 'boolean',
-      description: 'Whether clicking the overlay should close the modal',
+      control: "boolean",
+      description: "Whether clicking the overlay should close the modal",
     },
     closeOnEscape: {
-      control: 'boolean',
-      description: 'Whether pressing escape should close the modal',
+      control: "boolean",
+      description: "Whether pressing escape should close the modal",
     },
     animated: {
-      control: 'boolean',
-      description: 'Whether to show the modal with animation',
+      control: "boolean",
+      description: "Whether to show the modal with animation",
     },
   },
-} satisfies Meta<typeof Modal>
+} satisfies Meta<typeof Modal>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic modal
 export const Default: Story = {
   render: (args) => {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
 
     return (
       <div>
         <Button onClick={() => setOpen(true)}>Open Modal</Button>
-        <Modal open={open} onClose={() => setOpen(false)} size={args.size || 'default'}>
+        <Modal open={open} onClose={() => setOpen(false)} size={args.size || "default"}>
           <ModalHeader>
             <div>
               <ModalTitle>Modal Title</ModalTitle>
@@ -82,16 +82,16 @@ export const Default: Story = {
           </ModalFooter>
         </Modal>
       </div>
-    )
+    );
   },
   args: {
-    size: 'default',
+    size: "default",
   },
-}
+};
 
 export const Small: Story = {
   render: () => {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
 
     return (
       <div>
@@ -106,13 +106,13 @@ export const Small: Story = {
           </ModalContent>
         </Modal>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Large: Story = {
   render: () => {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
 
     return (
       <div>
@@ -146,13 +146,13 @@ export const Large: Story = {
           </ModalFooter>
         </Modal>
       </div>
-    )
+    );
   },
-}
+};
 
 export const ConfirmationDialog: Story = {
   render: () => {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
 
     return (
       <div>
@@ -182,13 +182,13 @@ export const ConfirmationDialog: Story = {
           </ModalFooter>
         </Modal>
       </div>
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'A confirmation dialog for destructive actions',
+        story: "A confirmation dialog for destructive actions",
       },
     },
   },
-}
+};

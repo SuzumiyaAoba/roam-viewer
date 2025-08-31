@@ -1,129 +1,129 @@
-import { Icon } from '@iconify/react'
-import { useEffect, useState } from 'react'
-import rehypeStringify from 'rehype-stringify'
-import { unified } from 'unified'
-import uniorgParse from 'uniorg-parse'
-import uniorg2rehype from 'uniorg-rehype'
+import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
+import rehypeStringify from "rehype-stringify";
+import { unified } from "unified";
+import uniorgParse from "uniorg-parse";
+import uniorg2rehype from "uniorg-rehype";
 
 interface OrgRendererProps {
   /**
    * The org-mode content to render
    */
-  content: string
+  content: string;
   /**
    * Additional CSS classes
    */
-  className?: string
+  className?: string;
   /**
    * Whether to show syntax highlighting for code blocks
    */
-  enableSyntaxHighlight?: boolean
+  enableSyntaxHighlight?: boolean;
 }
 
 // Extract and parse metadata from org content
 interface OrgMetadata {
-  title?: string
-  category?: string
-  tags?: string[]
-  id?: string
-  author?: string
-  date?: string
+  title?: string;
+  category?: string;
+  tags?: string[];
+  id?: string;
+  author?: string;
+  date?: string;
 }
 
 function extractMetadata(content: string): { metadata: OrgMetadata; cleanedContent: string } {
-  const lines = content.split('\n')
-  const cleanedLines: string[] = []
-  const metadata: OrgMetadata = {}
+  const lines = content.split("\n");
+  const cleanedLines: string[] = [];
+  const metadata: OrgMetadata = {};
 
-  let seenProperties = false
-  let seenTitle = false
-  let inPropertiesBlock = false
+  let seenProperties = false;
+  let seenTitle = false;
+  let inPropertiesBlock = false;
 
   for (const line of lines) {
-    const trimmed = line.trim()
+    const trimmed = line.trim();
 
     // Track PROPERTIES blocks
-    if (trimmed === ':PROPERTIES:') {
-      if (seenProperties) continue // Skip duplicate PROPERTIES block
-      seenProperties = true
-      inPropertiesBlock = true
-      continue // Don't include in cleaned content
-    } else if (trimmed === ':END:' && inPropertiesBlock) {
-      inPropertiesBlock = false
-      continue // Don't include in cleaned content
+    if (trimmed === ":PROPERTIES:") {
+      if (seenProperties) continue; // Skip duplicate PROPERTIES block
+      seenProperties = true;
+      inPropertiesBlock = true;
+      continue; // Don't include in cleaned content
+    } else if (trimmed === ":END:" && inPropertiesBlock) {
+      inPropertiesBlock = false;
+      continue; // Don't include in cleaned content
     } else if (inPropertiesBlock) {
       // Extract ID from properties
-      if (trimmed.startsWith(':ID:')) {
-        metadata.id = trimmed.replace(':ID:', '').trim()
+      if (trimmed.startsWith(":ID:")) {
+        metadata.id = trimmed.replace(":ID:", "").trim();
       }
-      continue // Don't include properties in cleaned content
+      continue; // Don't include properties in cleaned content
     }
 
     // Extract metadata from #+lines
-    if (trimmed.startsWith('#+title:')) {
+    if (trimmed.startsWith("#+title:")) {
       if (!seenTitle) {
-        metadata.title = trimmed.replace('#+title:', '').trim()
-        seenTitle = true
+        metadata.title = trimmed.replace("#+title:", "").trim();
+        seenTitle = true;
       }
-      continue // Don't include in cleaned content
+      continue; // Don't include in cleaned content
     }
 
-    if (trimmed.startsWith('#+category:')) {
-      metadata.category = trimmed.replace('#+category:', '').trim()
-      continue // Don't include in cleaned content
+    if (trimmed.startsWith("#+category:")) {
+      metadata.category = trimmed.replace("#+category:", "").trim();
+      continue; // Don't include in cleaned content
     }
 
-    if (trimmed.startsWith('#+tags:')) {
+    if (trimmed.startsWith("#+tags:")) {
       metadata.tags = trimmed
-        .replace('#+tags:', '')
+        .replace("#+tags:", "")
         .trim()
         .split(/\s+/)
-        .filter((t) => t.length > 0)
-      continue // Don't include in cleaned content
+        .filter((t) => t.length > 0);
+      continue; // Don't include in cleaned content
     }
 
-    if (trimmed.startsWith('#+author:')) {
-      metadata.author = trimmed.replace('#+author:', '').trim()
-      continue // Don't include in cleaned content
+    if (trimmed.startsWith("#+author:")) {
+      metadata.author = trimmed.replace("#+author:", "").trim();
+      continue; // Don't include in cleaned content
     }
 
-    if (trimmed.startsWith('#+date:')) {
-      metadata.date = trimmed.replace('#+date:', '').trim()
-      continue // Don't include in cleaned content
+    if (trimmed.startsWith("#+date:")) {
+      metadata.date = trimmed.replace("#+date:", "").trim();
+      continue; // Don't include in cleaned content
     }
 
     // Skip other org metadata BUT NOT code blocks
     if (
-      trimmed.startsWith('#+') &&
-      !trimmed.startsWith('#+BEGIN_SRC') &&
-      !trimmed.startsWith('#+END_SRC')
+      trimmed.startsWith("#+") &&
+      !trimmed.startsWith("#+BEGIN_SRC") &&
+      !trimmed.startsWith("#+END_SRC")
     ) {
-      continue
+      continue;
     }
 
     // Skip duplicate PROPERTIES or ID lines after we've seen them
     if (
       seenProperties &&
       !inPropertiesBlock &&
-      (trimmed === ':PROPERTIES:' || trimmed.startsWith(':ID:') || trimmed === ':END:')
+      (trimmed === ":PROPERTIES:" || trimmed.startsWith(":ID:") || trimmed === ":END:")
     ) {
-      continue
+      continue;
     }
 
-    cleanedLines.push(line)
+    cleanedLines.push(line);
   }
 
   return {
     metadata,
-    cleanedContent: cleanedLines.join('\n'),
-  }
+    cleanedContent: cleanedLines.join("\n"),
+  };
 }
 
 // Metadata display component
 function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
-  const hasMetadata = Object.values(metadata).some((v) => v !== undefined && v !== null)
+  const hasMetadata = Object.values(metadata).some((v) => v !== undefined && v !== null);
 
-  if (!hasMetadata) return null
+  if (!hasMetadata) return null;
 
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
@@ -193,99 +193,99 @@ function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 // Uniorg-based org-mode parser function to HTML
 async function parseOrgContent(
-  content: string
+  content: string,
 ): Promise<{ metadata: OrgMetadata; htmlContent: string }> {
   try {
     // First, extract metadata and get cleaned content
-    const { metadata, cleanedContent } = extractMetadata(content)
+    const { metadata, cleanedContent } = extractMetadata(content);
 
     // Create uniorg processor - let it handle TODO keywords naturally, then enhance with post-processing
     const processor = unified()
       .use(uniorgParse)
       .use(uniorg2rehype)
-      .use(rehypeStringify, { allowDangerousHtml: true })
+      .use(rehypeStringify, { allowDangerousHtml: true });
 
     // Process the cleaned content
-    const result = await processor.process(cleanedContent)
-    let htmlContent = String(result)
+    const result = await processor.process(cleanedContent);
+    let htmlContent = String(result);
 
     // Apply enhanced Tailwind CSS classes including TODO keyword styling
-    htmlContent = addEnhancedTailwindClasses(htmlContent)
+    htmlContent = addEnhancedTailwindClasses(htmlContent);
 
-    return { metadata, htmlContent }
+    return { metadata, htmlContent };
   } catch (error) {
-    console.error('Error parsing org content with uniorg:', error)
+    console.error("Error parsing org content with uniorg:", error);
     // Fallback to basic parsing if uniorg fails
-    const { metadata } = extractMetadata(content)
+    const { metadata } = extractMetadata(content);
     return {
       metadata,
       htmlContent: `<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
         <strong>Error:</strong> Failed to parse org-mode content with uniorg.
         <pre class="mt-2 text-sm">${String(error)}</pre>
       </div>`,
-    }
+    };
   }
 }
 
 // Helper function to get TODO keyword colors
 function getTodoKeywordColor(keyword: string): string {
   const colors: Record<string, string> = {
-    TODO: 'bg-orange-100 text-orange-800',
-    DONE: 'bg-green-100 text-green-800',
-    DOING: 'bg-blue-100 text-blue-800',
-    NEXT: 'bg-purple-100 text-purple-800',
-    WAITING: 'bg-yellow-100 text-yellow-800',
-    CANCELLED: 'bg-gray-100 text-gray-800',
-    CANCELED: 'bg-gray-100 text-gray-800',
-  }
-  return colors[keyword] || 'bg-gray-100 text-gray-800'
+    TODO: "bg-orange-100 text-orange-800",
+    DONE: "bg-green-100 text-green-800",
+    DOING: "bg-blue-100 text-blue-800",
+    NEXT: "bg-purple-100 text-purple-800",
+    WAITING: "bg-yellow-100 text-yellow-800",
+    CANCELLED: "bg-gray-100 text-gray-800",
+    CANCELED: "bg-gray-100 text-gray-800",
+  };
+  return colors[keyword] || "bg-gray-100 text-gray-800";
 }
 
 // Helper function to get header classes by level
 function getHeaderClass(level: string): string {
   const classes: Record<string, string> = {
-    '1': 'text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0',
-    '2': 'text-2xl font-semibold text-gray-800 mb-3 mt-6',
-    '3': 'text-xl font-semibold text-gray-800 mb-3 mt-5',
-    '4': 'text-lg font-semibold text-gray-700 mb-2 mt-4',
-    '5': 'text-base font-semibold text-gray-700 mb-2 mt-3',
-    '6': 'text-sm font-semibold text-gray-700 mb-2 mt-3',
-  }
-  return classes[level] || 'text-base font-semibold text-gray-700'
+    "1": "text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0",
+    "2": "text-2xl font-semibold text-gray-800 mb-3 mt-6",
+    "3": "text-xl font-semibold text-gray-800 mb-3 mt-5",
+    "4": "text-lg font-semibold text-gray-700 mb-2 mt-4",
+    "5": "text-base font-semibold text-gray-700 mb-2 mt-3",
+    "6": "text-sm font-semibold text-gray-700 mb-2 mt-3",
+  };
+  return classes[level] || "text-base font-semibold text-gray-700";
 }
 
 // Apply enhanced Tailwind CSS classes with improved TODO keyword handling
 function addEnhancedTailwindClasses(html: string): string {
-  let processedHtml = html
+  let processedHtml = html;
 
   // Step 1: Replace uniorg's default TODO keyword spans with styled badges
-  const todoKeywords = ['TODO', 'DONE', 'DOING', 'NEXT', 'WAITING', 'CANCELLED', 'CANCELED']
+  const todoKeywords = ["TODO", "DONE", "DOING", "NEXT", "WAITING", "CANCELLED", "CANCELED"];
   todoKeywords.forEach((keyword) => {
-    const defaultSpan = `<span class="todo-keyword ${keyword}">${keyword}</span>`
-    const styledSpan = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${getTodoKeywordColor(keyword)} rounded-full mr-2">${keyword}</span>`
+    const defaultSpan = `<span class="todo-keyword ${keyword}">${keyword}</span>`;
+    const styledSpan = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${getTodoKeywordColor(keyword)} rounded-full mr-2">${keyword}</span>`;
     processedHtml = processedHtml.replace(
-      new RegExp(defaultSpan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-      styledSpan
-    )
-  })
+      new RegExp(defaultSpan.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      styledSpan,
+    );
+  });
 
   // Step 2: Handle additional TODO keywords that uniorg might not detect
-  const additionalKeywords = ['DOING', 'NEXT', 'WAITING', 'CANCELLED', 'CANCELED']
+  const additionalKeywords = ["DOING", "NEXT", "WAITING", "CANCELLED", "CANCELED"];
   additionalKeywords.forEach((keyword) => {
     // Pattern: <h1>DOING some task</h1> -> <h1 class="..."><span class="...">DOING</span>some task</h1>
-    const pattern = new RegExp(`<h([1-6])>${keyword}\\s+([^<]*)</h([1-6])>`, 'g')
+    const pattern = new RegExp(`<h([1-6])>${keyword}\\s+([^<]*)</h([1-6])>`, "g");
     processedHtml = processedHtml.replace(pattern, (_match, level, text, closingLevel) => {
-      const headerClass = getHeaderClass(level)
-      const todoColors = getTodoKeywordColor(keyword)
-      const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} rounded-full mr-2">${keyword}</span>`
-      return `<h${level} class="${headerClass}">${styledKeyword}${text.trim()}</h${closingLevel}>`
-    })
-  })
+      const headerClass = getHeaderClass(level);
+      const todoColors = getTodoKeywordColor(keyword);
+      const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} rounded-full mr-2">${keyword}</span>`;
+      return `<h${level} class="${headerClass}">${styledKeyword}${text.trim()}</h${closingLevel}>`;
+    });
+  });
 
   // Step 3: Apply standard Tailwind classes
   return (
@@ -293,27 +293,27 @@ function addEnhancedTailwindClasses(html: string): string {
       // Headers (only add classes if not already present)
       .replace(
         /<h1(?![^>]*class=)([^>]*)>/g,
-        '<h1$1 class="text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0">'
+        '<h1$1 class="text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0">',
       )
       .replace(
         /<h2(?![^>]*class=)([^>]*)>/g,
-        '<h2$1 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">'
+        '<h2$1 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">',
       )
       .replace(
         /<h3(?![^>]*class=)([^>]*)>/g,
-        '<h3$1 class="text-xl font-semibold text-gray-800 mb-3 mt-5">'
+        '<h3$1 class="text-xl font-semibold text-gray-800 mb-3 mt-5">',
       )
       .replace(
         /<h4(?![^>]*class=)([^>]*)>/g,
-        '<h4$1 class="text-lg font-semibold text-gray-700 mb-2 mt-4">'
+        '<h4$1 class="text-lg font-semibold text-gray-700 mb-2 mt-4">',
       )
       .replace(
         /<h5(?![^>]*class=)([^>]*)>/g,
-        '<h5$1 class="text-base font-semibold text-gray-700 mb-2 mt-3">'
+        '<h5$1 class="text-base font-semibold text-gray-700 mb-2 mt-3">',
       )
       .replace(
         /<h6(?![^>]*class=)([^>]*)>/g,
-        '<h6$1 class="text-sm font-semibold text-gray-700 mb-2 mt-3">'
+        '<h6$1 class="text-sm font-semibold text-gray-700 mb-2 mt-3">',
       )
       // Paragraphs
       .replace(/<p([^>]*)>/g, '<p$1 class="text-gray-700 leading-relaxed mb-4">')
@@ -324,17 +324,17 @@ function addEnhancedTailwindClasses(html: string): string {
       // Code
       .replace(
         /<code([^>]*)>/g,
-        '<code$1 class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">'
+        '<code$1 class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">',
       )
       .replace(
         /<pre([^>]*)>/g,
-        '<pre$1 class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">'
+        '<pre$1 class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">',
       )
       // Tables
       .replace(/<table([^>]*)>/g, '<table$1 class="min-w-full divide-y divide-gray-200 border">')
       .replace(
         /<th([^>]*)>/g,
-        '<th$1 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">'
+        '<th$1 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">',
       )
       .replace(/<td([^>]*)>/g, '<td$1 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">')
       .replace(/<thead([^>]*)>/g, '<thead$1 class="bg-gray-50">')
@@ -346,44 +346,44 @@ function addEnhancedTailwindClasses(html: string): string {
       .replace(/<em([^>]*)>/g, '<em$1 class="italic">')
       // Horizontal rule
       .replace(/<hr([^>]*)>/g, '<hr$1 class="border-gray-300 my-8">')
-  )
+  );
 }
 
 export function OrgRenderer({
   content,
-  className = '',
+  className = "",
   enableSyntaxHighlight = true,
 }: OrgRendererProps) {
-  const [metadata, setMetadata] = useState<OrgMetadata>({})
-  const [htmlContent, setHtmlContent] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [, setError] = useState<Error | null>(null)
+  const [metadata, setMetadata] = useState<OrgMetadata>({});
+  const [htmlContent, setHtmlContent] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     async function processContent() {
-      setIsLoading(true)
-      setError(null)
+      setIsLoading(true);
+      setError(null);
 
       try {
-        const result = await parseOrgContent(content)
-        setMetadata(result.metadata)
-        setHtmlContent(result.htmlContent)
+        const result = await parseOrgContent(content);
+        setMetadata(result.metadata);
+        setHtmlContent(result.htmlContent);
       } catch (err) {
-        console.error('Error processing org content:', err)
-        const error = err as Error
-        setError(error)
-        setMetadata({})
+        console.error("Error processing org content:", err);
+        const error = err as Error;
+        setError(error);
+        setMetadata({});
         setHtmlContent(`<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
           <strong>Error:</strong> Failed to render org-mode content.
           <pre class="mt-2 text-sm">${String(error)}</pre>
-        </div>`)
+        </div>`);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-    processContent()
-  }, [content, enableSyntaxHighlight])
+    processContent();
+  }, [content, enableSyntaxHighlight]);
 
   if (isLoading) {
     return (
@@ -392,7 +392,7 @@ export function OrgRenderer({
           <div className="text-gray-500">Parsing org-mode content...</div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -400,5 +400,5 @@ export function OrgRenderer({
       <MetadataDisplay metadata={metadata} />
       <div className="org-content" dangerouslySetInnerHTML={{ __html: htmlContent }} />
     </div>
-  )
+  );
 }

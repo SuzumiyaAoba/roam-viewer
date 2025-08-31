@@ -1,33 +1,33 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import type React from 'react'
-import { forwardRef } from 'react'
-import { cn } from './utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
+import { forwardRef } from "react";
+import { cn } from "./utils";
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-blue-600 text-white hover:bg-blue-700',
-        secondary: 'border-transparent bg-gray-100 text-gray-900 hover:bg-gray-200',
-        destructive: 'border-transparent bg-red-600 text-white hover:bg-red-700',
-        success: 'border-transparent bg-green-600 text-white hover:bg-green-700',
-        warning: 'border-transparent bg-yellow-500 text-white hover:bg-yellow-600',
-        outline: 'border-gray-300 text-gray-700 hover:bg-gray-50',
-        ghost: 'border-transparent text-gray-600 hover:bg-gray-100',
+        default: "border-transparent bg-blue-600 text-white hover:bg-blue-700",
+        secondary: "border-transparent bg-gray-100 text-gray-900 hover:bg-gray-200",
+        destructive: "border-transparent bg-red-600 text-white hover:bg-red-700",
+        success: "border-transparent bg-green-600 text-white hover:bg-green-700",
+        warning: "border-transparent bg-yellow-500 text-white hover:bg-yellow-600",
+        outline: "border-gray-300 text-gray-700 hover:bg-gray-50",
+        ghost: "border-transparent text-gray-600 hover:bg-gray-100",
       },
       size: {
-        sm: 'px-1.5 py-0.5 text-xs',
-        default: 'px-2.5 py-0.5 text-xs',
-        lg: 'px-3 py-1 text-sm',
+        sm: "px-1.5 py-0.5 text-xs",
+        default: "px-2.5 py-0.5 text-xs",
+        lg: "px-3 py-1 text-sm",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: "default",
+      size: "default",
     },
-  }
-)
+  },
+);
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -35,23 +35,23 @@ export interface BadgeProps
   /**
    * If true, adds a remove button to the badge
    */
-  removable?: boolean
+  removable?: boolean;
   /**
    * Callback when remove button is clicked
    */
-  onRemove?: () => void
+  onRemove?: () => void;
   /**
    * Icon to display at the start of the badge
    */
-  startIcon?: React.ReactNode
+  startIcon?: React.ReactNode;
   /**
    * Icon to display at the end of the badge
    */
-  endIcon?: React.ReactNode
+  endIcon?: React.ReactNode;
   /**
    * If true, adds a dot indicator at the start of the badge
    */
-  dot?: boolean
+  dot?: boolean;
 }
 
 const Badge = forwardRef<HTMLDivElement, BadgeProps>(
@@ -68,7 +68,7 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <div ref={ref} className={cn(badgeVariants({ variant, size }), className)} {...props}>
@@ -98,10 +98,10 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(
           </button>
         )}
       </div>
-    )
-  }
-)
+    );
+  },
+);
 
-Badge.displayName = 'Badge'
+Badge.displayName = "Badge";
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants };

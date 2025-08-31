@@ -1,3 +1,3 @@
 // Node Detail Page Export
 
-export { NodeDetailPage } from './NodeDetailPage'
+export { NodeDetailPage } from "./NodeDetailPage";

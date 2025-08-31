@@ -1,81 +1,81 @@
-import { Icon } from '@iconify/react'
-import React from 'react'
-import ReactMarkdown from 'react-markdown'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
-import type { BacklinkNode } from '../../entities/node'
-import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from '../../entities/node'
-import { OrgRenderer } from '../../features/org-rendering'
-import { Layout } from '../../widgets/layout'
+import { Icon } from "@iconify/react";
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
+import type { BacklinkNode } from "../../entities/node";
+import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from "../../entities/node";
+import { OrgRenderer } from "../../features/org-rendering";
+import { Layout } from "../../widgets/layout";
 
 // Simple function to remove frontmatter
 function removeFrontmatter(content: string): string {
-  const lines = content.split('\n')
-  if (lines[0] === '---') {
-    const endIndex = lines.findIndex((line, index) => index > 0 && line === '---')
+  const lines = content.split("\n");
+  if (lines[0] === "---") {
+    const endIndex = lines.findIndex((line, index) => index > 0 && line === "---");
     if (endIndex > 0) {
-      return lines.slice(endIndex + 1).join('\n')
+      return lines.slice(endIndex + 1).join("\n");
     }
   }
-  return content
+  return content;
 }
 
 // Remove duplicate PROPERTIES and metadata blocks for cleaner display
 function removeDuplicateMetadata(content: string): string {
-  const lines = content.split('\n')
-  const cleanedLines: string[] = []
-  let seenProperties = false
-  let seenTitle = false
-  let seenCategory = false
-  let seenFiletags = false
-  let inPropertiesBlock = false
+  const lines = content.split("\n");
+  const cleanedLines: string[] = [];
+  let seenProperties = false;
+  let seenTitle = false;
+  let seenCategory = false;
+  let seenFiletags = false;
+  let inPropertiesBlock = false;
 
   for (const line of lines) {
-    const trimmed = line.trim()
+    const trimmed = line.trim();
 
     // Track PROPERTIES blocks
-    if (trimmed === ':PROPERTIES:') {
-      if (seenProperties) continue // Skip duplicate PROPERTIES block
-      seenProperties = true
-      inPropertiesBlock = true
-    } else if (trimmed === ':END:' && inPropertiesBlock) {
-      inPropertiesBlock = false
+    if (trimmed === ":PROPERTIES:") {
+      if (seenProperties) continue; // Skip duplicate PROPERTIES block
+      seenProperties = true;
+      inPropertiesBlock = true;
+    } else if (trimmed === ":END:" && inPropertiesBlock) {
+      inPropertiesBlock = false;
     } else if (inPropertiesBlock) {
       // Skip all properties content (but keep the first occurrence)
-      if (seenProperties && trimmed.startsWith(':ID:')) {
+      if (seenProperties && trimmed.startsWith(":ID:")) {
         // Allow first ID, skip subsequent ones
-        const idCount = cleanedLines.filter((l) => l.trim().startsWith(':ID:')).length
-        if (idCount > 0) continue
+        const idCount = cleanedLines.filter((l) => l.trim().startsWith(":ID:")).length;
+        if (idCount > 0) continue;
       }
     }
 
     // Track metadata lines and skip duplicates
-    if (trimmed.startsWith('#+title:')) {
-      if (seenTitle) continue
-      seenTitle = true
-    } else if (trimmed.startsWith('#+category:')) {
-      if (seenCategory) continue
-      seenCategory = true
-    } else if (trimmed.startsWith('#+filetags:')) {
-      if (seenFiletags) continue
-      seenFiletags = true
+    if (trimmed.startsWith("#+title:")) {
+      if (seenTitle) continue;
+      seenTitle = true;
+    } else if (trimmed.startsWith("#+category:")) {
+      if (seenCategory) continue;
+      seenCategory = true;
+    } else if (trimmed.startsWith("#+filetags:")) {
+      if (seenFiletags) continue;
+      seenFiletags = true;
     }
 
     // Skip duplicate PROPERTIES or metadata lines after we've seen them
     if (
       seenProperties &&
       !inPropertiesBlock &&
-      (trimmed === ':PROPERTIES:' || trimmed.startsWith(':ID:') || trimmed === ':END:')
+      (trimmed === ":PROPERTIES:" || trimmed.startsWith(":ID:") || trimmed === ":END:")
     ) {
-      continue
+      continue;
     }
 
-    cleanedLines.push(line)
+    cleanedLines.push(line);
   }
 
-  return cleanedLines.join('\n')
+  return cleanedLines.join("\n");
 }
 
 function BacklinkCard({ link }: { link: BacklinkNode }) {
@@ -105,7 +105,7 @@ function BacklinkCard({ link }: { link: BacklinkNode }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function ForwardLinkCard({ link }: { link: BacklinkNode }) {
@@ -135,28 +135,28 @@ function ForwardLinkCard({ link }: { link: BacklinkNode }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export function NodeDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const [showRaw, setShowRaw] = React.useState(false)
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [showRaw, setShowRaw] = React.useState(false);
 
-  const { data: node, isLoading: nodeLoading, error: nodeError } = useNode(id!)
-  const { data: backlinks } = useBacklinks(id!)
-  const { data: forwardLinks } = useForwardLinks(id!)
-  const deleteNodeMutation = useDeleteNode()
+  const { data: node, isLoading: nodeLoading, error: nodeError } = useNode(id!);
+  const { data: backlinks } = useBacklinks(id!);
+  const { data: forwardLinks } = useForwardLinks(id!);
+  const deleteNodeMutation = useDeleteNode();
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this node?')) {
+    if (window.confirm("Are you sure you want to delete this node?")) {
       deleteNodeMutation.mutate(id!, {
         onSuccess: () => {
-          navigate('/nodes')
+          navigate("/nodes");
         },
-      })
+      });
     }
-  }
+  };
 
   if (nodeLoading) {
     return (
@@ -165,7 +165,7 @@ export function NodeDetailPage() {
           <p className="text-gray-500">Loading node...</p>
         </div>
       </Layout>
-    )
+    );
   }
 
   if (nodeError || !node) {
@@ -180,7 +180,7 @@ export function NodeDetailPage() {
           </Link>
         </div>
       </Layout>
-    )
+    );
   }
 
   return (
@@ -203,7 +203,7 @@ export function NodeDetailPage() {
             onClick={handleDelete}
             disabled={deleteNodeMutation.isPending}
             className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md transition-colors disabled:opacity-50 flex items-center justify-center"
-            title={deleteNodeMutation.isPending ? 'Deleting...' : 'Delete node'}
+            title={deleteNodeMutation.isPending ? "Deleting..." : "Delete node"}
           >
             {deleteNodeMutation.isPending ? (
               <Icon icon="lucide:loader-2" width={16} height={16} className="animate-spin" />
@@ -224,19 +224,19 @@ export function NodeDetailPage() {
                   onClick={() => setShowRaw(!showRaw)}
                   className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded border"
                 >
-                  {showRaw ? 'Rendered' : 'Raw'}
+                  {showRaw ? "Rendered" : "Raw"}
                 </button>
               </div>
             </div>
 
             {showRaw ? (
               <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-md text-sm font-mono">
-                {removeDuplicateMetadata(node.content || 'No content available.')}
+                {removeDuplicateMetadata(node.content || "No content available.")}
               </pre>
             ) : (
               <div className="max-w-none">
                 {node.content ? (
-                  node.file?.endsWith('.org') ? (
+                  node.file?.endsWith(".org") ? (
                     <OrgRenderer
                       content={removeFrontmatter(node.content)}
                       enableSyntaxHighlight={true}
@@ -250,23 +250,23 @@ export function NodeDetailPage() {
                           // Custom link rendering for internal node links
                           a: ({ href, children, ...props }) => {
                             // Check if it's an internal node reference (you can customize this logic)
-                            if (href?.startsWith('#') || href?.match(/^\[\[.*\]\]$/)) {
+                            if (href?.startsWith("#") || href?.match(/^\[\[.*\]\]$/)) {
                               return (
                                 <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
                                   {children}
                                 </span>
-                              )
+                              );
                             }
                             return (
                               <a
                                 href={href}
-                                target={href?.startsWith('http') ? '_blank' : undefined}
-                                rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                target={href?.startsWith("http") ? "_blank" : undefined}
+                                rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
                                 {...props}
                               >
                                 {children}
                               </a>
-                            )
+                            );
                           },
                         }}
                       >
@@ -381,7 +381,7 @@ export function NodeDetailPage() {
                 {node.refs.map((refValue, index) => (
                   <div key={index} className="bg-gray-50 p-3 rounded-md">
                     <div className="text-sm font-mono text-gray-700 break-all">
-                      {refValue.startsWith('https://') ? (
+                      {refValue.startsWith("https://") ? (
                         <a
                           href={refValue}
                           target="_blank"
@@ -402,5 +402,5 @@ export function NodeDetailPage() {
         </div>
       </div>
     </Layout>
-  )
+  );
 }

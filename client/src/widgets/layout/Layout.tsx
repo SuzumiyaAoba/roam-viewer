@@ -1,9 +1,9 @@
-import type React from 'react'
-import { Link } from 'react-router-dom'
+import type React from "react";
+import { Link } from "react-router-dom";
 
 interface LayoutProps {
-  children: React.ReactNode
-  title?: string
+  children: React.ReactNode;
+  title?: string;
 }
 
 export function Layout({ children, title }: LayoutProps) {
@@ -49,5 +49,5 @@ export function Layout({ children, title }: LayoutProps) {
         </div>
       </footer>
     </div>
-  )
+  );
 }

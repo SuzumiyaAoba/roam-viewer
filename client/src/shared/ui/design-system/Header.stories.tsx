@@ -1,47 +1,47 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Badge } from './Badge'
-import { Button } from './Button'
-import { Header, HeaderActions, HeaderLogo, HeaderNav, HeaderNavItem } from './Header'
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Badge } from "./Badge";
+import { Button } from "./Button";
+import { Header, HeaderActions, HeaderLogo, HeaderNav, HeaderNavItem } from "./Header";
 
 const meta = {
-  title: 'Design System/Header',
+  title: "Design System/Header",
   component: Header,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
     docs: {
       description: {
         component:
-          'A flexible header component with logo, navigation, and actions. Supports responsive design with mobile menu and multiple variants.',
+          "A flexible header component with logo, navigation, and actions. Supports responsive design with mobile menu and multiple variants.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: { type: 'select' },
-      options: ['default', 'elevated', 'minimal', 'transparent'],
-      description: 'The visual variant of the header',
+      control: { type: "select" },
+      options: ["default", "elevated", "minimal", "transparent"],
+      description: "The visual variant of the header",
     },
     size: {
-      control: { type: 'select' },
-      options: ['sm', 'default', 'lg'],
-      description: 'The size of the header',
+      control: { type: "select" },
+      options: ["sm", "default", "lg"],
+      description: "The size of the header",
     },
     position: {
-      control: { type: 'select' },
-      options: ['static', 'sticky', 'fixed'],
-      description: 'The positioning of the header',
+      control: { type: "select" },
+      options: ["static", "sticky", "fixed"],
+      description: "The positioning of the header",
     },
     showMobileMenu: {
-      control: 'boolean',
-      description: 'Whether to show mobile menu toggle',
+      control: "boolean",
+      description: "Whether to show mobile menu toggle",
     },
   },
-} satisfies Meta<typeof Header>
+} satisfies Meta<typeof Header>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic examples
 export const Default: Story = {
@@ -66,7 +66,7 @@ export const Default: Story = {
       actions={<HeaderActions></HeaderActions>}
     />
   ),
-}
+};
 
 export const Elevated: Story = {
   render: () => (
@@ -91,7 +91,7 @@ export const Elevated: Story = {
       actions={<HeaderActions></HeaderActions>}
     />
   ),
-}
+};
 
 export const Minimal: Story = {
   render: () => (
@@ -114,7 +114,7 @@ export const Minimal: Story = {
       actions={<HeaderActions></HeaderActions>}
     />
   ),
-}
+};
 
 export const Transparent: Story = {
   render: () => (
@@ -161,11 +161,11 @@ export const Transparent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Transparent header with backdrop blur effect, perfect for hero sections',
+        story: "Transparent header with backdrop blur effect, perfect for hero sections",
       },
     },
   },
-}
+};
 
 // Size variations
 export const Small: Story = {
@@ -190,7 +190,7 @@ export const Small: Story = {
       actions={<HeaderActions></HeaderActions>}
     />
   ),
-}
+};
 
 export const Large: Story = {
   render: () => (
@@ -215,7 +215,7 @@ export const Large: Story = {
       actions={<HeaderActions></HeaderActions>}
     />
   ),
-}
+};
 
 // Position variations
 export const Sticky: Story = {
@@ -259,11 +259,11 @@ export const Sticky: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Sticky header that remains at the top when scrolling',
+        story: "Sticky header that remains at the top when scrolling",
       },
     },
   },
-}
+};
 
 // User authenticated state
 export const WithUserMenu: Story = {
@@ -310,16 +310,16 @@ export const WithUserMenu: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Header for authenticated users with notifications and user avatar',
+        story: "Header for authenticated users with notifications and user avatar",
       },
     },
   },
-}
+};
 
 // Mobile responsive example
 export const MobileResponsive: Story = {
   render: () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
     return (
       <Header
@@ -344,16 +344,16 @@ export const MobileResponsive: Story = {
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       />
-    )
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Responsive header with mobile menu (resize viewport to see mobile behavior)',
+        story: "Responsive header with mobile menu (resize viewport to see mobile behavior)",
       },
     },
   },
-}
+};
 
 // App-like header with breadcrumbs
 export const WithBreadcrumbs: Story = {
@@ -406,11 +406,11 @@ export const WithBreadcrumbs: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Header with breadcrumb navigation for deeper app navigation',
+        story: "Header with breadcrumb navigation for deeper app navigation",
       },
     },
   },
-}
+};
 
 // Search-focused header
 export const WithSearch: Story = {
@@ -451,8 +451,8 @@ export const WithSearch: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Header with prominent search functionality',
+        story: "Header with prominent search functionality",
       },
     },
   },
-}
+};

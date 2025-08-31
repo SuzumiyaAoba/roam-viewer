@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
-import { Layout } from './Layout'
+import type { Meta, StoryObj } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
+import { Layout } from "./Layout";
 
 const meta: Meta<typeof Layout> = {
-  title: 'Components/Layout',
+  title: "Components/Layout",
   component: Layout,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
     docs: {
       description: {
         component:
-          'The main layout component that provides the application structure with header, navigation, and content area. Includes responsive design and consistent spacing.',
+          "The main layout component that provides the application structure with header, navigation, and content area. Includes responsive design and consistent spacing.",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   decorators: [
     (Story) => (
       <MemoryRouter>
@@ -24,29 +24,29 @@ const meta: Meta<typeof Layout> = {
   ],
   argTypes: {
     title: {
-      control: 'text',
-      description: 'Page title displayed in the header',
+      control: "text",
+      description: "Page title displayed in the header",
     },
     children: {
-      control: 'text',
-      description: 'Content to be displayed in the main area',
+      control: "text",
+      description: "Content to be displayed in the main area",
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    title: 'Dashboard',
-    children: 'This is the main content area of the layout.',
+    title: "Dashboard",
+    children: "This is the main content area of the layout.",
   },
-}
+};
 
 export const WithTitle: Story = {
   args: {
-    title: 'Node Management',
+    title: "Node Management",
     children: (
       <div className="space-y-6">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -58,7 +58,7 @@ export const WithTitle: Story = {
       </div>
     ),
   },
-}
+};
 
 export const NoTitle: Story = {
   args: {
@@ -74,11 +74,11 @@ export const NoTitle: Story = {
       </div>
     ),
   },
-}
+};
 
 export const ContentExamples: Story = {
   args: {
-    title: 'Content Examples',
+    title: "Content Examples",
     children: (
       <div className="space-y-6">
         {/* Cards Grid */}
@@ -117,11 +117,11 @@ export const ContentExamples: Story = {
       </div>
     ),
   },
-}
+};
 
 export const FormLayout: Story = {
   args: {
-    title: 'Settings',
+    title: "Settings",
     children: (
       <div className="max-w-2xl">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -178,11 +178,11 @@ export const FormLayout: Story = {
       </div>
     ),
   },
-}
+};
 
 export const DataTable: Story = {
   args: {
-    title: 'Users',
+    title: "Users",
     children: (
       <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
@@ -213,13 +213,13 @@ export const DataTable: Story = {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {[
-                { name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active' },
-                { name: 'Jane Smith', email: 'jane@example.com', role: 'Editor', status: 'Active' },
+                { name: "John Doe", email: "john@example.com", role: "Admin", status: "Active" },
+                { name: "Jane Smith", email: "jane@example.com", role: "Editor", status: "Active" },
                 {
-                  name: 'Bob Johnson',
-                  email: 'bob@example.com',
-                  role: 'Viewer',
-                  status: 'Inactive',
+                  name: "Bob Johnson",
+                  email: "bob@example.com",
+                  role: "Viewer",
+                  status: "Inactive",
                 },
               ].map((user, index) => (
                 <tr key={index} className="hover:bg-gray-50">
@@ -237,9 +237,9 @@ export const DataTable: Story = {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        user.status === 'Active'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                        user.status === "Active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
                       }`}
                     >
                       {user.status}
@@ -257,11 +257,11 @@ export const DataTable: Story = {
       </div>
     ),
   },
-}
+};
 
 export const EmptyState: Story = {
   args: {
-    title: 'Projects',
+    title: "Projects",
     children: (
       <div className="text-center py-12">
         <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
@@ -290,4 +290,4 @@ export const EmptyState: Story = {
       </div>
     ),
   },
-}
+};
