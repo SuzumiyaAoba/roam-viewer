@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { cn } from "../../client/src/lib/utils";
+import { cn } from "./utils";
 
 // Helper function from NodeDetail.tsx that we want to test
 function removeFrontmatter(content: string): string {
-  const lines = content.split("\n");
+  const lines = content.split(/\r?\n/);
   if (lines[0] === "---") {
     const endIndex = lines.findIndex((line, index) => index > 0 && line === "---");
     if (endIndex > 0) {

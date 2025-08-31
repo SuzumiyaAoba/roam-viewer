@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ApiClient, ApiError } from "../client/src/lib/api-client";
-import type { CreateNodeRequest, UpdateNodeRequest } from "../client/src/types/api";
+import { ApiClient, ApiError } from "./api-client";
+import type { CreateNodeRequest, UpdateNodeRequest } from "../types/api";
 
 // Mock fetch globally
 global.fetch = vi.fn();
