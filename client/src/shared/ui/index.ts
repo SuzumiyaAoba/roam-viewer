@@ -16,10 +16,8 @@ export {
 } from './shadcn/badge'
 export * from './shadcn/card'
 export {
-  Input as ShadcnInput,
-  type InputProps as ShadcnInputProps
+  Input as ShadcnInput
 } from './shadcn/input'
 export {
-  Textarea as ShadcnTextarea,
-  type TextareaProps as ShadcnTextareaProps
+  Textarea as ShadcnTextarea
 } from './shadcn/textarea'

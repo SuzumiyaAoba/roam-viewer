@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { NodeCreatePage, NodeEditPage } from './NodeForm'
-import type { Node } from '../types/api'
+import { NodeFormPage, NodeEditPage } from './NodeFormPage'
+import type { Node } from '../../entities/node'
 
 // Mock the Layout component
-vi.mock('../components/Layout', () => ({
+vi.mock('../../widgets/layout', () => ({
   Layout: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="layout">{children}</div>
   )

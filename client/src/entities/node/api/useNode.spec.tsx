@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
-import * as apiModule from '../../client/src/lib/api-client'
+import * as apiModule from '../../../shared/lib/api-client'
 import {
   useNodes,
   useNode,
@@ -12,12 +12,11 @@ import {
   useCreateNode,
   useUpdateNode,
   useDeleteNode,
-  useTags,
-  useNodesByTag,
-} from '../../client/src/hooks/useNodes'
+} from './useNode'
+import { useTags, useNodesByTag } from '../../tag/api/useTag'
 
 // Mock the API client
-vi.mock('../../client/src/lib/api-client')
+vi.mock('../../../shared/lib/api-client')
 const mockApiClient = apiModule.apiClient as any
 
 describe('useNodes hooks', () => {

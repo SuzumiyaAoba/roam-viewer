@@ -22,7 +22,7 @@ const searchFormVariants = cva(
 )
 
 export interface SearchFormProps
-  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'>,
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange'>,
     VariantProps<typeof searchFormVariants> {
   /**
    * Input variant style

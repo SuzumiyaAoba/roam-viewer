@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { unified } from 'unified'
 import uniorgParse from 'uniorg-parse'
@@ -264,7 +264,7 @@ function addEnhancedTailwindClasses(html: string): string {
   additionalKeywords.forEach(keyword => {
     // Pattern: <h1>DOING some task</h1> -> <h1 class="..."><span class="...">DOING</span>some task</h1>
     const pattern = new RegExp(`<h([1-6])>${keyword}\\s+([^<]*)</h([1-6])>`, 'g')
-    processedHtml = processedHtml.replace(pattern, (match, level, text, closingLevel) => {
+    processedHtml = processedHtml.replace(pattern, (_match, level, text, closingLevel) => {
       const headerClass = getHeaderClass(level)
       const todoColors = getTodoKeywordColor(keyword)
       const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} rounded-full mr-2">${keyword}</span>`
@@ -314,7 +314,7 @@ export function OrgRenderer({
   const [metadata, setMetadata] = useState<OrgMetadata>({})
   const [htmlContent, setHtmlContent] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     async function processContent() {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { NodeListPage } from '../../pages/node-list'
 import { NodeDetailPage } from '../../pages/node-detail'

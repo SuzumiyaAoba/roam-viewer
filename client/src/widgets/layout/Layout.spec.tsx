@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { ReactNode } from 'react'
-import { Layout } from '../../client/src/components/Layout'
+import { Layout } from './Layout'
 
 describe('Layout', () => {
   let wrapper: ({ children }: { children: ReactNode }) => JSX.Element

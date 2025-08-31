@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { OrgRenderer } from './OrgRenderer'
-import React from 'react'
 
 describe('OrgRenderer', () => {
   describe('Basic text rendering', () => {

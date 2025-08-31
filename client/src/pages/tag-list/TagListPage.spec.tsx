@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { TagListPage } from './TagList'
+import { TagListPage } from './TagListPage'
 
 // Mock the Layout component
-vi.mock('../components/Layout', () => ({
+vi.mock('../../widgets/layout', () => ({
   Layout: ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div data-testid="layout">
       <h1>{title}</h1>

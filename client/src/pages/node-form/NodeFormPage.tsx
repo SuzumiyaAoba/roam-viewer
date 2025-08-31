@@ -258,7 +258,7 @@ export function NodeEditPage() {
         tags: (node.tags || []).join(', '),
         aliases: (node.aliases || []).join(', '),
         refs: (node.refs || []).join(', '),
-        file_type: node.file_type || 'org',
+        file_type: 'org',  // Default for edit form
       })
     }
   }, [node])

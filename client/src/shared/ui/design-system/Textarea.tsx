@@ -1,7 +1,6 @@
 import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from './utils'
-import { Textarea as ShadcnTextarea } from '../shadcn/textarea'
 
 const textareaVariants = cva(
   'w-full rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y',

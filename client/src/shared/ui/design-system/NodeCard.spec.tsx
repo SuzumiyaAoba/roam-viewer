@@ -26,7 +26,7 @@ vi.mock('./Badge', () => ({
 }))
 
 // Mock the utils
-vi.mock(./utils', () => ({
+vi.mock('./utils', () => ({
   cn: (...classes: any[]) => classes.filter(Boolean).join(' ')
 }))
 

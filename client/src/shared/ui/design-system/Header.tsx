@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from "./utils"
 
@@ -32,7 +32,7 @@ const headerVariants = cva(
 )
 
 export interface HeaderProps
-  extends React.HTMLAttributes<HTMLHeaderElement>,
+  extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof headerVariants> {
   /**
    * Logo element or brand name
@@ -60,7 +60,7 @@ export interface HeaderProps
   isMobileMenuOpen?: boolean
 }
 
-const Header = forwardRef<HTMLHeaderElement, HeaderProps>(
+const Header = forwardRef<HTMLElement, HeaderProps>(
   ({
     className,
     variant,
@@ -179,12 +179,24 @@ const HeaderLogo = forwardRef<
     lg: 'text-2xl font-bold',
   }
 
-  const Component = href ? 'a' : 'div'
+  if (href) {
+    return (
+      <a
+        href={href}
+        className={cn(
+          'flex items-center text-gray-900 hover:text-gray-700 transition-colors',
+          sizeClasses[size],
+          className
+        )}
+      >
+        {children}
+      </a>
+    )
+  }
 
   return (
-    <Component
+    <div
       ref={ref}
-      href={href}
       className={cn(
         'flex items-center text-gray-900 hover:text-gray-700 transition-colors',
         sizeClasses[size],
@@ -193,14 +205,14 @@ const HeaderLogo = forwardRef<
       {...props}
     >
       {children}
-    </Component>
+    </div>
   )
 })
 HeaderLogo.displayName = 'HeaderLogo'
 
 const HeaderNav = forwardRef<
-  HTMLNavElement,
-  React.HTMLAttributes<HTMLNavElement>
+  HTMLElement,
+  React.HTMLAttributes<HTMLElement>
 >(({ className, children, ...props }, ref) => (
   <nav
     ref={ref}
