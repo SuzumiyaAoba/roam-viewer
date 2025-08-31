@@ -188,7 +188,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           <ul
             ref={listRef}
             className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-            role="listbox"
           >
             {options.map((option) => (
               <li
@@ -199,7 +198,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                   selectedValue === option.value && "bg-blue-100 text-blue-900",
                 )}
                 onClick={() => !option.disabled && handleSelect(option.value)}
-                role="option"
                 aria-selected={selectedValue === option.value}
                 aria-disabled={option.disabled}
               >

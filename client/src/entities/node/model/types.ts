@@ -10,7 +10,7 @@ export interface Node {
   scheduled?: string;
   deadline?: string;
   tags?: string[];
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   olp?: string[];
   content?: string; // Add content for test compatibility
   aliases?: string[]; // Add aliases for test compatibility
@@ -29,7 +29,7 @@ export interface BacklinkNode {
   title: string;
   file: string;
   pos?: number;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   source?: string;
   dest?: string;
   type?: "backlink" | "forwardlink";

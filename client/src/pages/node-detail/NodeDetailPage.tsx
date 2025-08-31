@@ -143,14 +143,18 @@ export function NodeDetailPage() {
   const navigate = useNavigate();
   const [showRaw, setShowRaw] = React.useState(false);
 
-  const { data: node, isLoading: nodeLoading, error: nodeError } = useNode(id!);
-  const { data: backlinks } = useBacklinks(id!);
-  const { data: forwardLinks } = useForwardLinks(id!);
+  const { data: node, isLoading: nodeLoading, error: nodeError } = useNode(id || "");
+  const { data: backlinks } = useBacklinks(id || "");
+  const { data: forwardLinks } = useForwardLinks(id || "");
   const deleteNodeMutation = useDeleteNode();
+
+  if (!id) {
+    return <div>Node ID is required</div>;
+  }
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this node?")) {
-      deleteNodeMutation.mutate(id!, {
+      deleteNodeMutation.mutate(id, {
         onSuccess: () => {
           navigate("/nodes");
         },

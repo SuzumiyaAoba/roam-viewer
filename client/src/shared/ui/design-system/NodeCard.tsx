@@ -134,7 +134,7 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
 
     const displayContent =
       content && content.length > maxContentLength
-        ? content.substring(0, maxContentLength) + "..."
+        ? `${content.substring(0, maxContentLength)}...`
         : content;
 
     const formattedDate = date

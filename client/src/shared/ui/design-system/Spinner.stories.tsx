@@ -261,7 +261,7 @@ export const DataFetching: Story = {
 
     React.useEffect(() => {
       fetchData();
-    }, []);
+    }, [fetchData]);
 
     return (
       <div className="max-w-md border rounded-lg">

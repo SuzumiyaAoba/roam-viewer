@@ -117,7 +117,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           textarea.style.height = `${textarea.scrollHeight}px`;
         }
       }
-    }, [value, autoResize, ref]);
+    }, [autoResize, ref]);
 
     return (
       <div className="w-full">

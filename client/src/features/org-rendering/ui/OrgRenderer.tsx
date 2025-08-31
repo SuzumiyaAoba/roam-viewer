@@ -383,7 +383,7 @@ export function OrgRenderer({
     }
 
     processContent();
-  }, [content, enableSyntaxHighlight]);
+  }, [content]);
 
   if (isLoading) {
     return (

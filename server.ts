@@ -320,7 +320,7 @@ app.get("/api/nodes/:id", async (c) => {
         console.log("API returned empty refs, trying fallback for node:", id);
         throw new Error("Empty refs, using fallback");
       }
-    } catch (error) {
+    } catch (_error) {
       console.log("API refs call failed or empty, using fallback for node:", id);
       // Fallback: extract refs from frontmatter if API fails
       if (node.content) {
@@ -514,7 +514,7 @@ app.get("/api/search/tag/:tag", async (c) => {
           return c.json(taggedNodes);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       console.log(`New tags API not available, falling back to node filtering for tag: ${tag}`);
     }
 
@@ -538,16 +538,16 @@ app.get("/api/search/tag/:tag", async (c) => {
 });
 
 async function startServer() {
-  const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT) : 3001;
+  const preferredPort = process.env.BACKEND_PORT ? parseInt(process.env.BACKEND_PORT, 10) : 3001;
   const port = await getPort({ port: preferredPort, portRange: [3001, 3011] });
-  
+
   console.log(`🔥 Bun server starting on port ${port}`);
-  
+
   const server = Bun.serve({
     port: port,
     fetch: app.fetch,
   });
-  
+
   console.log(`✅ Server successfully started at http://localhost:${port}`);
   return server;
 }

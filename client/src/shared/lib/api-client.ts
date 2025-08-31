@@ -127,11 +127,13 @@ export class ApiClient {
 
   // Tags
   async getTags(): Promise<{ tag: string; count: number }[]> {
-    const result = await this.request<any>("/api/tags");
+    const result = await this.request<
+      { tags: { tag: string; count: number }[] } | { tag: string; count: number }[]
+    >("/api/tags");
 
     // Handle new API response format
     if (result && Array.isArray(result.tags)) {
-      return result.tags.map((tagInfo: any) => ({
+      return result.tags.map((tagInfo) => ({
         tag: tagInfo.tag,
         count: tagInfo.count,
       }));
@@ -143,7 +145,7 @@ export class ApiClient {
   }
 
   async searchNodesByTag(tag: string): Promise<Node[]> {
-    const result = await this.request<any>(`/api/search/tag/${encodeURIComponent(tag)}`);
+    const result = await this.request<Node[]>(`/api/search/tag/${encodeURIComponent(tag)}`);
 
     // Handle new API response format
     if (result && Array.isArray(result.nodes)) {

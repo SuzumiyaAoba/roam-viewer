@@ -1,5 +1,5 @@
+import path from "node:path";
 import react from "@vitejs/plugin-react-swc";
-import path from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: parseInt(process.env.VITE_PORT) || 3000,
+    port: parseInt(process.env.VITE_PORT, 10) || 3000,
     proxy: {
       "/api": {
         target: process.env.VITE_API_URL || "http://localhost:3001",

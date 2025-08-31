@@ -29,7 +29,11 @@ function EmptyState({ tag }: { tag: string }) {
 export function TagDetailPage() {
   const { tag } = useParams<{ tag: string }>();
   const navigate = useNavigate();
-  const { data: nodes, isLoading, error } = useNodesByTag(tag!);
+  const { data: nodes, isLoading, error } = useNodesByTag(tag || "");
+
+  if (!tag) {
+    return <div>Tag parameter is required</div>;
+  }
 
   if (isLoading) {
     return (
@@ -71,7 +75,7 @@ export function TagDetailPage() {
             <span>Back to Tags</span>
           </Link>
         </div>
-        <EmptyState tag={tag!} />
+        <EmptyState tag={tag} />
       </Layout>
     );
   }
@@ -99,7 +103,7 @@ export function TagDetailPage() {
         </div>
         <div className="flex items-center space-x-3">
           <Link
-            to={`/nodes?tag=${encodeURIComponent(tag!)}`}
+            to={`/nodes?tag=${encodeURIComponent(tag)}`}
             className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-800 border border-gray-300 hover:border-gray-400 px-4 py-2 rounded-md transition-colors"
           >
             <Icon icon="lucide:list" width={16} height={16} />

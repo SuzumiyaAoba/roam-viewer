@@ -52,7 +52,7 @@ export function NodeListPage() {
       setSearchQuery(decodedSearch);
       setDebouncedQuery(decodedSearch);
     }
-  }, []); // Run only on mount
+  }, [searchParams.get]); // Run only on mount
 
   // Debounce search query
   useEffect(() => {
@@ -71,7 +71,7 @@ export function NodeListPage() {
     if (!isInitialLoad) {
       updateURLParams(undefined, debouncedQuery);
     }
-  }, [debouncedQuery]);
+  }, [debouncedQuery, searchParams.get, updateURLParams]);
 
   // Handle browser back/forward navigation
   useEffect(() => {
@@ -114,7 +114,14 @@ export function NodeListPage() {
     } else if (!searchFromUrl && searchQuery) {
       setSearchQuery("");
     }
-  }, [searchParams]);
+  }, [
+    searchParams,
+    searchQuery,
+    selectedTag,
+    selectedTags.join,
+    selectedTags.length,
+    showTagSelector,
+  ]);
 
   // Filter nodes based on search query and selected tags
   const getFilteredNodes = (): Node[] => {
