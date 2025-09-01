@@ -38,18 +38,17 @@ export interface SpinnerProps
   label?: string;
 }
 
-const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
+const Spinner = forwardRef<HTMLOutputElement, SpinnerProps>(
   ({ className, size, variant, label = "Loading...", ...props }, ref) => {
     return (
-      <div
+      <output
         ref={ref}
         className={cn(spinnerVariants({ size, variant }), className)}
-        role="status"
         aria-label={label}
         {...props}
       >
         <span className="sr-only">{label}</span>
-      </div>
+      </output>
     );
   },
 );

@@ -78,7 +78,14 @@ export const WithIcon: Story = {
   args: {
     placeholder: "Search with icon...",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -96,7 +103,14 @@ export const WithoutButton: Story = {
     placeholder: "Search without button...",
     showButton: false,
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -115,7 +129,14 @@ export const Elevated: Story = {
     variant: "elevated",
     placeholder: "Elevated search form...",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -135,7 +156,14 @@ export const Prominent: Story = {
     placeholder: "Search everything...",
     buttonText: "Find",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -154,7 +182,14 @@ export const FilledInput: Story = {
     inputVariant: "filled",
     placeholder: "Filled input style...",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -172,7 +207,14 @@ export const OutlinedInput: Story = {
     inputVariant: "outlined",
     placeholder: "Outlined input style...",
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -191,7 +233,14 @@ export const MinimalInput: Story = {
     placeholder: "Minimal input style...",
     showButton: false,
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -210,7 +259,14 @@ export const Small: Story = {
     size: "sm",
     placeholder: "Small search...",
     icon: (
-      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-3 h-3"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -228,7 +284,14 @@ export const Large: Story = {
     size: "lg",
     placeholder: "Large search form...",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -247,7 +310,14 @@ export const Loading: Story = {
     placeholder: "Loading state...",
     loading: true,
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -265,7 +335,14 @@ export const Disabled: Story = {
     placeholder: "Disabled state...",
     disabled: true,
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <title>Search icon</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -309,7 +386,14 @@ export const ControlledExample: Story = {
           onChange={setSearchValue}
           placeholder="Controlled search..."
           icon={
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Search icon</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -387,7 +471,14 @@ export const WithSuggestions: Story = {
           suggestions={suggestions}
           placeholder="Search with suggestions..."
           icon={
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Search icon</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -436,7 +527,14 @@ export const NodeSearchExample: Story = {
           placeholder="Search your knowledge base..."
           buttonText="Find"
           icon={
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Search icon</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -458,7 +556,14 @@ export const NodeSearchExample: Story = {
           placeholder="What would you like to learn about?"
           buttonText="Explore"
           icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Search icon</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -490,7 +595,7 @@ export const AllVariants: Story = {
         <h3 className="text-lg font-semibold mb-4">Form Variants</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Default</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Default</div>
             <SearchForm
               placeholder="Default search form..."
               onSubmit={(query) => alert(`Search: ${query}`)}
@@ -498,7 +603,7 @@ export const AllVariants: Story = {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Elevated</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Elevated</div>
             <SearchForm
               variant="elevated"
               placeholder="Elevated search form..."
@@ -507,7 +612,7 @@ export const AllVariants: Story = {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Prominent</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Prominent</div>
             <SearchForm
               variant="prominent"
               placeholder="Prominent search form..."
@@ -521,7 +626,7 @@ export const AllVariants: Story = {
         <h3 className="text-lg font-semibold mb-4">Input Variants</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Default Input</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Default Input</div>
             <SearchForm
               inputVariant="default"
               placeholder="Default input..."
@@ -530,7 +635,7 @@ export const AllVariants: Story = {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Filled Input</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Filled Input</div>
             <SearchForm
               inputVariant="filled"
               placeholder="Filled input..."
@@ -539,7 +644,7 @@ export const AllVariants: Story = {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Outlined Input</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Outlined Input</div>
             <SearchForm
               inputVariant="outlined"
               placeholder="Outlined input..."
@@ -548,7 +653,7 @@ export const AllVariants: Story = {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Minimal Input</label>
+            <div className="block text-sm font-medium text-gray-700 mb-2">Minimal Input</div>
             <SearchForm
               inputVariant="minimal"
               placeholder="Minimal input..."
@@ -586,9 +691,9 @@ export const HeightAlignmentTest: Story = {
           <h4 className="font-medium mb-4">Default Input Variant - All Sizes</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="block text-sm font-medium text-gray-700 mb-2">
                 Small (38px height)
-              </label>
+              </div>
               <SearchForm
                 size="sm"
                 inputVariant="default"
@@ -598,9 +703,9 @@ export const HeightAlignmentTest: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="block text-sm font-medium text-gray-700 mb-2">
                 Default (50px height)
-              </label>
+              </div>
               <SearchForm
                 size="default"
                 inputVariant="default"
@@ -610,9 +715,9 @@ export const HeightAlignmentTest: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="block text-sm font-medium text-gray-700 mb-2">
                 Large (62px height)
-              </label>
+              </div>
               <SearchForm
                 size="lg"
                 inputVariant="default"
@@ -628,9 +733,9 @@ export const HeightAlignmentTest: Story = {
           <h4 className="font-medium mb-4">Outlined Input Variant - All Sizes (Thicker Border)</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="block text-sm font-medium text-gray-700 mb-2">
                 Small Outlined (38px height + 2px border)
-              </label>
+              </div>
               <SearchForm
                 size="sm"
                 inputVariant="outlined"
@@ -640,9 +745,9 @@ export const HeightAlignmentTest: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="block text-sm font-medium text-gray-700 mb-2">
                 Default Outlined (50px height + 2px border)
-              </label>
+              </div>
               <SearchForm
                 size="default"
                 inputVariant="outlined"
@@ -652,9 +757,9 @@ export const HeightAlignmentTest: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="block text-sm font-medium text-gray-700 mb-2">
                 Large Outlined (62px height + 2px border)
-              </label>
+              </div>
               <SearchForm
                 size="lg"
                 inputVariant="outlined"
@@ -670,7 +775,7 @@ export const HeightAlignmentTest: Story = {
           <h4 className="font-medium mb-4">Filled Input Variant</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Small Filled</label>
+              <div className="block text-sm font-medium text-gray-700 mb-2">Small Filled</div>
               <SearchForm
                 size="sm"
                 inputVariant="filled"
@@ -680,7 +785,7 @@ export const HeightAlignmentTest: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Default Filled</label>
+              <div className="block text-sm font-medium text-gray-700 mb-2">Default Filled</div>
               <SearchForm
                 size="default"
                 inputVariant="filled"
@@ -690,7 +795,7 @@ export const HeightAlignmentTest: Story = {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Large Filled</label>
+              <div className="block text-sm font-medium text-gray-700 mb-2">Large Filled</div>
               <SearchForm
                 size="lg"
                 inputVariant="filled"

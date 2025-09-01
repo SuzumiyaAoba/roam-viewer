@@ -96,7 +96,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           "bg-black bg-opacity-50 backdrop-blur-sm",
           animated && "animate-in fade-in-0 duration-300",
         )}
-        // biome-ignore lint/a11y/useSemanticElements: Modal overlay needs div for proper styling
         role="button"
         tabIndex={0}
         onClick={handleOverlayClick}

@@ -154,7 +154,7 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if ((e.key === 'Enter' || e.key === ' ') && onCardClick) {
+      if ((e.key === "Enter" || e.key === " ") && onCardClick) {
         e.preventDefault();
         if (!(e.target as HTMLElement).closest("[data-action-button]")) {
           onCardClick();
@@ -174,7 +174,6 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         onKeyDown={handleKeyDown}
         role={onCardClick ? "button" : undefined}
         tabIndex={onCardClick ? 0 : undefined}
-        aria-label={onCardClick ? `View ${title} node` : undefined}
         {...props}
       >
         {/* Status indicator for selected state */}
@@ -262,7 +261,13 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         {todo && (
           <div className="mb-3">
             <Badge variant="warning" className="text-xs">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg
+                className="w-3 h-3 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
                 <title>TODO icon</title>
                 <path
                   strokeLinecap="round"

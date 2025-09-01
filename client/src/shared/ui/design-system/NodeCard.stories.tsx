@@ -219,8 +219,19 @@ export const CustomActions: Story = {
     tags: ["Custom"],
     actions: (
       <div className="flex items-center space-x-1">
-        <button className="p-1 text-blue-500 hover:text-blue-700" onClick={() => alert("Share")}>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button
+          type="button"
+          className="p-1 text-blue-500 hover:text-blue-700"
+          onClick={() => alert("Share")}
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <title>Share icon</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -230,10 +241,18 @@ export const CustomActions: Story = {
           </svg>
         </button>
         <button
+          type="button"
           className="p-1 text-yellow-500 hover:text-yellow-700"
           onClick={() => alert("Bookmark")}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <title>Bookmark icon</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -243,10 +262,18 @@ export const CustomActions: Story = {
           </svg>
         </button>
         <button
+          type="button"
           className="p-1 text-green-500 hover:text-green-700"
           onClick={() => alert("Download")}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <title>Download icon</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

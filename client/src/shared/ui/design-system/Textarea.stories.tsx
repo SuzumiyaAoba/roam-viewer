@@ -119,7 +119,7 @@ export const Minimal: Story = {
   },
 };
 
-export const Error: Story = {
+export const WithError: Story = {
   args: {
     label: "Feedback",
     placeholder: "Please provide feedback...",

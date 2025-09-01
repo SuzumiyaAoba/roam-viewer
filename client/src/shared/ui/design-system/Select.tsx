@@ -179,7 +179,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
+            <title>Dropdown arrow</title>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
@@ -190,21 +192,35 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
             {options.map((option) => (
-              <li
+              <div
                 key={option.value}
                 className={cn(
                   "relative cursor-pointer select-none py-2 px-3 hover:bg-blue-50",
                   option.disabled && "cursor-not-allowed opacity-50",
                   selectedValue === option.value && "bg-blue-100 text-blue-900",
                 )}
+                role="option"
                 onClick={() => !option.disabled && handleSelect(option.value)}
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === " ") && !option.disabled) {
+                    e.preventDefault();
+                    handleSelect(option.value);
+                  }
+                }}
                 aria-selected={selectedValue === option.value}
                 aria-disabled={option.disabled}
+                tabIndex={0}
               >
                 <span className="block truncate">{option.label}</span>
                 {selectedValue === option.value && (
                   <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-blue-600">
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg
+                      className="h-4 w-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <title>Selected</title>
                       <path
                         fillRule="evenodd"
                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -213,7 +229,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                     </svg>
                   </span>
                 )}
-              </li>
+              </div>
             ))}
           </ul>
         )}
@@ -226,10 +242,11 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 Select.displayName = "Select";
 
 const SelectLabel = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
-  ({ className, ...props }, ref) => (
+  ({ className, htmlFor, ...props }, ref) => (
     <label
       ref={ref}
       className={cn("block text-sm font-medium text-gray-700 mb-1", className)}
+      htmlFor={htmlFor}
       {...props}
     />
   ),

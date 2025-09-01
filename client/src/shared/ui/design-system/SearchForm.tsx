@@ -140,7 +140,9 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
+                <title>Loading spinner</title>
                 <circle
                   className="opacity-25"
                   cx="12"
@@ -188,7 +190,14 @@ const QuickSearch = forwardRef<
       className,
       placeholder = "Quick search...",
       icon = (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <title>Search icon</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -210,7 +219,7 @@ const QuickSearch = forwardRef<
 
     return (
       <SearchForm
-        ref={ref as any}
+        ref={ref as React.ForwardedRef<HTMLFormElement>}
         className={className}
         placeholder={placeholder}
         icon={icon}

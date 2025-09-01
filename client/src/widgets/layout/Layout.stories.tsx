@@ -130,17 +130,28 @@ export const FormLayout: Story = {
           <div className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                <label
+                  htmlFor="form-firstName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  First Name
+                </label>
                 <input
+                  id="form-firstName"
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="John"
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                <label
+                  htmlFor="form-lastName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Last Name
+                </label>
                 <input
-                  id="lastName"
+                  id="form-lastName"
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Doe"
@@ -149,9 +160,11 @@ export const FormLayout: Story = {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label htmlFor="form-email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
               <input
-                id="email"
+                id="form-email"
                 type="email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="john.doe@example.com"
@@ -159,9 +172,11 @@ export const FormLayout: Story = {
             </div>
 
             <div>
-              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+              <label htmlFor="form-bio" className="block text-sm font-medium text-gray-700 mb-2">
+                Bio
+              </label>
               <textarea
-                id="bio"
+                id="form-bio"
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Tell us about yourself..."
@@ -283,7 +298,9 @@ export const EmptyState: Story = {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
+            <title>Empty projects icon</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
