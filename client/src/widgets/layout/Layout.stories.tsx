@@ -120,87 +120,93 @@ export const ContentExamples: Story = {
 };
 
 export const FormLayout: Story = {
-  args: {
-    title: "Settings",
-    children: (
-      <div className="max-w-2xl">
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-semibold mb-6">User Settings</h2>
+  render: (args) => {
+    const firstNameId = `firstName-${Math.random().toString(36).slice(2)}`;
+    const lastNameId = `lastName-${Math.random().toString(36).slice(2)}`;
+    const emailId = `email-${Math.random().toString(36).slice(2)}`;
+    const bioId = `bio-${Math.random().toString(36).slice(2)}`;
 
-          <div className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+    return (
+      <Layout title="Settings" {...args}>
+        <div className="max-w-2xl">
+          <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <h2 className="text-xl font-semibold mb-6">User Settings</h2>
+
+            <div className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor={firstNameId}
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    id={firstNameId}
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="John"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={lastNameId}
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    id={lastNameId}
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Doe"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label
-                  htmlFor="form-firstName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  First Name
+                <label htmlFor={emailId} className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
                 </label>
                 <input
-                  id="form-firstName"
-                  type="text"
+                  id={emailId}
+                  type="email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="John"
+                  placeholder="john.doe@example.com"
                 />
               </div>
+
               <div>
-                <label
-                  htmlFor="form-lastName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Last Name
+                <label htmlFor={bioId} className="block text-sm font-medium text-gray-700 mb-2">
+                  Bio
                 </label>
-                <input
-                  id="form-lastName"
-                  type="text"
+                <textarea
+                  id={bioId}
+                  rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Doe"
+                  placeholder="Tell us about yourself..."
                 />
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="form-email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                id="form-email"
-                type="email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="john.doe@example.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="form-bio" className="block text-sm font-medium text-gray-700 mb-2">
-                Bio
-              </label>
-              <textarea
-                id="form-bio"
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Tell us about yourself..."
-              />
-            </div>
-
-            <div className="flex space-x-4">
-              <button
-                type="button"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-md"
-              >
-                Cancel
-              </button>
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    ),
+      </Layout>
+    );
   },
 };
 

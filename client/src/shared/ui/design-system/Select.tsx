@@ -242,13 +242,15 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 Select.displayName = "Select";
 
 const SelectLabel = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
-  ({ className, htmlFor, ...props }, ref) => (
+  ({ className, htmlFor, children, ...props }, ref) => (
     <label
       ref={ref}
       className={cn("block text-sm font-medium text-gray-700 mb-1", className)}
       htmlFor={htmlFor}
       {...props}
-    />
+    >
+      {children}
+    </label>
   ),
 );
 SelectLabel.displayName = "SelectLabel";

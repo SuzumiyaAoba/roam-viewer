@@ -200,13 +200,15 @@ export const IconOnly: Story = {
       </Button>
 
       <Button size="icon" variant="ghost">
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+          <title>Edit</title>
           <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
         </svg>
       </Button>
 
       <Button size="icon" variant="destructive">
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+          <title>Delete</title>
           <path fillRule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clipRule="evenodd" />
           <path
             fillRule="evenodd"
@@ -225,7 +227,13 @@ export const LoadingStates: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Button disabled>
-        <svg className="animate-spin -ml-1 mr-3 h-4 w-4" fill="none" viewBox="0 0 24 24">
+        <svg
+          className="animate-spin -ml-1 mr-3 h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <title>Loading spinner</title>
           <circle
             cx="12"
             cy="12"
@@ -244,7 +252,13 @@ export const LoadingStates: Story = {
       </Button>
 
       <Button variant="outline" disabled>
-        <svg className="animate-spin -ml-1 mr-3 h-4 w-4" fill="none" viewBox="0 0 24 24">
+        <svg
+          className="animate-spin -ml-1 mr-3 h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <title>Loading spinner</title>
           <circle
             cx="12"
             cy="12"
@@ -270,19 +284,20 @@ export const AsChild: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Button asChild>
-        <a href="#" onClick={(e) => e.preventDefault()}>
+        <button type="button" onClick={() => console.log("Link Button clicked")}>
           Link Button
-        </a>
+        </button>
       </Button>
 
       <Button variant="outline" asChild>
-        <a href="#" onClick={(e) => e.preventDefault()}>
+        <button type="button" onClick={() => console.log("External Link clicked")}>
           External Link
-          <svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <title>External link</title>
             <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
             <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
           </svg>
-        </a>
+        </button>
       </Button>
     </div>
   ),

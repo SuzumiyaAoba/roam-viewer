@@ -75,7 +75,7 @@ export const Email: Story = {
   },
 };
 
-export const Number: Story = {
+export const NumberInput: Story = {
   args: {
     type: "number",
     placeholder: "Enter number...",
@@ -137,42 +137,56 @@ export const WithCustomStyling: Story = {
 
 // Example showing all states in a form
 export const FormExample: Story = {
-  render: () => (
-    <div className="space-y-4 p-6 max-w-md">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-          Full Name
-        </label>
-        <Input id="name" type="text" placeholder="Enter your full name" required />
-      </div>
+  render: () => {
+    const nameId = `name-${Math.random().toString(36).slice(2)}`;
+    const emailId = `email-${Math.random().toString(36).slice(2)}`;
+    const passwordId = `password-${Math.random().toString(36).slice(2)}`;
+    const phoneId = `phone-${Math.random().toString(36).slice(2)}`;
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-          Email
-        </label>
-        <Input id="email" type="email" placeholder="your.email@example.com" required />
-      </div>
+    return (
+      <div className="space-y-4 p-6 max-w-md">
+        <div>
+          <label htmlFor={nameId} className="block text-sm font-medium text-gray-700 mb-2">
+            Full Name
+          </label>
+          <Input id={nameId} type="text" placeholder="Enter your full name" required />
+        </div>
 
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-          Password
-        </label>
-        <Input id="password" type="password" placeholder="Enter secure password" required />
-      </div>
+        <div>
+          <label htmlFor={emailId} className="block text-sm font-medium text-gray-700 mb-2">
+            Email
+          </label>
+          <Input id={emailId} type="email" placeholder="your.email@example.com" required />
+        </div>
 
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-          Phone (Optional)
-        </label>
-        <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" />
-      </div>
+        <div>
+          <label htmlFor={passwordId} className="block text-sm font-medium text-gray-700 mb-2">
+            Password
+          </label>
+          <Input id={passwordId} type="password" placeholder="Enter secure password" required />
+        </div>
 
-      <div>
-        <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-2">
-          Website
-        </label>
-        <Input id="website" type="url" placeholder="https://example.com" />
+        <div>
+          <label htmlFor={phoneId} className="block text-sm font-medium text-gray-700 mb-2">
+            Phone (Optional)
+          </label>
+          <Input id={phoneId} type="tel" placeholder="+1 (555) 000-0000" />
+        </div>
+
+        <div>
+          <label
+            htmlFor={`website-${Math.random().toString(36).slice(2)}`}
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Website
+          </label>
+          <Input
+            id={`website-${Math.random().toString(36).slice(2)}`}
+            type="url"
+            placeholder="https://example.com"
+          />
+        </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };

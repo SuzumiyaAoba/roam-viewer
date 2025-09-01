@@ -170,10 +170,12 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
           selected && "ring-2 ring-blue-500 ring-offset-2",
           className,
         )}
-        onClick={handleCardClick}
-        onKeyDown={handleKeyDown}
-        role={onCardClick ? "button" : undefined}
-        tabIndex={onCardClick ? 0 : undefined}
+        {...(onCardClick && {
+          onClick: handleCardClick,
+          onKeyDown: handleKeyDown,
+          role: "button",
+          tabIndex: 0,
+        })}
         {...props}
       >
         {/* Status indicator for selected state */}

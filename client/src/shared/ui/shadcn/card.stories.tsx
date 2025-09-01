@@ -58,8 +58,13 @@ export const WithFooter: Story = {
         </p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        <button type="button" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+          Cancel
+        </button>
+        <button
+          type="button"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
           Confirm
         </button>
       </CardFooter>
@@ -101,7 +106,10 @@ export const ProductCard: Story = {
         </div>
       </CardContent>
       <CardFooter>
-        <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+        <button
+          type="button"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+        >
           Add to Cart
         </button>
       </CardFooter>
@@ -136,10 +144,16 @@ export const ProfileCard: Story = {
         </div>
       </CardContent>
       <CardFooter className="flex space-x-2">
-        <button className="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+        <button
+          type="button"
+          className="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+        >
           Contact
         </button>
-        <button className="flex-1 border border-gray-300 py-2 rounded-md hover:bg-gray-50">
+        <button
+          type="button"
+          className="flex-1 border border-gray-300 py-2 rounded-md hover:bg-gray-50"
+        >
           View Profile
         </button>
       </CardFooter>
@@ -153,7 +167,13 @@ export const StatCard: Story = {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-          <svg className="h-4 w-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            className="h-4 w-4 text-gray-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <title>Revenue icon</title>
             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" />
           </svg>
         </CardHeader>
@@ -166,7 +186,13 @@ export const StatCard: Story = {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
-          <svg className="h-4 w-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            className="h-4 w-4 text-gray-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <title>Subscriptions icon</title>
             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </CardHeader>
@@ -179,7 +205,13 @@ export const StatCard: Story = {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-          <svg className="h-4 w-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            className="h-4 w-4 text-gray-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <title>Active users icon</title>
             <path
               fillRule="evenodd"
               d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
@@ -197,51 +229,72 @@ export const StatCard: Story = {
 };
 
 export const FormCard: Story = {
-  render: () => (
-    <Card className="w-96">
-      <CardHeader>
-        <CardTitle>Create Account</CardTitle>
-        <CardDescription>Enter your information below to create your account</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Full Name</label>
-          <input
-            type="text"
-            placeholder="John Doe"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Email</label>
-          <input
-            type="email"
-            placeholder="john@example.com"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Password</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-      </CardContent>
-      <CardFooter className="flex flex-col space-y-2">
-        <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
-          Create Account
-        </button>
-        <p className="text-xs text-center text-gray-600">
-          Already have an account?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
-            Sign in
-          </a>
-        </p>
-      </CardFooter>
-    </Card>
-  ),
+  render: () => {
+    const fullNameId = `fullname-${Math.random().toString(36).slice(2)}`;
+    const emailId = `email-${Math.random().toString(36).slice(2)}`;
+    const passwordId = `password-${Math.random().toString(36).slice(2)}`;
+
+    return (
+      <Card className="w-96">
+        <CardHeader>
+          <CardTitle>Create Account</CardTitle>
+          <CardDescription>Enter your information below to create your account</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor={fullNameId} className="text-sm font-medium">
+              Full Name
+            </label>
+            <input
+              id={fullNameId}
+              type="text"
+              placeholder="John Doe"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor={emailId} className="text-sm font-medium">
+              Email
+            </label>
+            <input
+              id={emailId}
+              type="email"
+              placeholder="john@example.com"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor={passwordId} className="text-sm font-medium">
+              Password
+            </label>
+            <input
+              id={passwordId}
+              type="password"
+              placeholder="••••••••"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-2">
+          <button
+            type="button"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+          >
+            Create Account
+          </button>
+          <p className="text-xs text-center text-gray-600">
+            Already have an account?{" "}
+            <button
+              type="button"
+              className="text-blue-600 hover:underline bg-transparent border-none p-0"
+            >
+              Sign in
+            </button>
+          </p>
+        </CardFooter>
+      </Card>
+    );
+  },
 };
 
 export const NotificationCard: Story = {
@@ -260,8 +313,12 @@ export const NotificationCard: Story = {
         </p>
       </CardContent>
       <CardFooter className="flex space-x-2">
-        <button className="text-sm text-blue-600 hover:text-blue-800">View Message</button>
-        <button className="text-sm text-gray-600 hover:text-gray-800">Mark as Read</button>
+        <button type="button" className="text-sm text-blue-600 hover:text-blue-800">
+          View Message
+        </button>
+        <button type="button" className="text-sm text-gray-600 hover:text-gray-800">
+          Mark as Read
+        </button>
       </CardFooter>
     </Card>
   ),
@@ -295,7 +352,7 @@ export const CompositionExample: Story = {
       {/* Footer only */}
       <Card>
         <CardFooter className="pt-6">
-          <button className="w-full bg-gray-100 hover:bg-gray-200 py-2 rounded-md">
+          <button type="button" className="w-full bg-gray-100 hover:bg-gray-200 py-2 rounded-md">
             Footer Only
           </button>
         </CardFooter>

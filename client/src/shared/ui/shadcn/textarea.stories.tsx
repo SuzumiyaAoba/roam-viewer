@@ -134,49 +134,56 @@ export const NonResizable: Story = {
 
 // Example showing different use cases
 export const FormExample: Story = {
-  render: () => (
-    <div className="space-y-6 p-6 max-w-2xl">
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-          Description
-        </label>
-        <Textarea id="description" placeholder="Provide a detailed description..." rows={4} />
-        <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
-      </div>
+  render: () => {
+    const descriptionId = `description-${Math.random().toString(36).slice(2)}`;
+    const feedbackId = `feedback-${Math.random().toString(36).slice(2)}`;
+    const codeId = `code-${Math.random().toString(36).slice(2)}`;
+    const notesId = `notes-${Math.random().toString(36).slice(2)}`;
 
-      <div>
-        <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-2">
-          Feedback
-        </label>
-        <Textarea id="feedback" placeholder="Share your thoughts and suggestions..." rows={6} />
-      </div>
+    return (
+      <div className="space-y-6 p-6 max-w-2xl">
+        <div>
+          <label htmlFor={descriptionId} className="block text-sm font-medium text-gray-700 mb-2">
+            Description
+          </label>
+          <Textarea id={descriptionId} placeholder="Provide a detailed description..." rows={4} />
+          <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
+        </div>
 
-      <div>
-        <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
-          Code Snippet
-        </label>
-        <Textarea
-          id="code"
-          placeholder="Paste your code here..."
-          className="font-mono text-sm"
-          rows={8}
-          spellCheck={false}
-        />
-      </div>
+        <div>
+          <label htmlFor={feedbackId} className="block text-sm font-medium text-gray-700 mb-2">
+            Feedback
+          </label>
+          <Textarea id={feedbackId} placeholder="Share your thoughts and suggestions..." rows={6} />
+        </div>
 
-      <div>
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
-          Additional Notes
-        </label>
-        <Textarea
-          id="notes"
-          placeholder="Any additional information..."
-          rows={3}
-          style={{ resize: "vertical" }}
-        />
+        <div>
+          <label htmlFor={codeId} className="block text-sm font-medium text-gray-700 mb-2">
+            Code Snippet
+          </label>
+          <Textarea
+            id={codeId}
+            placeholder="Paste your code here..."
+            className="font-mono text-sm"
+            rows={8}
+            spellCheck={false}
+          />
+        </div>
+
+        <div>
+          <label htmlFor={notesId} className="block text-sm font-medium text-gray-700 mb-2">
+            Additional Notes
+          </label>
+          <Textarea
+            id={notesId}
+            placeholder="Any additional information..."
+            rows={3}
+            style={{ resize: "vertical" }}
+          />
+        </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };
 
 export const ChatExample: Story = {
@@ -198,7 +205,10 @@ export const ChatExample: Story = {
           className="flex-1"
           style={{ resize: "none" }}
         />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+        <button
+          type="button"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
           Send
         </button>
       </div>
