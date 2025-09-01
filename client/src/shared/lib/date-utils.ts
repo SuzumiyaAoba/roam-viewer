@@ -119,17 +119,21 @@ export function formatOrgTimestamp(
   const isRange = timestamp.timestampType?.includes("range") || !!timestamp.end;
 
   // Create start date
-  // For DEADLINE without time, treat as end of day (23:59)
-  const startHour = type === "deadline" && timestamp.start.hour === undefined ? 23 : (timestamp.start.hour || 0);
-  const startMinute = type === "deadline" && timestamp.start.hour === undefined ? 59 : (timestamp.start.minute || 0);
-  
-  const startDate = new Date(
+  // For DEADLINE without time, treat as next day 0:00 (end of the specified day)
+  let startDate = new Date(
     timestamp.start.year,
     timestamp.start.month - 1, // JS months are 0-based
     timestamp.start.day,
-    startHour,
-    startMinute,
+    timestamp.start.hour || 0,
+    timestamp.start.minute || 0,
   );
+  
+  // If DEADLINE has no time specified, set to next day 0:00
+  if (type === "deadline" && timestamp.start.hour === undefined) {
+    startDate = new Date(startDate);
+    startDate.setDate(startDate.getDate() + 1); // Next day
+    startDate.setHours(0, 0, 0, 0); // 0:00:00
+  }
 
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -206,10 +210,11 @@ export function formatOrgDate(
     return { display: dateStr, isOverdue: false, isToday: false, isSoon: false, isRange: false };
   }
 
-  // For DEADLINE without time, treat as end of day (23:59)
+  // For DEADLINE without time, treat as next day 0:00 (end of the specified day)
   const targetDateTime = new Date(date);
   if (type === "deadline" && !dateStr.includes(":")) {
-    targetDateTime.setHours(23, 59, 59, 999);
+    targetDateTime.setDate(targetDateTime.getDate() + 1); // Next day
+    targetDateTime.setHours(0, 0, 0, 0); // 0:00:00
   }
 
   const now = new Date();

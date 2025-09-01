@@ -578,11 +578,11 @@ const timestampContent = `* Meeting Schedule
 SCHEDULED: <2025-08-30 Fri 09:00>--<2025-08-30 Fri 17:00>
 DEADLINE: <2025-09-01 Sun>
 
-** DEADLINE Examples (End-of-Day Handling)
-*** Task with date-only deadline (treated as 23:59)
+** DEADLINE Examples (Next-Day 0:00 Handling)
+*** Task with date-only deadline (treated as next day 0:00)
 DEADLINE: <2024-12-25 Wed>
 
-*** Task with specific deadline time
+*** Task with specific deadline time  
 DEADLINE: <2024-12-25 Wed 15:30>
 
 ** Today's Events
