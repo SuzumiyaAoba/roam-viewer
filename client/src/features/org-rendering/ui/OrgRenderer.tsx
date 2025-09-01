@@ -451,7 +451,74 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
     });
   });
 
-  // Step 3: Apply standard Tailwind classes
+  // Step 3: Style timestamp elements
+  processedHtml = processedHtml.replace(
+    /<span class="timestamp">([^<]*)<\/span>/g,
+    (_, content) => {
+      // Decode HTML entities
+      const decodedContent = content
+        .replace(/&#x3C;/g, '<')
+        .replace(/&#x3E;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+
+      // Check if it's a range (contains --)
+      const isRange = decodedContent.includes('--');
+      
+      if (isRange) {
+        // Handle timestamp ranges like <2025-01-15 Wed 14:30>--<2025-01-15 Wed 16:00>
+        const rangeParts = decodedContent.split('--');
+        if (rangeParts.length === 2) {
+          const startTime = rangeParts[0].trim().replace(/^[<\[]|[>\]]$/g, '');
+          const endTime = rangeParts[1].trim().replace(/^[<\[]|[>\]]$/g, '');
+          
+          return `<span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>${startTime}</span>
+            <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12" />
+            </svg>
+            <span>${endTime}</span>
+          </span>`;
+        }
+      }
+      
+      // Handle single timestamps
+      const isActive = decodedContent.startsWith('<') && decodedContent.endsWith('>');
+      const isInactive = decodedContent.startsWith('[') && decodedContent.endsWith(']');
+      
+      if (isActive) {
+        const cleanContent = decodedContent.replace(/^[<\[]|[>\]]$/g, '');
+        return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 border border-green-200 rounded-md text-sm">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          ${cleanContent}
+        </span>`;
+      } else if (isInactive) {
+        const cleanContent = decodedContent.replace(/^[<\[]|[>\]]$/g, '');
+        return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 text-gray-600 border border-gray-200 rounded-md text-sm">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          ${cleanContent}
+        </span>`;
+      }
+      
+      // Fallback for other timestamp formats
+      const cleanContent = decodedContent.replace(/^[<\[]|[>\]]$/g, '');
+      return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded-md text-sm">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        ${cleanContent}
+      </span>`;
+    }
+  );
+
+  // Step 4: Apply standard Tailwind classes
   return (
     processedHtml
       // Headers (only add classes if not already present)

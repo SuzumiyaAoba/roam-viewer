@@ -119,12 +119,16 @@ export function formatOrgTimestamp(
   const isRange = timestamp.timestampType?.includes("range") || !!timestamp.end;
 
   // Create start date
+  // For DEADLINE without time, treat as end of day (23:59)
+  const startHour = type === "deadline" && timestamp.start.hour === undefined ? 23 : (timestamp.start.hour || 0);
+  const startMinute = type === "deadline" && timestamp.start.hour === undefined ? 59 : (timestamp.start.minute || 0);
+  
   const startDate = new Date(
     timestamp.start.year,
     timestamp.start.month - 1, // JS months are 0-based
     timestamp.start.day,
-    timestamp.start.hour || 0,
-    timestamp.start.minute || 0,
+    startHour,
+    startMinute,
   );
 
   const now = new Date();
@@ -132,7 +136,8 @@ export function formatOrgTimestamp(
   const targetDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
   const diffInDays = Math.floor((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  const isOverdue = diffInDays < 0 && type === "deadline";
+  // For deadlines, check if the actual datetime has passed (not just the date)
+  const isOverdue = type === "deadline" ? startDate.getTime() < now.getTime() : false;
   const isToday = diffInDays === 0;
   const isSoon = diffInDays > 0 && diffInDays <= 3;
 
@@ -201,12 +206,19 @@ export function formatOrgDate(
     return { display: dateStr, isOverdue: false, isToday: false, isSoon: false, isRange: false };
   }
 
+  // For DEADLINE without time, treat as end of day (23:59)
+  const targetDateTime = new Date(date);
+  if (type === "deadline" && !dateStr.includes(":")) {
+    targetDateTime.setHours(23, 59, 59, 999);
+  }
+
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const diffInDays = Math.floor((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  const isOverdue = diffInDays < 0 && type === "deadline";
+  // For deadlines, check if the actual datetime has passed (not just the date)
+  const isOverdue = type === "deadline" ? targetDateTime.getTime() < now.getTime() : false;
   const isToday = diffInDays === 0;
   const isSoon = diffInDays > 0 && diffInDays <= 3;
 

@@ -49,7 +49,7 @@ Here's a subsection with some /italic/ and *bold* text.
 
 Some regular paragraph text with a [[https://orgmode.org][link to Org-mode]].`;
 
-const codeBlockContent = `* Code Examples
+const codeBlockContent = `* Code Examples with Shiki Syntax Highlighting
 
 Here's some inline =code= in a paragraph.
 
@@ -60,7 +60,34 @@ function fibonacci(n) {
   return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
+// ES6 arrow function version
+const fibonacciArrow = (n) => n <= 1 ? n : fibonacciArrow(n - 1) + fibonacciArrow(n - 2);
+
 console.log(fibonacci(10));
+#+END_SRC
+
+** TypeScript Example
+#+BEGIN_SRC typescript
+interface User {
+  id: number;
+  name: string;
+  email?: string;
+}
+
+class UserService {
+  private users: User[] = [];
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+
+  findUser(id: number): User | undefined {
+    return this.users.find(user => user.id === id);
+  }
+}
+
+const userService = new UserService();
+userService.addUser({ id: 1, name: "Alice", email: "alice@example.com" });
 #+END_SRC
 
 ** Python Example
@@ -73,6 +100,132 @@ def quicksort(arr):
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
     return quicksort(left) + middle + quicksort(right)
+
+# List comprehension example
+numbers = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+sorted_numbers = quicksort(numbers)
+print(f"Original: {numbers}")
+print(f"Sorted: {sorted_numbers}")
+#+END_SRC
+
+** Timestamp Examples
+Meeting from <2025-08-30 Fri 09:00> to <2025-08-30 Fri 17:00>
+
+Conference call: <2025-01-15 Wed 14:30>--<2025-01-15 Wed 16:00>
+
+Simple date: <2025-02-01 Sat>
+
+Inactive timestamp: [2025-03-01 Sun 10:00]
+
+Multi-day event: <2025-04-01 Mon>--<2025-04-03 Wed>
+
+** Go Example
+#+BEGIN_SRC go
+package main
+
+import (
+    "fmt"
+    "sort"
+)
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+func main() {
+    people := []Person{
+        {"Alice", 25},
+        {"Bob", 30},
+        {"Charlie", 20},
+    }
+
+    sort.Slice(people, func(i, j int) bool {
+        return people[i].Age < people[j].Age
+    })
+
+    for _, person := range people {
+        fmt.Printf("%s is %d years old\n", person.Name, person.Age)
+    }
+}
+#+END_SRC
+
+** Rust Example  
+#+BEGIN_SRC rust
+use std::collections::HashMap;
+
+#[derive(Debug)]
+struct Book {
+    title: String,
+    author: String,
+    year: u16,
+}
+
+fn main() {
+    let mut library: HashMap<String, Book> = HashMap::new();
+    
+    let book = Book {
+        title: "The Rust Programming Language".to_string(),
+        author: "Steve Klabnik and Carol Nichols".to_string(),
+        year: 2018,
+    };
+    
+    library.insert("rust_book".to_string(), book);
+    
+    match library.get("rust_book") {
+        Some(book) => println!("{:?}", book),
+        None => println!("Book not found"),
+    }
+}
+#+END_SRC
+
+** JSON Example
+#+BEGIN_SRC json
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.0.0",
+    "typescript": "^4.9.0",
+    "shiki": "^0.12.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  }
+}
+#+END_SRC
+
+** Shell Script Example
+#+BEGIN_SRC bash
+#!/bin/bash
+
+# Function to check if command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Install dependencies based on OS
+install_deps() {
+    if command_exists apt-get; then
+        sudo apt-get update && sudo apt-get install -y git curl
+    elif command_exists brew; then
+        brew install git curl
+    else
+        echo "Package manager not found"
+        exit 1
+    fi
+}
+
+echo "Installing dependencies..."
+install_deps
+echo "Done!"
 #+END_SRC`;
 
 const tableContent = `* Data Tables
@@ -417,4 +570,40 @@ console.log('Code block');
       </div>
     </div>
   ),
+};
+
+
+// Timestamp-focused story
+const timestampContent = `* Meeting Schedule
+SCHEDULED: <2025-08-30 Fri 09:00>--<2025-08-30 Fri 17:00>
+DEADLINE: <2025-09-01 Sun>
+
+** DEADLINE Examples (End-of-Day Handling)
+*** Task with date-only deadline (treated as 23:59)
+DEADLINE: <2024-12-25 Wed>
+
+*** Task with specific deadline time
+DEADLINE: <2024-12-25 Wed 15:30>
+
+** Today's Events
+- Morning standup: <2025-01-15 Wed 09:00>--<2025-01-15 Wed 09:30>
+- Client meeting from <2025-01-15 Wed 14:00> to <2025-01-15 Wed 15:30>
+- Planning session: <2025-01-15 Wed 16:00>--<2025-01-15 Wed 17:00>
+
+** Upcoming Deadlines
+- Project proposal due: <2025-01-20 Mon>
+- Design review: [2025-01-25 Sat 10:00]
+- Launch date: <2025-02-01 Thu>--<2025-02-03 Sat>
+
+** Notes  
+Remember to check the calendar for any conflicts with <2025-01-16 Thu 14:00> meeting.
+
+Inactive reminder: [2025-01-18 Sat] - Weekend work session (optional)
+`;
+
+export const TimestampStyling = {
+  args: {
+    content: timestampContent,
+    enableSyntaxHighlight: false,
+  },
 };
