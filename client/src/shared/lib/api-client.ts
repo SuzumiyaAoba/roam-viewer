@@ -69,10 +69,10 @@ export class ApiClient {
 
   // Node Operations
   async getNodes(): Promise<Node[]> {
-    const result = await this.request<Node[]>("/api/nodes");
+    const result = await this.request<Node[] | { data: Node[] }>("/api/nodes");
 
     // Handle new API response format
-    if (result && Array.isArray(result.data)) {
+    if (result && typeof result === 'object' && 'data' in result && Array.isArray(result.data)) {
       return result.data;
     } else if (Array.isArray(result)) {
       return result;
@@ -115,7 +115,7 @@ export class ApiClient {
     if (result && result.nodes !== undefined) {
       return {
         nodes: Array.isArray(result.nodes) ? result.nodes : [],
-        total: result.count || 0,
+        total: ('count' in result ? result.count : result.total) || 0,
       };
     } else if (result && Array.isArray(result)) {
       return {
@@ -134,8 +134,8 @@ export class ApiClient {
     >("/api/tags");
 
     // Handle new API response format
-    if (result && Array.isArray(result.tags)) {
-      return result.tags.map((tagInfo) => ({
+    if (result && typeof result === 'object' && 'tags' in result && Array.isArray(result.tags)) {
+      return result.tags.map((tagInfo: { tag: string; count: number }) => ({
         tag: tagInfo.tag,
         count: tagInfo.count,
       }));
@@ -147,10 +147,10 @@ export class ApiClient {
   }
 
   async searchNodesByTag(tag: string): Promise<Node[]> {
-    const result = await this.request<Node[]>(`/api/search/tag/${encodeURIComponent(tag)}`);
+    const result = await this.request<Node[] | { nodes: Node[] }>(`/api/search/tag/${encodeURIComponent(tag)}`);
 
     // Handle new API response format
-    if (result && Array.isArray(result.nodes)) {
+    if (result && typeof result === 'object' && 'nodes' in result && Array.isArray(result.nodes)) {
       return result.nodes;
     } else if (Array.isArray(result)) {
       return result;

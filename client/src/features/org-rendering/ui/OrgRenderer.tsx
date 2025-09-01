@@ -1,9 +1,16 @@
 import { Icon } from "@iconify/react";
+import rehypeShiki from "@shikijs/rehype";
 import { useEffect, useState } from "react";
 import rehypeStringify from "rehype-stringify";
 import { unified } from "unified";
 import uniorgParse from "uniorg-parse";
 import uniorg2rehype from "uniorg-rehype";
+import {
+  formatDate,
+  formatOrgDate,
+  formatOrgTimestamp,
+  type OrgTimestamp,
+} from "../../../shared/lib/date-utils";
 
 interface OrgRendererProps {
   /**
@@ -28,6 +35,11 @@ interface OrgMetadata {
   id?: string;
   author?: string;
   date?: string;
+  scheduled?: string;
+  deadline?: string;
+  // Enhanced timestamp objects from uniorg AST
+  scheduledTimestamp?: OrgTimestamp;
+  deadlineTimestamp?: OrgTimestamp;
 }
 
 function extractMetadata(content: string): { metadata: OrgMetadata; cleanedContent: string } {
@@ -90,6 +102,21 @@ function extractMetadata(content: string): { metadata: OrgMetadata; cleanedConte
     if (trimmed.startsWith("#+date:")) {
       metadata.date = trimmed.replace("#+date:", "").trim();
       continue; // Don't include in cleaned content
+    }
+
+    // Extract SCHEDULED and DEADLINE timestamps
+    if (trimmed.includes("SCHEDULED:")) {
+      const scheduledMatch = trimmed.match(/SCHEDULED:\s*([^>\]]+[>\]])/);
+      if (scheduledMatch) {
+        metadata.scheduled = scheduledMatch[1];
+      }
+    }
+
+    if (trimmed.includes("DEADLINE:")) {
+      const deadlineMatch = trimmed.match(/DEADLINE:\s*([^>\]]+[>\]])/);
+      if (deadlineMatch) {
+        metadata.deadline = deadlineMatch[1];
+      }
     }
 
     // Skip other org metadata BUT NOT code blocks
@@ -160,8 +187,64 @@ function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
         {metadata.date && (
           <div className="flex items-center gap-2">
             <Icon icon="lucide:calendar" className="w-4 h-4 text-orange-600" />
-            <span className="text-gray-600">Date:</span>
-            <span className="font-medium text-gray-900">{metadata.date}</span>
+            <span className="text-gray-600">作成日:</span>
+            <span className="font-medium text-gray-900">
+              {formatDate(metadata.date, { format: "medium" })}
+            </span>
+          </div>
+        )}
+
+        {(metadata.scheduledTimestamp || metadata.scheduled) && (
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:clock" className="w-4 h-4 text-blue-600" />
+            <span className="text-gray-600">予定:</span>
+            {(() => {
+              // Use enhanced timestamp object if available, fallback to string parsing
+              const result = metadata.scheduledTimestamp
+                ? formatOrgTimestamp(metadata.scheduledTimestamp, "scheduled")
+                : formatOrgDate(metadata.scheduled, "scheduled");
+
+              const { display, isToday, isSoon, isRange } = result;
+              return (
+                <span
+                  className={`font-medium ${isToday ? "text-blue-700 bg-blue-50 px-2 py-1 rounded" : isSoon ? "text-blue-600" : "text-gray-900"}`}
+                >
+                  {isRange && <Icon icon="lucide:arrow-right" className="inline w-3 h-3 mr-1" />}
+                  {display}
+                </span>
+              );
+            })()}
+          </div>
+        )}
+
+        {(metadata.deadlineTimestamp || metadata.deadline) && (
+          <div className="flex items-center gap-2">
+            <Icon icon="lucide:alert-triangle" className="w-4 h-4 text-red-600" />
+            <span className="text-gray-600">締切:</span>
+            {(() => {
+              // Use enhanced timestamp object if available, fallback to string parsing
+              const result = metadata.deadlineTimestamp
+                ? formatOrgTimestamp(metadata.deadlineTimestamp, "deadline")
+                : formatOrgDate(metadata.deadline, "deadline");
+
+              const { display, isOverdue, isToday, isSoon, isRange } = result;
+              return (
+                <span
+                  className={`font-medium ${
+                    isOverdue
+                      ? "text-red-700 bg-red-50 px-2 py-1 rounded"
+                      : isToday
+                        ? "text-orange-700 bg-orange-50 px-2 py-1 rounded"
+                        : isSoon
+                          ? "text-orange-600"
+                          : "text-gray-900"
+                  }`}
+                >
+                  {isRange && <Icon icon="lucide:arrow-right" className="inline w-3 h-3 mr-1" />}
+                  {display}
+                </span>
+              );
+            })()}
           </div>
         )}
 
@@ -196,28 +279,109 @@ function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
   );
 }
 
-// Uniorg-based org-mode parser function to HTML
+// Extract timestamp information from uniorg AST
+function extractTimestampsFromAST(ast: any): {
+  scheduledTimestamp?: OrgTimestamp;
+  deadlineTimestamp?: OrgTimestamp;
+} {
+  const result: { scheduledTimestamp?: OrgTimestamp; deadlineTimestamp?: OrgTimestamp } = {};
+
+  function traverse(node: any) {
+    if (node.type === "planning") {
+      if (node.scheduled && node.scheduled.type === "timestamp") {
+        result.scheduledTimestamp = node.scheduled as OrgTimestamp;
+      }
+      if (node.deadline && node.deadline.type === "timestamp") {
+        result.deadlineTimestamp = node.deadline as OrgTimestamp;
+      }
+    }
+
+    if (node.children) {
+      for (const child of node.children) {
+        traverse(child);
+      }
+    }
+  }
+
+  traverse(ast);
+  return result;
+}
+
+// Uniorg-based org-mode parser function to HTML with Shiki syntax highlighting
 async function parseOrgContent(
   content: string,
+  enableSyntaxHighlight = true,
 ): Promise<{ metadata: OrgMetadata; htmlContent: string }> {
   try {
     // First, extract metadata and get cleaned content
     const { metadata, cleanedContent } = extractMetadata(content);
 
-    // Create uniorg processor - let it handle TODO keywords naturally, then enhance with post-processing
-    const processor = unified()
-      .use(uniorgParse)
-      .use(uniorg2rehype)
-      .use(rehypeStringify, { allowDangerousHtml: true });
+    // Parse with uniorg to get AST for timestamp extraction
+    const astProcessor = unified().use(uniorgParse);
+    const ast = astProcessor.parse(content);
+
+    // Extract enhanced timestamp information from AST
+    const { scheduledTimestamp, deadlineTimestamp } = extractTimestampsFromAST(ast);
+
+    // Merge AST-based timestamp info with string-based metadata
+    const enhancedMetadata: OrgMetadata = {
+      ...metadata,
+      scheduledTimestamp,
+      deadlineTimestamp,
+    };
+
+    // Create uniorg processor with Shiki syntax highlighting
+    const processorBuilder = unified().use(uniorgParse).use(uniorg2rehype);
+
+    // Add Shiki syntax highlighting if enabled
+    if (enableSyntaxHighlight) {
+      processorBuilder.use(rehypeShiki as any, {
+        themes: {
+          light: "github-light",
+          dark: "github-dark",
+        },
+        defaultTheme: "light",
+        // Popular languages for coding - only commonly supported ones
+        langs: [
+          "javascript",
+          "typescript",
+          "jsx",
+          "tsx",
+          "python",
+          "java",
+          "go",
+          "rust",
+          "cpp",
+          "c",
+          "bash",
+          "shell",
+          "json",
+          "yaml",
+          "xml",
+          "html",
+          "css",
+          "scss",
+          "sql",
+          "markdown",
+          "php",
+          "ruby",
+          "dockerfile",
+        ],
+        // Custom styling to integrate with Tailwind CSS
+        defaultColor: false,
+      });
+    }
+
+    const processor = processorBuilder.use(rehypeStringify, { allowDangerousHtml: true });
 
     // Process the cleaned content
     const result = await processor.process(cleanedContent);
     let htmlContent = String(result);
 
     // Apply enhanced Tailwind CSS classes including TODO keyword styling
-    htmlContent = addEnhancedTailwindClasses(htmlContent);
+    htmlContent = addEnhancedTailwindClasses(htmlContent, enableSyntaxHighlight);
 
-    return { metadata, htmlContent };
+    return { metadata: enhancedMetadata, htmlContent };
   } catch (error) {
     console.error("Error parsing org content with uniorg:", error);
     // Fallback to basic parsing if uniorg fails
@@ -260,7 +424,7 @@ function getHeaderClass(level: string): string {
 }
 
 // Apply enhanced Tailwind CSS classes with improved TODO keyword handling
-function addEnhancedTailwindClasses(html: string): string {
+function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true): string {
   let processedHtml = html;
 
   // Step 1: Replace uniorg's default TODO keyword spans with styled badges
@@ -321,15 +485,21 @@ function addEnhancedTailwindClasses(html: string): string {
       .replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc list-inside mb-4 ml-4 space-y-1">')
       .replace(/<ol([^>]*)>/g, '<ol$1 class="list-decimal list-inside mb-4 ml-4 space-y-1">')
       .replace(/<li([^>]*)>/g, '<li$1 class="text-gray-700">')
-      // Code
+      // Code - handle both Shiki-styled and regular code blocks
       .replace(
-        /<code([^>]*)>/g,
+        /<code(?![^>]*class=[^>]*shiki)([^>]*)>/g,
         '<code$1 class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">',
       )
       .replace(
-        /<pre([^>]*)>/g,
+        /<pre(?![^>]*class=[^>]*shiki)([^>]*)>/g,
         '<pre$1 class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">',
       )
+      // Shiki code blocks - enhance styling while letting CSS handle background colors
+      .replace(
+        /<pre class="shiki([^"]*)"([^>]*)>/g,
+        '<pre class="shiki$1 rounded-lg overflow-x-auto mb-4 text-sm border border-gray-200 shadow-sm p-4"$2>',
+      )
+      .replace(/<code class="shiki([^"]*)"([^>]*)>/g, '<code class="shiki$1 block"$2>')
       // Tables
       .replace(/<table([^>]*)>/g, '<table$1 class="min-w-full divide-y divide-gray-200 border">')
       .replace(
@@ -352,7 +522,7 @@ function addEnhancedTailwindClasses(html: string): string {
 export function OrgRenderer({
   content,
   className = "",
-  _enableSyntaxHighlight = true,
+  enableSyntaxHighlight = true,
 }: OrgRendererProps) {
   const [metadata, setMetadata] = useState<OrgMetadata>({});
   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -365,7 +535,7 @@ export function OrgRenderer({
       setError(null);
 
       try {
-        const result = await parseOrgContent(content);
+        const result = await parseOrgContent(content, enableSyntaxHighlight);
         setMetadata(result.metadata);
         setHtmlContent(result.htmlContent);
       } catch (err) {
@@ -383,7 +553,7 @@ export function OrgRenderer({
     }
 
     processContent();
-  }, [content]);
+  }, [content, enableSyntaxHighlight]);
 
   if (isLoading) {
     return (

@@ -1,5 +1,44 @@
-/* Syntax highlighting for code blocks */
-@import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+/* Shiki syntax highlighting styles */
+pre.shiki {
+  /* Use Shiki's background colors for the container */
+  background-color: var(--shiki-light-bg) !important;
+  color: var(--shiki-light) !important;
+}
+
+pre.shiki code {
+  /* Ensure code element has transparent background */
+  background-color: transparent !important;
+}
+
+pre.shiki span {
+  /* Apply syntax highlighting colors from Shiki, no background */
+  color: var(--shiki-light) !important;
+  background-color: transparent !important;
+}
+
+/* Dark theme support (can be activated via CSS class or media query) */
+@media (prefers-color-scheme: dark) {
+  pre.shiki {
+    background-color: var(--shiki-dark-bg) !important;
+    color: var(--shiki-dark) !important;
+  }
+  
+  pre.shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: transparent !important;
+  }
+}
+
+/* Explicit dark theme class support */
+.dark pre.shiki {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+
+.dark pre.shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+}
 
 @tailwind base;
 @tailwind components;

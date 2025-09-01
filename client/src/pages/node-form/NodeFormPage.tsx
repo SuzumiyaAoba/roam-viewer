@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { CreateNodeRequest, UpdateNodeRequest } from "../../entities/node";
 import { useCreateNode, useNode, useUpdateNode } from "../../entities/node";
@@ -241,7 +241,6 @@ export function NodeEditPage() {
   const { data: node, isLoading, error } = useNode(id || "");
   const updateNodeMutation = useUpdateNode();
   const titleId = useId();
-  const _fileTypeId = useId();
   const contentId = useId();
   const tagsId = useId();
   const aliasesId = useId();
@@ -328,7 +327,7 @@ export function NodeEditPage() {
   return (
     <Layout>
       <div className="flex items-center space-x-4 mb-8">
-        <Link to={`/nodes/${encodeURIComponent(id)}`} className="text-gray-600 hover:text-gray-800">
+        <Link to={`/nodes/${encodeURIComponent(id || '')}`} className="text-gray-600 hover:text-gray-800">
           ← Back to Node
         </Link>
         <h1 className="text-3xl font-bold text-gray-900">Edit: {node.title}</h1>
@@ -433,7 +432,7 @@ export function NodeEditPage() {
               {updateNodeMutation.isPending ? "Updating..." : "Update Node"}
             </button>
             <Link
-              to={`/nodes/${encodeURIComponent(id)}`}
+              to={`/nodes/${encodeURIComponent(id || '')}`}
               className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-md transition-colors"
             >
               Cancel

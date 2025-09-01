@@ -101,7 +101,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         onClick={handleOverlayClick}
         onKeyDown={(e) => {
           if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
-            handleOverlayClick(e as React.MouseEvent<HTMLDivElement>);
+            if (onClose) {
+              onClose();
+            }
           }
         }}
         aria-label="Close modal"
