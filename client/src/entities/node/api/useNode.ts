@@ -76,6 +76,17 @@ export const useDeleteNode = () => {
   });
 };
 
+export const useDeleteNodes = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => apiClient.deleteNodes(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["nodes"] });
+    },
+  });
+};
+
 export const useNodesByTag = (tag: string) => {
   return useQuery({
     queryKey: ["nodes", "tag", tag],

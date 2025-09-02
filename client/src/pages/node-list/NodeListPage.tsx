@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import type { Node } from "../../entities/node";
-import { useDeleteNode, useNodes, useSearchNodes } from "../../entities/node";
+import { useDeleteNode, useDeleteNodes, useNodes, useSearchNodes } from "../../entities/node";
 import { useTags } from "../../entities/tag";
 import { Button, cn, NodeCard, NodeCardCompact } from "../../shared/ui";
 import { Layout } from "../../widgets/layout";
@@ -19,12 +19,14 @@ export function NodeListPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showTagSelector, setShowTagSelector] = useState(false);
   const [viewMode, setViewMode] = useLocalStorage<ViewMode>("node-list-view-mode", "grid");
+  const [selectedNodes, setSelectedNodes] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
   const { data: nodes, isLoading: nodesLoading, error: nodesError } = useNodes();
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery);
   const { data: availableTags, isLoading: tagsLoading } = useTags(showTagSelector);
   const deleteNodeMutation = useDeleteNode();
+  const deleteNodesMutation = useDeleteNodes();
 
   // Update URL parameters helper
   const updateURLParams = useCallback(
@@ -184,6 +186,40 @@ export function NodeListPage() {
     deleteNodeMutation.mutate(id);
   };
 
+  // Selection handlers
+  const toggleNodeSelection = (nodeId: string) => {
+    const newSelected = new Set(selectedNodes);
+    if (newSelected.has(nodeId)) {
+      newSelected.delete(nodeId);
+    } else {
+      newSelected.add(nodeId);
+    }
+    setSelectedNodes(newSelected);
+  };
+
+  const selectAllNodes = () => {
+    const displayNodes = getFilteredNodes();
+    setSelectedNodes(new Set(displayNodes.map((node) => node.id)));
+  };
+
+  const clearSelection = () => {
+    setSelectedNodes(new Set());
+  };
+
+  const handleBulkDelete = () => {
+    const selectedIds = Array.from(selectedNodes);
+    if (selectedIds.length === 0) return;
+
+    const confirmMessage = `Are you sure you want to delete ${selectedIds.length} nodes? This action cannot be undone.`;
+    if (window.confirm(confirmMessage)) {
+      deleteNodesMutation.mutate(selectedIds, {
+        onSuccess: () => {
+          clearSelection();
+        },
+      });
+    }
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Search is handled by debounced effect
@@ -242,6 +278,9 @@ export function NodeListPage() {
                   }
                 }}
                 onTagClick={handleTagClick}
+                showCheckbox={true}
+                isSelected={selectedNodes.has(node.id)}
+                onSelectionChange={() => toggleNodeSelection(node.id)}
               />
             ))}
           </div>
@@ -265,6 +304,9 @@ export function NodeListPage() {
                   }
                 }}
                 onTagClick={handleTagClick}
+                showCheckbox={true}
+                isSelected={selectedNodes.has(node.id)}
+                onSelectionChange={() => toggleNodeSelection(node.id)}
               />
             ))}
           </div>
@@ -273,93 +315,120 @@ export function NodeListPage() {
       case "table":
         return (
           <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    File
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tags
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {displayNodes.map((node) => (
-                  <tr key={node.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/nodes/${node.id}`)}
-                        className="text-sm font-medium text-gray-900 hover:text-blue-600 text-left"
-                      >
-                        {node.title}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-500 font-mono">{node.file}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-wrap gap-1">
-                        {node.tags?.slice(0, 3).map((tag) => (
-                          <button
-                            type="button"
-                            key={tag}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleTagClick(tag);
-                            }}
-                            className={cn(
-                              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium transition-colors hover:bg-blue-200",
-                              selectedTag === tag
-                                ? "bg-blue-600 text-white"
-                                : "bg-blue-100 text-blue-800",
-                            )}
-                          >
-                            {tag}
-                          </button>
-                        ))}
-                        {node.tags && node.tags.length > 3 && (
-                          <span className="text-xs text-gray-400">+{node.tags.length - 3}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end space-x-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => navigate(`/nodes/${node.id}/edit`)}
-                          className="h-8 w-8 p-0"
-                          title="Edit node"
-                        >
-                          <Icon icon="lucide:edit" width={14} height={14} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => {
-                            if (window.confirm("Are you sure you want to delete this node?")) {
-                              handleDelete(node.id);
-                            }
-                          }}
-                          className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
-                          title="Delete node"
-                        >
-                          <Icon icon="lucide:trash-2" width={14} height={14} />
-                        </Button>
-                      </div>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px]">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left w-12">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedNodes.size === getFilteredNodes().length &&
+                          getFilteredNodes().length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            selectAllNodes();
+                          } else {
+                            clearSelection();
+                          }
+                        }}
+                        className="w-4 h-4 text-blue-600 bg-white border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                      />
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
+                      Title
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">
+                      File
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
+                      Tags
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {displayNodes.map((node) => (
+                    <tr key={node.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedNodes.has(node.id)}
+                          onChange={() => toggleNodeSelection(node.id)}
+                          className="w-4 h-4 text-blue-600 bg-white border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/nodes/${node.id}`)}
+                          className="text-sm font-medium text-gray-900 hover:text-blue-600 text-left"
+                        >
+                          {node.title}
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-gray-500 font-mono">{node.file}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex flex-wrap gap-1">
+                          {node.tags?.slice(0, 3).map((tag) => (
+                            <button
+                              type="button"
+                              key={tag}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTagClick(tag);
+                              }}
+                              className={cn(
+                                "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium transition-colors hover:bg-blue-200",
+                                selectedTag === tag
+                                  ? "bg-blue-600 text-white"
+                                  : "bg-blue-100 text-blue-800",
+                              )}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                          {node.tags && node.tags.length > 3 && (
+                            <span className="text-xs text-gray-400">+{node.tags.length - 3}</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => navigate(`/nodes/${node.id}/edit`)}
+                            className="h-8 w-8 p-0"
+                            title="Edit node"
+                          >
+                            <Icon icon="lucide:edit" width={14} height={14} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              if (window.confirm("Are you sure you want to delete this node?")) {
+                                handleDelete(node.id);
+                              }
+                            }}
+                            className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                            title="Delete node"
+                          >
+                            <Icon icon="lucide:trash-2" width={14} height={14} />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         );
 
@@ -541,6 +610,56 @@ export function NodeListPage() {
           </div>
         )}
       </div>
+
+      {/* Bulk Operations Bar */}
+      {selectedNodes.size > 0 && (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <span className="text-sm font-medium text-gray-700">
+                {selectedNodes.size} of {getFilteredNodes().length} nodes selected
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={selectAllNodes}
+                disabled={selectedNodes.size === getFilteredNodes().length}
+              >
+                Select All
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={clearSelection}
+                disabled={selectedNodes.size === 0}
+              >
+                Clear Selection
+              </Button>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={handleBulkDelete}
+                disabled={selectedNodes.size === 0 || deleteNodesMutation.isPending}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {deleteNodesMutation.isPending ? (
+                  <>
+                    <Icon icon="lucide:loader-2" className="w-4 h-4 mr-2 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Icon icon="lucide:trash-2" className="w-4 h-4 mr-2" />
+                    Delete Selected ({selectedNodes.size})
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         {error && (

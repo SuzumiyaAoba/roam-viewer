@@ -127,7 +127,7 @@ export function formatOrgTimestamp(
     timestamp.start.hour || 0,
     timestamp.start.minute || 0,
   );
-  
+
   // If DEADLINE has no time specified, set to next day 0:00
   if (type === "deadline" && timestamp.start.hour === undefined) {
     startDate = new Date(startDate);

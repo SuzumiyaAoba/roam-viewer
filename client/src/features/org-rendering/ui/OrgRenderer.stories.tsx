@@ -572,7 +572,6 @@ console.log('Code block');
   ),
 };
 
-
 // Timestamp-focused story
 const timestampContent = `* Meeting Schedule
 SCHEDULED: <2025-08-30 Fri 09:00>--<2025-08-30 Fri 17:00>

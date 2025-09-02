@@ -68,8 +68,9 @@ The development script automatically finds available ports for the frontend (300
 
 **Common issues:**
 - Socket connection closed unexpectedly: Usually indicates the md-roam API server stopped or restarted
-- Network timeouts: Extended timeouts for POST/PUT operations (60s) due to slow processing with Japanese characters
+- Network timeouts: Extended timeouts for POST/PUT operations (server: 60s, client: 90s) due to slow processing with Japanese characters
 - Node creation with Japanese text: May take 30+ seconds but will eventually succeed
+- Timeout configuration: Frontend API client includes AbortController-based timeout handling with detailed logging
 
 ## Key Architectural Patterns
 

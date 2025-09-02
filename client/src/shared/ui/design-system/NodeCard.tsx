@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type React from "react";
 import { forwardRef } from "react";
+import { formatNodeDate } from "../../lib/date-utils";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { cn } from "./utils";
@@ -97,6 +98,18 @@ export interface NodeCardProps
    */
   maxTags?: number;
   /**
+   * Show selection checkbox
+   */
+  showCheckbox?: boolean;
+  /**
+   * Whether the node is selected
+   */
+  isSelected?: boolean;
+  /**
+   * Selection change handler
+   */
+  onSelectionChange?: (selected: boolean) => void;
+  /**
    * Maximum length of content preview
    */
   maxContentLength?: number;
@@ -123,6 +136,9 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
       showActions = true,
       actions,
       maxTags = 5,
+      showCheckbox = false,
+      isSelected = false,
+      onSelectionChange,
       maxContentLength = 150,
       children,
       ...props
@@ -137,20 +153,22 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         ? `${content.substring(0, maxContentLength)}...`
         : content;
 
-    const formattedDate = date
-      ? new Date(date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-      : null;
+    const formattedDate = formatNodeDate(date);
 
     const handleCardClick = (e: React.MouseEvent) => {
-      // Don't trigger card click if clicking on action buttons
-      if ((e.target as HTMLElement).closest("[data-action-button]")) {
+      // Don't trigger card click if clicking on action buttons or checkbox
+      if (
+        (e.target as HTMLElement).closest("[data-action-button]") ||
+        (e.target as HTMLElement).closest("[data-checkbox]")
+      ) {
         return;
       }
       onCardClick?.();
+    };
+
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
+      onSelectionChange?.(e.target.checked);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -178,6 +196,22 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         })}
         {...props}
       >
+        {/* Selection checkbox */}
+        {showCheckbox && (
+          <div
+            className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm rounded p-1 shadow-sm"
+            data-checkbox
+          >
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={handleCheckboxChange}
+              className="w-5 h-5 text-blue-600 bg-white border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
+
         {/* Status indicator for selected state */}
         {selected && (
           <div className="absolute top-4 right-4 w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
@@ -324,7 +358,24 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
         {(date || children) && (
           <div className="flex items-center justify-between pt-4 mt-4 border-t border-gray-100">
             <div className="flex-1">{children}</div>
-            {formattedDate && <div className="text-xs text-gray-400">{formattedDate}</div>}
+            {formattedDate && (
+              <div className="text-xs text-gray-500 flex items-center gap-1">
+                <svg
+                  className="w-3 h-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <title>Last modified</title>
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                {formattedDate}
+              </div>
+            )}
           </div>
         )}
 

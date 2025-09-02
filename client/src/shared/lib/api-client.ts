@@ -20,13 +20,30 @@ export class ApiError extends Error {
 
 export class ApiClient {
   private baseUrl: string;
+  private timeout: number;
 
-  constructor(baseUrl: string = "http://localhost:3001") {
+  constructor(baseUrl: string = "http://localhost:3001", timeout: number = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
+    this.timeout = timeout;
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+
+    // Use longer timeout for POST/PUT operations (updates can be slow with Japanese text)
+    const requestTimeout =
+      options.method === "POST" || options.method === "PUT" ? 90000 : this.timeout;
+
+    // Log slow operations for debugging
+    if (options.method === "POST" || options.method === "PUT") {
+      console.log(
+        `🕐 Starting ${options.method} request to: ${url} (timeout: ${requestTimeout}ms)`,
+      );
+    }
+
+    // Create AbortController for timeout handling
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
 
     const defaultHeaders = {
       "Content-Type": "application/json",
@@ -34,6 +51,7 @@ export class ApiClient {
 
     const config: RequestInit = {
       ...options,
+      signal: controller.signal,
       headers: {
         ...defaultHeaders,
         ...options.headers,
@@ -41,7 +59,15 @@ export class ApiClient {
     };
 
     try {
+      const startTime = Date.now();
       const response = await fetch(url, config);
+      clearTimeout(timeoutId);
+
+      // Log completion time for slow operations
+      if (options.method === "POST" || options.method === "PUT") {
+        const duration = Date.now() - startTime;
+        console.log(`✅ ${options.method} request completed: ${url} (${duration}ms)`);
+      }
 
       if (!response.ok) {
         throw new ApiError(
@@ -58,6 +84,14 @@ export class ApiClient {
         return (await response.text()) as unknown as T;
       }
     } catch (error) {
+      clearTimeout(timeoutId);
+
+      // Handle timeout errors specifically
+      if (error instanceof Error && error.name === "AbortError") {
+        console.warn(`Request timeout after ${requestTimeout}ms:`, url);
+        throw new ApiError(`Request timeout after ${requestTimeout / 1000}s`, 408);
+      }
+
       if (error instanceof ApiError) {
         throw error;
       }
@@ -72,7 +106,7 @@ export class ApiClient {
     const result = await this.request<Node[] | { data: Node[] }>("/api/nodes");
 
     // Handle new API response format
-    if (result && typeof result === 'object' && 'data' in result && Array.isArray(result.data)) {
+    if (result && typeof result === "object" && "data" in result && Array.isArray(result.data)) {
       return result.data;
     } else if (Array.isArray(result)) {
       return result;
@@ -105,6 +139,13 @@ export class ApiClient {
     });
   }
 
+  async deleteNodes(ids: string[]): Promise<void> {
+    await this.request<void>("/api/nodes/bulk-delete", {
+      method: "POST",
+      body: JSON.stringify({ ids }),
+    });
+  }
+
   // Search Operations
   async searchNodes(query: string): Promise<SearchResult> {
     const result = await this.request<
@@ -115,7 +156,7 @@ export class ApiClient {
     if (result && result.nodes !== undefined) {
       return {
         nodes: Array.isArray(result.nodes) ? result.nodes : [],
-        total: ('count' in result ? result.count : result.total) || 0,
+        total: ("count" in result ? result.count : result.total) || 0,
       };
     } else if (result && Array.isArray(result)) {
       return {
@@ -134,7 +175,7 @@ export class ApiClient {
     >("/api/tags");
 
     // Handle new API response format
-    if (result && typeof result === 'object' && 'tags' in result && Array.isArray(result.tags)) {
+    if (result && typeof result === "object" && "tags" in result && Array.isArray(result.tags)) {
       return result.tags.map((tagInfo: { tag: string; count: number }) => ({
         tag: tagInfo.tag,
         count: tagInfo.count,
@@ -147,10 +188,12 @@ export class ApiClient {
   }
 
   async searchNodesByTag(tag: string): Promise<Node[]> {
-    const result = await this.request<Node[] | { nodes: Node[] }>(`/api/search/tag/${encodeURIComponent(tag)}`);
+    const result = await this.request<Node[] | { nodes: Node[] }>(
+      `/api/search/tag/${encodeURIComponent(tag)}`,
+    );
 
     // Handle new API response format
-    if (result && typeof result === 'object' && 'nodes' in result && Array.isArray(result.nodes)) {
+    if (result && typeof result === "object" && "nodes" in result && Array.isArray(result.nodes)) {
       return result.nodes;
     } else if (Array.isArray(result)) {
       return result;

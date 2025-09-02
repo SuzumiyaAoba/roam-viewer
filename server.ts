@@ -238,6 +238,21 @@ class MdRoamApiClient {
     });
   }
 
+  async deleteNodes(ids: string[]) {
+    // Delete nodes sequentially to avoid overwhelming the API
+    const results = [];
+    for (const id of ids) {
+      try {
+        await this.deleteNode(id);
+        results.push({ id, success: true });
+      } catch (error) {
+        console.error(`Failed to delete node ${id}:`, error);
+        results.push({ id, success: false, error: error.message });
+      }
+    }
+    return results;
+  }
+
   async getTags() {
     const result = await this.request<{ tags?: { tag: string; count: number }[] }>("/tags");
     // New API format: {"status":"success", "tags":[...], "total_tags":N}
@@ -501,6 +516,35 @@ app.delete("/api/nodes/:id", async (c) => {
   } catch (error) {
     console.error("Error deleting node:", error);
     return c.json({ error: "Failed to delete node" }, 500);
+  }
+});
+
+// Bulk delete nodes
+app.post("/api/nodes/bulk-delete", async (c) => {
+  try {
+    const { ids } = await c.req.json();
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return c.json({ error: "Invalid or empty ids array" }, 400);
+    }
+
+    console.log(`Starting bulk delete of ${ids.length} nodes`);
+    const results = await apiClient.deleteNodes(ids);
+
+    const successful = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
+
+    console.log(`Bulk delete completed: ${successful} successful, ${failed} failed`);
+
+    return c.json({
+      message: `Deleted ${successful} nodes successfully`,
+      successful,
+      failed,
+      results,
+    });
+  } catch (error) {
+    console.error("Error in bulk delete:", error);
+    return c.json({ error: "Failed to delete nodes" }, 500);
   }
 });
 
