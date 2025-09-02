@@ -12,6 +12,14 @@ import {
   type OrgTimestamp,
 } from "../../../shared/lib/date-utils";
 
+interface UniorgNode {
+  type: string;
+  children?: unknown[];
+  scheduled?: OrgTimestamp;
+  deadline?: OrgTimestamp;
+  [key: string]: unknown;
+}
+
 interface OrgRendererProps {
   /**
    * The org-mode content to render
@@ -280,13 +288,13 @@ function MetadataDisplay({ metadata }: { metadata: OrgMetadata }) {
 }
 
 // Extract timestamp information from uniorg AST
-function extractTimestampsFromAST(ast: any): {
+function extractTimestampsFromAST(ast: UniorgNode): {
   scheduledTimestamp?: OrgTimestamp;
   deadlineTimestamp?: OrgTimestamp;
 } {
   const result: { scheduledTimestamp?: OrgTimestamp; deadlineTimestamp?: OrgTimestamp } = {};
 
-  function traverse(node: any) {
+  function traverse(node: UniorgNode) {
     if (node.type === "planning") {
       if (node.scheduled && node.scheduled.type === "timestamp") {
         result.scheduledTimestamp = node.scheduled as OrgTimestamp;
@@ -298,7 +306,7 @@ function extractTimestampsFromAST(ast: any): {
 
     if (node.children) {
       for (const child of node.children) {
-        traverse(child);
+        traverse(child as UniorgNode);
       }
     }
   }
@@ -321,7 +329,9 @@ async function parseOrgContent(
     const ast = astProcessor.parse(content);
 
     // Extract enhanced timestamp information from AST
-    const { scheduledTimestamp, deadlineTimestamp } = extractTimestampsFromAST(ast);
+    const { scheduledTimestamp, deadlineTimestamp } = extractTimestampsFromAST(
+      ast as unknown as UniorgNode,
+    );
 
     // Merge AST-based timestamp info with string-based metadata
     const enhancedMetadata: OrgMetadata = {
@@ -335,6 +345,7 @@ async function parseOrgContent(
 
     // Add Shiki syntax highlighting if enabled
     if (enableSyntaxHighlight) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       processorBuilder.use(rehypeShiki as any, {
         themes: {
           light: "github-light",
@@ -469,8 +480,8 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
         // Handle timestamp ranges like <2025-01-15 Wed 14:30>--<2025-01-15 Wed 16:00>
         const rangeParts = decodedContent.split("--");
         if (rangeParts.length === 2) {
-          const startTime = rangeParts[0].trim().replace(/^[<\[]|[>\]]$/g, "");
-          const endTime = rangeParts[1].trim().replace(/^[<\[]|[>\]]$/g, "");
+          const startTime = rangeParts[0].trim().replace(/^[<[]|[>]]$/g, "");
+          const endTime = rangeParts[1].trim().replace(/^[<[]|[>]]$/g, "");
 
           return `<span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-medium">
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -490,7 +501,7 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
       const isInactive = decodedContent.startsWith("[") && decodedContent.endsWith("]");
 
       if (isActive) {
-        const cleanContent = decodedContent.replace(/^[<\[]|[>\]]$/g, "");
+        const cleanContent = decodedContent.replace(/^[<[]|[>]]$/g, "");
         return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 border border-green-200 rounded-md text-sm">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -498,7 +509,7 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
           ${cleanContent}
         </span>`;
       } else if (isInactive) {
-        const cleanContent = decodedContent.replace(/^[<\[]|[>\]]$/g, "");
+        const cleanContent = decodedContent.replace(/^[<[]|[>]]$/g, "");
         return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 text-gray-600 border border-gray-200 rounded-md text-sm">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -508,7 +519,7 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
       }
 
       // Fallback for other timestamp formats
-      const cleanContent = decodedContent.replace(/^[<\[]|[>\]]$/g, "");
+      const cleanContent = decodedContent.replace(/^[<[]|[>]]$/g, "");
       return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded-md text-sm">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

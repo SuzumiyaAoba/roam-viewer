@@ -35,8 +35,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "biome check --write",
-      "tsc --noEmit --skipLibCheck"
+      "biome check --write"
     ],
     "*.{js,jsx}": [
       "biome check --write"

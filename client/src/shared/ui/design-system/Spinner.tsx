@@ -30,7 +30,7 @@ const spinnerVariants = cva("animate-spin rounded-full border-solid border-curre
 });
 
 export interface SpinnerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLOutputElement>,
     VariantProps<typeof spinnerVariants> {
   /**
    * Accessible label for screen readers
@@ -38,17 +38,17 @@ export interface SpinnerProps
   label?: string;
 }
 
-const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
+const Spinner = forwardRef<HTMLOutputElement, SpinnerProps>(
   ({ className, size, variant, label = "Loading...", ...props }, ref) => {
     return (
-      <div
+      <output
         ref={ref}
         className={cn(spinnerVariants({ size, variant }), className)}
-        aria-label={label}
+        aria-live="polite"
         {...props}
       >
         <span className="sr-only">{label}</span>
-      </div>
+      </output>
     );
   },
 );
