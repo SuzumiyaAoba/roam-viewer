@@ -2,46 +2,46 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../../../shared/lib/api-client";
 import type { CreateNodeRequest, UpdateNodeRequest } from "../model/types";
 
-export function useNodes() {
+export const useNodes = () => {
   return useQuery({
     queryKey: ["nodes"],
     queryFn: () => apiClient.getNodes(),
   });
-}
+};
 
-export function useNode(id: string) {
+export const useNode = (id: string) => {
   return useQuery({
     queryKey: ["nodes", id],
     queryFn: () => apiClient.getNode(id),
     enabled: !!id,
   });
-}
+};
 
-export function useSearchNodes(query: string) {
+export const useSearchNodes = (query: string) => {
   return useQuery({
     queryKey: ["search", query],
     queryFn: () => apiClient.searchNodes(query),
     enabled: !!query,
   });
-}
+};
 
-export function useBacklinks(id: string) {
+export const useBacklinks = (id: string) => {
   return useQuery({
     queryKey: ["backlinks", id],
     queryFn: () => apiClient.getBacklinks(id),
     enabled: !!id,
   });
-}
+};
 
-export function useForwardLinks(id: string) {
+export const useForwardLinks = (id: string) => {
   return useQuery({
     queryKey: ["forwardLinks", id],
     queryFn: () => apiClient.getForwardLinks(id),
     enabled: !!id,
   });
-}
+};
 
-export function useCreateNode() {
+export const useCreateNode = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -50,9 +50,9 @@ export function useCreateNode() {
       queryClient.invalidateQueries({ queryKey: ["nodes"] });
     },
   });
-}
+};
 
-export function useUpdateNode() {
+export const useUpdateNode = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -63,9 +63,9 @@ export function useUpdateNode() {
       queryClient.invalidateQueries({ queryKey: ["nodes", id] });
     },
   });
-}
+};
 
-export function useDeleteNode() {
+export const useDeleteNode = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,12 +74,12 @@ export function useDeleteNode() {
       queryClient.invalidateQueries({ queryKey: ["nodes"] });
     },
   });
-}
+};
 
-export function useNodesByTag(tag: string) {
+export const useNodesByTag = (tag: string) => {
   return useQuery({
     queryKey: ["nodes", "tag", tag],
     queryFn: () => apiClient.searchNodesByTag(tag),
     enabled: !!tag,
   });
-}
+};
