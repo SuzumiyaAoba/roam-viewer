@@ -2,6 +2,8 @@ import path from "node:path";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 
+/// <reference types="vitest" />
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -20,5 +22,11 @@ export default defineConfig({
   },
   build: {
     outDir: "dist/client",
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./client/src/test-setup.ts"],
+    include: ["client/**/*.{test,spec}.{ts,tsx}"],
   },
 });

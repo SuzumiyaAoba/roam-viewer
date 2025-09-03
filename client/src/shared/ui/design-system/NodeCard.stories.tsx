@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 import { NodeCard, NodeCardCompact, NodeCardGrid } from "./NodeCard";
 
 const meta = {
@@ -445,6 +446,255 @@ export const RoamWebExample: Story = {
     docs: {
       description: {
         story: "Example of how NodeCards might appear in the Roam Web application",
+      },
+    },
+  },
+};
+
+// Checkbox functionality showcase
+export const WithCheckboxes: Story = {
+  render: () => {
+    const [selectedNodes, setSelectedNodes] = React.useState<Set<string>>(new Set());
+
+    const handleSelectionChange = (nodeId: string, isSelected: boolean) => {
+      const newSelected = new Set(selectedNodes);
+      if (isSelected) {
+        newSelected.add(nodeId);
+      } else {
+        newSelected.delete(nodeId);
+      }
+      setSelectedNodes(newSelected);
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="text-sm text-gray-600 mb-4">
+          Selected nodes: {selectedNodes.size > 0 ? Array.from(selectedNodes).join(", ") : "None"}
+        </div>
+
+        <div className="space-y-4">
+          <NodeCard
+            title="First Selectable Node"
+            content="This node can be selected using the checkbox."
+            file="selectable/first.md"
+            tags={["Selectable", "Multi-select"]}
+            showCheckbox={true}
+            isSelected={selectedNodes.has("node1")}
+            onSelectionChange={(isSelected) => handleSelectionChange("node1", isSelected)}
+            onCardClick={() => alert("First node clicked")}
+          />
+
+          <NodeCard
+            variant="elevated"
+            title="Second Selectable Node"
+            content="Another selectable node with elevated styling."
+            file="selectable/second.md"
+            tags={["Selectable", "Elevated"]}
+            showCheckbox={true}
+            isSelected={selectedNodes.has("node2")}
+            onSelectionChange={(isSelected) => handleSelectionChange("node2", isSelected)}
+            onCardClick={() => alert("Second node clicked")}
+          />
+
+          <NodeCard
+            variant="accent"
+            title="Third Selectable Node"
+            content="Accent variant with selection functionality."
+            file="selectable/third.md"
+            tags={["Selectable", "Accent"]}
+            todo="Add more examples"
+            showCheckbox={true}
+            isSelected={selectedNodes.has("node3")}
+            onSelectionChange={(isSelected) => handleSelectionChange("node3", isSelected)}
+            onCardClick={() => alert("Third node clicked")}
+          />
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "Interactive example showing checkbox selection functionality for bulk operations",
+      },
+    },
+  },
+};
+
+export const CheckboxStates: Story = {
+  render: () => (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold mb-4">Checkbox States</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <NodeCard
+          title="Unselected Node"
+          content="This node is not selected."
+          file="states/unselected.md"
+          tags={["Unselected"]}
+          showCheckbox={true}
+          isSelected={false}
+          onSelectionChange={(isSelected) => alert(`Selection changed: ${isSelected}`)}
+        />
+
+        <NodeCard
+          title="Selected Node"
+          content="This node is currently selected."
+          file="states/selected.md"
+          tags={["Selected"]}
+          showCheckbox={true}
+          isSelected={true}
+          onSelectionChange={(isSelected) => alert(`Selection changed: ${isSelected}`)}
+        />
+
+        <NodeCard
+          title="No Checkbox"
+          content="This node has no checkbox shown."
+          file="states/no-checkbox.md"
+          tags={["No Checkbox"]}
+          showCheckbox={false}
+          onCardClick={() => alert("Node clicked (no checkbox)")}
+        />
+
+        <NodeCard
+          title="Selected with Ring"
+          content="This node is selected and shows the selection ring."
+          file="states/selected-ring.md"
+          tags={["Selected", "Ring"]}
+          showCheckbox={true}
+          isSelected={true}
+          selected={true}
+          onSelectionChange={(isSelected) => alert(`Selection changed: ${isSelected}`)}
+        />
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Different states of the checkbox functionality including selected, unselected, and no checkbox",
+      },
+    },
+  },
+};
+
+export const BulkOperationsDemo: Story = {
+  render: () => {
+    const [selectedNodes, setSelectedNodes] = React.useState<Set<string>>(
+      new Set(["demo1", "demo3"]),
+    );
+    const [nodes] = React.useState([
+      {
+        id: "demo1",
+        title: "Database Design Patterns",
+        content: "Learn about normalization, indexing, and query optimization.",
+        file: "database/patterns.md",
+        tags: ["Database", "SQL", "Design"],
+      },
+      {
+        id: "demo2",
+        title: "React Performance Tips",
+        content: "Optimize your React applications with these proven techniques.",
+        file: "react/performance.md",
+        tags: ["React", "Performance", "Frontend"],
+      },
+      {
+        id: "demo3",
+        title: "TypeScript Advanced Types",
+        content: "Master complex TypeScript patterns for better type safety.",
+        file: "typescript/advanced.md",
+        tags: ["TypeScript", "Types", "Advanced"],
+      },
+    ]);
+
+    const handleSelectionChange = (nodeId: string, isSelected: boolean) => {
+      const newSelected = new Set(selectedNodes);
+      if (isSelected) {
+        newSelected.add(nodeId);
+      } else {
+        newSelected.delete(nodeId);
+      }
+      setSelectedNodes(newSelected);
+    };
+
+    const selectAll = () => {
+      setSelectedNodes(new Set(nodes.map((node) => node.id)));
+    };
+
+    const clearSelection = () => {
+      setSelectedNodes(new Set());
+    };
+
+    const deleteSelected = () => {
+      const nodeIds = Array.from(selectedNodes);
+      alert(`Would delete nodes: ${nodeIds.join(", ")}`);
+      clearSelection();
+    };
+
+    return (
+      <div className="space-y-6">
+        {/* Bulk Operations Bar */}
+        {selectedNodes.size > 0 && (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium text-gray-700">
+                  {selectedNodes.size} of {nodes.length} nodes selected
+                </span>
+                <button
+                  type="button"
+                  onClick={selectAll}
+                  disabled={selectedNodes.size === nodes.length}
+                  className="text-sm px-3 py-1 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Select All
+                </button>
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="text-sm px-3 py-1 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Clear Selection
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={deleteSelected}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Delete Selected ({selectedNodes.size})
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Node List */}
+        <div className="space-y-4">
+          {nodes.map((node) => (
+            <NodeCard
+              key={node.id}
+              title={node.title}
+              content={node.content}
+              file={node.file}
+              tags={node.tags}
+              showCheckbox={true}
+              isSelected={selectedNodes.has(node.id)}
+              onSelectionChange={(isSelected) => handleSelectionChange(node.id, isSelected)}
+              onCardClick={() => alert(`Navigate to ${node.title}`)}
+              onEdit={() => alert(`Edit ${node.title}`)}
+              onDelete={() => alert(`Delete ${node.title}`)}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Complete bulk operations demo showing selection, bulk operations bar, and delete functionality",
       },
     },
   },
