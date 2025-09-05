@@ -7,6 +7,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { LogbookDisplay } from "../../components/LogbookDisplay";
 import type { BacklinkNode } from "../../entities/node";
 import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from "../../entities/node";
 import { OrgRenderer } from "../../features/org-rendering";
@@ -26,6 +27,46 @@ function removeFrontmatter(content: string): string {
   return content;
 }
 
+// Split content at LOGBOOK position for proper rendering order
+function splitContentAtLogbook(content: string): {
+  beforeLogbook: string;
+  afterLogbook: string;
+  hasLogbook: boolean;
+} {
+  const lines = content.split("\n");
+  const beforeLines: string[] = [];
+  const afterLines: string[] = [];
+  let inLogbookBlock = false;
+  let logbookStartFound = false;
+  let logbookEndFound = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (trimmed === ":LOGBOOK:" && !logbookStartFound) {
+      logbookStartFound = true;
+      inLogbookBlock = true;
+      continue;
+    } else if (trimmed === ":END:" && inLogbookBlock && !logbookEndFound) {
+      inLogbookBlock = false;
+      logbookEndFound = true;
+      continue;
+    } else if (inLogbookBlock) {
+      continue; // Skip LOGBOOK content lines
+    } else if (!logbookStartFound) {
+      beforeLines.push(line); // Content before LOGBOOK
+    } else if (logbookEndFound) {
+      afterLines.push(line); // Content after LOGBOOK
+    }
+  }
+
+  return {
+    beforeLogbook: beforeLines.join("\n"),
+    afterLogbook: afterLines.join("\n"),
+    hasLogbook: logbookStartFound && logbookEndFound,
+  };
+}
+
 // Remove duplicate PROPERTIES and metadata blocks for cleaner display
 function removeDuplicateMetadata(content: string): string {
   const lines = content.split("\n");
@@ -35,9 +76,25 @@ function removeDuplicateMetadata(content: string): string {
   let seenCategory = false;
   let seenFiletags = false;
   let inPropertiesBlock = false;
+  let inLogbookBlock = false;
 
   for (const line of lines) {
     const trimmed = line.trim();
+
+    // Track LOGBOOK blocks (preserve these completely)
+    if (trimmed === ":LOGBOOK:") {
+      inLogbookBlock = true;
+      cleanedLines.push(line);
+      continue;
+    } else if (trimmed === ":END:" && inLogbookBlock) {
+      inLogbookBlock = false;
+      cleanedLines.push(line);
+      continue;
+    } else if (inLogbookBlock) {
+      // Preserve all LOGBOOK content
+      cleanedLines.push(line);
+      continue;
+    }
 
     // Track PROPERTIES blocks
     if (trimmed === ":PROPERTIES:") {
@@ -248,44 +305,69 @@ export function NodeDetailPage() {
             ) : (
               <div className="max-w-none">
                 {node.content ? (
-                  node.file?.endsWith(".org") ? (
-                    <OrgRenderer
-                      content={removeFrontmatter(node.content)}
-                      enableSyntaxHighlight={true}
-                    />
-                  ) : (
-                    <div className="markdown-content">
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm, remarkMath]}
-                        rehypePlugins={[rehypeKatex, rehypeHighlight, rehypeRaw]}
-                        components={{
-                          // Custom link rendering for internal node links
-                          a: ({ href, children, ...props }) => {
-                            // Check if it's an internal node reference (you can customize this logic)
-                            if (href?.startsWith("#") || href?.match(/^\[\[.*\]\]$/)) {
-                              return (
-                                <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
-                                  {children}
-                                </span>
-                              );
-                            }
-                            return (
-                              <a
-                                href={href}
-                                target={href?.startsWith("http") ? "_blank" : undefined}
-                                rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
-                                {...props}
-                              >
-                                {children}
-                              </a>
-                            );
-                          },
-                        }}
-                      >
-                        {removeFrontmatter(node.content)}
-                      </ReactMarkdown>
-                    </div>
-                  )
+                  (() => {
+                    const { beforeLogbook, afterLogbook, hasLogbook } = splitContentAtLogbook(node.content);
+                    
+                    const renderContent = (content: string) => {
+                      if (!content.trim()) return null;
+                      
+                      return node.file?.endsWith(".org") ? (
+                        <OrgRenderer
+                          content={removeFrontmatter(content)}
+                          enableSyntaxHighlight={true}
+                        />
+                      ) : (
+                        <div className="markdown-content">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeKatex, rehypeHighlight, rehypeRaw]}
+                            components={{
+                              // Custom link rendering for internal node links
+                              a: ({ href, children, ...props }) => {
+                                // Check if it's an internal node reference (you can customize this logic)
+                                if (href?.startsWith("#") || href?.match(/^\[\[.*\]\]$/)) {
+                                  return (
+                                    <span className="text-blue-600 bg-blue-50 px-1 rounded cursor-pointer hover:bg-blue-100">
+                                      {children}
+                                    </span>
+                                  );
+                                }
+                                return (
+                                  <a
+                                    href={href}
+                                    target={href?.startsWith("http") ? "_blank" : undefined}
+                                    rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                                    {...props}
+                                  >
+                                    {children}
+                                  </a>
+                                );
+                              },
+                            }}
+                          >
+                            {removeFrontmatter(content)}
+                          </ReactMarkdown>
+                        </div>
+                      );
+                    };
+
+                    return (
+                      <>
+                        {/* Content before LOGBOOK */}
+                        {renderContent(beforeLogbook)}
+                        
+                        {/* LOGBOOK section at its original position */}
+                        {hasLogbook && (
+                          <div className="my-8">
+                            <LogbookDisplay content={node.content} />
+                          </div>
+                        )}
+                        
+                        {/* Content after LOGBOOK */}
+                        {renderContent(afterLogbook)}
+                      </>
+                    );
+                  })()
                 ) : (
                   <div className="text-gray-500 italic">No content available.</div>
                 )}
@@ -320,6 +402,7 @@ export function NodeDetailPage() {
               </div>
             </div>
           )}
+
         </div>
 
         {/* Sidebar */}
