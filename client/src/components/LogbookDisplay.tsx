@@ -25,7 +25,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
     return (
       <div className="logbook-entry bg-slate-50 border border-slate-200 rounded-md">
         <div className="p-3">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
                 <div className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center">
@@ -57,7 +57,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
           </div>
           
           {entry.note && (
-            <div className="text-sm text-slate-600 bg-white p-2 rounded border border-slate-200 mt-2">
+            <div className="text-sm text-slate-600 bg-white p-2 rounded border border-slate-200 mt-3">
               {entry.note}
             </div>
           )}
@@ -73,7 +73,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
   return (
     <div className="logbook-entry bg-orange-50 border border-orange-200 rounded-md">
       <div className="p-3">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">
               <div className={`w-6 h-6 rounded flex items-center justify-center ${
@@ -117,7 +117,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
         </div>
         
         {entry.note && (
-          <div className="text-sm text-slate-600 bg-white p-2 rounded border border-orange-200 mt-2">
+          <div className="text-sm text-slate-600 bg-white p-2 rounded border border-orange-200 mt-3">
             {entry.note}
           </div>
         )}
