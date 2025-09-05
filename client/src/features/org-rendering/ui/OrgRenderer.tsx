@@ -442,7 +442,7 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
   const todoKeywords = ["TODO", "DONE", "DOING", "NEXT", "WAITING", "CANCELLED", "CANCELED"];
   todoKeywords.forEach((keyword) => {
     const defaultSpan = `<span class="todo-keyword ${keyword}">${keyword}</span>`;
-    const styledSpan = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${getTodoKeywordColor(keyword)} rounded-full mr-2">${keyword}</span>`;
+    const styledSpan = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${getTodoKeywordColor(keyword)} mr-2">${keyword}</span>`;
     processedHtml = processedHtml.replace(
       new RegExp(defaultSpan.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
       styledSpan,
@@ -457,7 +457,7 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
     processedHtml = processedHtml.replace(pattern, (_match, level, text, closingLevel) => {
       const headerClass = getHeaderClass(level);
       const todoColors = getTodoKeywordColor(keyword);
-      const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} rounded-full mr-2">${keyword}</span>`;
+      const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} mr-2">${keyword}</span>`;
       return `<h${level} class="${headerClass}">${styledKeyword}${text.trim()}</h${closingLevel}>`;
     });
   });

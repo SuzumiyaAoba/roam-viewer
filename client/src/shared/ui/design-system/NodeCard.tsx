@@ -219,7 +219,7 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
 
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
-          <div className="flex-1 min-w-0">
+          <div className={cn("flex-1 min-w-0", showCheckbox && "ml-10")}>
             <h3 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
               {title}
             </h3>
