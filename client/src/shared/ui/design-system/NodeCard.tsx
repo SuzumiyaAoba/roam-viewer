@@ -198,10 +198,7 @@ const NodeCard = forwardRef<HTMLDivElement, NodeCardProps>(
       >
         {/* Selection checkbox */}
         {showCheckbox && (
-          <div
-            className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm rounded p-1 shadow-sm"
-            data-checkbox
-          >
+          <div className="absolute top-3 left-3 z-10 p-1" data-checkbox>
             <input
               type="checkbox"
               checked={isSelected}
