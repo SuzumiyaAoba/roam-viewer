@@ -31,16 +31,31 @@ function removeFrontmatter(content: string): string {
 function splitContentAtLogbook(content: string): {
   beforeLogbook: string;
   afterLogbook: string;
+  footnotes: string;
   hasLogbook: boolean;
 } {
   const lines = content.split("\n");
   const beforeLines: string[] = [];
   const afterLines: string[] = [];
+  const footnoteLines: string[] = [];
   let inLogbookBlock = false;
   let logbookStartFound = false;
   let logbookEndFound = false;
 
+  // First pass: extract footnote definitions and regular content separately
+  const contentLines: string[] = [];
   for (const line of lines) {
+    const trimmed = line.trim();
+    // Check if line is a footnote definition: [fn:label] content
+    if (trimmed.match(/^\[fn:[^\]]+\]\s+.+/)) {
+      footnoteLines.push(line);
+    } else {
+      contentLines.push(line);
+    }
+  }
+
+  // Second pass: split content at LOGBOOK (footnotes already extracted)
+  for (const line of contentLines) {
     const trimmed = line.trim();
 
     if (trimmed === ":LOGBOOK:" && !logbookStartFound) {
@@ -63,6 +78,7 @@ function splitContentAtLogbook(content: string): {
   return {
     beforeLogbook: beforeLines.join("\n"),
     afterLogbook: afterLines.join("\n"),
+    footnotes: footnoteLines.join("\n"),
     hasLogbook: logbookStartFound && logbookEndFound,
   };
 }
@@ -306,7 +322,7 @@ export function NodeDetailPage() {
               <div className="max-w-none">
                 {node.content ? (
                   (() => {
-                    const { beforeLogbook, afterLogbook, hasLogbook } = splitContentAtLogbook(node.content);
+                    const { beforeLogbook, afterLogbook, footnotes, hasLogbook } = splitContentAtLogbook(node.content);
                     
                     const renderContent = (content: string) => {
                       if (!content.trim()) return null;
@@ -351,6 +367,7 @@ export function NodeDetailPage() {
                       );
                     };
 
+
                     return (
                       <>
                         {/* Content before LOGBOOK */}
@@ -365,6 +382,30 @@ export function NodeDetailPage() {
                         
                         {/* Content after LOGBOOK */}
                         {renderContent(afterLogbook)}
+                        
+                        {/* Footnotes section at the very end */}
+                        {footnotes.trim() && (
+                          <div className="mt-8 pt-6 border-t border-gray-200">
+                            <div className="text-sm text-gray-600 mb-4 font-semibold">脚注</div>
+                            <div className="space-y-2">
+                              {footnotes.split('\n').filter(line => line.trim()).map((line, index) => {
+                                const match = line.trim().match(/^\[fn:([^\]]+)\]\s+(.+)$/);
+                                if (match) {
+                                  const [, label, content] = match;
+                                  return (
+                                    <div key={index} className="text-sm">
+                                      <span className="font-mono text-blue-600 bg-blue-50 px-1 rounded text-xs mr-2">
+                                        [fn:{label}]
+                                      </span>
+                                      <span className="text-gray-700">{content}</span>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              }).filter(Boolean)}
+                            </div>
+                          </div>
+                        )}
                       </>
                     );
                   })()
