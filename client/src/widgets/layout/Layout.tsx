@@ -10,7 +10,7 @@ export function Layout({ children, title }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white shadow">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/nodes" className="flex items-center text-xl font-bold text-gray-900">
               <span className="text-blue-600 mr-2">🌐</span>
@@ -34,7 +34,7 @@ export function Layout({ children, title }: LayoutProps) {
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
         {title && (
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
@@ -44,7 +44,7 @@ export function Layout({ children, title }: LayoutProps) {
       </main>
 
       <footer className="bg-white border-t">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <p className="text-sm text-gray-500 text-center">© 2024 Roam Web. All rights reserved.</p>
         </div>
       </footer>

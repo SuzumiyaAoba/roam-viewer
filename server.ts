@@ -284,9 +284,22 @@ app.get("/health", (c) => {
 
 // Get all nodes
 app.get("/api/nodes", async (c) => {
+  const startTime = Date.now();
+  console.log("🕐 Starting /api/nodes request");
   try {
+    const apiStart = Date.now();
     const apiResult = await apiClient.getNodes();
+    const apiDuration = Date.now() - apiStart;
+    console.log(`📡 API call to md-roam took ${apiDuration}ms`);
+
+    const processStart = Date.now();
     const nodes = Array.isArray(apiResult) ? apiResult : [];
+    const processDuration = Date.now() - processStart;
+    console.log(`🔄 Processing took ${processDuration}ms`);
+
+    const totalDuration = Date.now() - startTime;
+    console.log(`✅ Total /api/nodes request completed in ${totalDuration}ms`);
+
     return c.json(nodes);
   } catch (error) {
     console.error("Error fetching nodes:", error);
@@ -324,9 +337,14 @@ app.get("/api/nodes", async (c) => {
 
 // Get single node
 app.get("/api/nodes/:id", async (c) => {
+  const startTime = Date.now();
+  const id = c.req.param("id");
+  console.log(`🕐 Starting /api/nodes/${id} request`);
   try {
-    const id = c.req.param("id");
+    const nodeStart = Date.now();
     const node = await apiClient.getNode(id);
+    const nodeDuration = Date.now() - nodeStart;
+    console.log(`📡 Node fetch took ${nodeDuration}ms`);
 
     // Try to get refs from the API first
     let refs: string[] = [];
@@ -382,10 +400,16 @@ app.get("/api/nodes/:id", async (c) => {
     }
 
     // Merge the additional data with the node response
+    const mergeStart = Date.now();
     const enrichedNode = {
       ...node,
       refs: refs.length > 0 ? refs : undefined,
     };
+    const mergeDuration = Date.now() - mergeStart;
+    console.log(`🔄 Data merging took ${mergeDuration}ms`);
+
+    const totalDuration = Date.now() - startTime;
+    console.log(`✅ Total /api/nodes/${id} request completed in ${totalDuration}ms`);
 
     return c.json(enrichedNode);
   } catch (error) {

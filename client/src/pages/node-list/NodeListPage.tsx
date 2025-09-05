@@ -288,7 +288,7 @@ export function NodeListPage() {
 
       case "list":
         return (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {displayNodes.map((node) => (
               <NodeCardCompact
                 key={node.id}

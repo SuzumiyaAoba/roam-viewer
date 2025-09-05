@@ -393,9 +393,14 @@ const NodeCardCompact = forwardRef<HTMLDivElement, NodeCardProps>(
     <NodeCard
       ref={ref}
       size="sm"
-      variant="minimal"
+      variant="default"
       interactive={false}
-      className={cn("py-3 px-4 hover:scale-100 hover:translate-y-0", className)}
+      className={cn(
+        "py-3 px-4 hover:scale-100 hover:translate-y-0",
+        "border-gray-300 hover:border-gray-400 hover:shadow-md",
+        "bg-white hover:bg-gray-50",
+        className,
+      )}
       {...props}
     />
   ),
