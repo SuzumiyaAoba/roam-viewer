@@ -8,6 +8,8 @@ import remarkGfm from "remark-gfm";
 import type { BacklinkNode } from "../../entities/node";
 import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from "../../entities/node";
 import { OrgRenderer } from "../../features/org-rendering";
+import { extractPriority, PriorityLabel } from "../../shared/lib/priority-utils";
+import { TodoIcon } from "../../shared/lib/todo-utils";
 import { Layout } from "../../widgets/layout";
 
 // Simple function to remove frontmatter
@@ -187,6 +189,8 @@ export function NodeDetailPage() {
     );
   }
 
+  const priority = node.content ? extractPriority(node.content) : null;
+
   return (
     <Layout title={node.title}>
       <div className="flex items-center justify-between mb-8">
@@ -339,7 +343,18 @@ export function NodeDetailPage() {
               {node.todo && (
                 <div>
                   <dt className="font-medium text-gray-700">TODO</dt>
-                  <dd className="text-gray-600">{node.todo}</dd>
+                  <dd className="text-gray-600 flex items-center gap-2">
+                    <TodoIcon todo={node.todo} />
+                    {node.todo}
+                  </dd>
+                </div>
+              )}
+              {priority && (
+                <div>
+                  <dt className="font-medium text-gray-700">優先度</dt>
+                  <dd className="flex items-center gap-2">
+                    <PriorityLabel priority={priority} />
+                  </dd>
                 </div>
               )}
             </dl>

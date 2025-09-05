@@ -421,6 +421,16 @@ function getTodoKeywordColor(keyword: string): string {
   return colors[keyword] || "bg-gray-100 text-gray-800";
 }
 
+// Helper function to get priority colors
+function getPriorityColor(priority: string): string {
+  const colors: Record<string, string> = {
+    A: "bg-red-100 text-red-800",
+    B: "bg-yellow-100 text-yellow-800",
+    C: "bg-green-100 text-green-800",
+  };
+  return colors[priority] || "bg-gray-100 text-gray-800";
+}
+
 // Helper function to get header classes by level
 function getHeaderClass(level: string): string {
   const classes: Record<string, string> = {
@@ -460,6 +470,18 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
       const styledKeyword = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${todoColors} mr-2">${keyword}</span>`;
       return `<h${level} class="${headerClass}">${styledKeyword}${text.trim()}</h${closingLevel}>`;
     });
+  });
+
+  // Step 2.5: Handle priority indicators [#A], [#B], [#C] and [A], [B], [C]
+  processedHtml = processedHtml.replace(/\[#([ABC])\]/g, (_, priority) => {
+    const priorityColors = getPriorityColor(priority);
+    return `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${priorityColors} mr-2 border border-current rounded">#${priority}</span>`;
+  });
+
+  // Handle [A], [B], [C] format as well
+  processedHtml = processedHtml.replace(/\[([ABC])\]/g, (_, priority) => {
+    const priorityColors = getPriorityColor(priority);
+    return `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${priorityColors} mr-2 border border-current rounded">${priority}</span>`;
   });
 
   // Step 3: Style timestamp elements
