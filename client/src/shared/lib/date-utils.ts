@@ -24,7 +24,8 @@ export function formatDate(
   // Handle various input formats
   if (typeof dateInput === "string") {
     // Handle org-mode date formats like <2024-01-15 Mon> or [2024-01-15]
-    const orgDateMatch = dateInput.match(/[<[](\d{4}-\d{2}-\d{2})/);
+    // Extract just the date part, ignoring brackets and day names
+    const orgDateMatch = dateInput.match(/[<[]?(\d{4}-\d{2}-\d{2})/);
     if (orgDateMatch) {
       date = new Date(orgDateMatch[1]);
     } else {
@@ -240,9 +241,10 @@ export function formatOrgDate(
  */
 function parseOrgDate(dateStr: string): Date | null {
   // Handle formats like <2024-01-15 Mon>, [2024-01-15], or plain 2024-01-15
-  const match = dateStr.match(/([<[])?(\d{4}-\d{2}-\d{2})/);
+  // Extract just the date part, ignoring brackets and day names
+  const match = dateStr.match(/[<[]?(\d{4}-\d{2}-\d{2})/);
   if (match) {
-    return new Date(match[2]);
+    return new Date(match[1]);
   }
 
   // Fallback to regular Date parsing
