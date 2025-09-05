@@ -1,7 +1,9 @@
 import { Icon } from "@iconify/react";
 import rehypeShiki from "@shikijs/rehype";
 import { useEffect, useState } from "react";
+import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+import remarkMath from "remark-math";
 import { unified } from "unified";
 import uniorgParse from "uniorg-parse";
 import uniorg2rehype from "uniorg-rehype";
@@ -340,8 +342,11 @@ async function parseOrgContent(
       deadlineTimestamp,
     };
 
-    // Create uniorg processor with Shiki syntax highlighting
+    // Create uniorg processor with Shiki syntax highlighting and KaTeX
     const processorBuilder = unified().use(uniorgParse).use(uniorg2rehype);
+
+    // Add KaTeX math rendering
+    processorBuilder.use(rehypeKatex);
 
     // Add Shiki syntax highlighting if enabled
     if (enableSyntaxHighlight) {
@@ -483,6 +488,13 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
     const priorityColors = getPriorityColor(priority);
     return `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${priorityColors} mr-2 border border-current rounded">${priority}</span>`;
   });
+
+  // Step 2.6: Convert LaTeX math expressions to KaTeX-compatible format
+  // Convert display math: $$...$$
+  processedHtml = processedHtml.replace(/\$\$([^$]+)\$\$/g, '<span class="katex-display">$$$$1$$</span>');
+  
+  // Convert inline math: $...$  
+  processedHtml = processedHtml.replace(/(?<!\$)\$([^$\n]+)\$(?!\$)/g, '<span class="katex-inline">$$$1$$</span>');
 
   // Step 3: Style timestamp elements
   processedHtml = processedHtml.replace(

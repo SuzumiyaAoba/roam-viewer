@@ -3,8 +3,10 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import type { BacklinkNode } from "../../entities/node";
 import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from "../../entities/node";
 import { OrgRenderer } from "../../features/org-rendering";
@@ -254,8 +256,8 @@ export function NodeDetailPage() {
                   ) : (
                     <div className="markdown-content">
                       <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeHighlight, rehypeRaw]}
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex, rehypeHighlight, rehypeRaw]}
                         components={{
                           // Custom link rendering for internal node links
                           a: ({ href, children, ...props }) => {

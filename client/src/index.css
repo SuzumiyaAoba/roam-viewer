@@ -1,3 +1,34 @@
+/* KaTeX math rendering styles */
+@import 'katex/dist/katex.min.css';
+
+/* Custom KaTeX styling */
+.katex {
+  font-size: 1em;
+}
+
+.katex-display {
+  @apply my-4 text-center;
+}
+
+.katex-display .katex {
+  @apply text-left;
+}
+
+.katex-inline .katex {
+  @apply inline;
+}
+
+/* Better integration with markdown content */
+.markdown-content .katex-display,
+.org-content .katex-display {
+  @apply my-6;
+}
+
+.markdown-content .katex-inline,
+.org-content .katex-inline {
+  @apply mx-1;
+}
+
 /* Shiki syntax highlighting styles */
 pre.shiki {
   /* Use Shiki's background colors for the container */
