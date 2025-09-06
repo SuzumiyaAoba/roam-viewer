@@ -8,10 +8,12 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { LogbookDisplay } from "../../components/LogbookDisplay";
+import { TimestampsDisplay } from "../../components/TimestampDisplay";
 import type { BacklinkNode } from "../../entities/node";
 import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from "../../entities/node";
 import { OrgRenderer } from "../../features/org-rendering";
 import { extractPriority, PriorityLabel } from "../../shared/lib/priority-utils";
+import { parseTimestamps } from "../../shared/lib/timestamp-utils";
 import { TodoIcon } from "../../shared/lib/todo-utils";
 import { Layout } from "../../widgets/layout";
 
@@ -27,57 +29,120 @@ function removeFrontmatter(content: string): string {
   return content;
 }
 
-// Split content at LOGBOOK position for proper rendering order
-function splitContentAtLogbook(content: string): {
-  beforeLogbook: string;
-  afterLogbook: string;
+// Enhanced content splitting with precise timestamp positioning
+function splitContentWithTimestamps(content: string): {
+  sections: Array<{
+    type: 'content' | 'logbook' | 'timestamps';
+    content?: string;
+    timestamps?: import("../../shared/lib/timestamp-utils").TimestampEntry[];
+    originalLineNumber?: number;
+  }>;
   footnotes: string;
   hasLogbook: boolean;
 } {
   const lines = content.split("\n");
-  const beforeLines: string[] = [];
-  const afterLines: string[] = [];
   const footnoteLines: string[] = [];
+  const sections: Array<{
+    type: 'content' | 'logbook' | 'timestamps';
+    content?: string;
+    timestamps?: import("../../shared/lib/timestamp-utils").TimestampEntry[];
+    originalLineNumber?: number;
+  }> = [];
+
+  // Parse timestamps and create a map by line number
+  const timestamps = parseTimestamps(content);
+  const timestampsByLine = new Map<number, import("../../shared/lib/timestamp-utils").TimestampEntry[]>();
+  
+  timestamps.forEach(timestamp => {
+    if (timestamp.lineNumber !== undefined) {
+      const existing = timestampsByLine.get(timestamp.lineNumber) || [];
+      existing.push(timestamp);
+      timestampsByLine.set(timestamp.lineNumber, existing);
+    }
+  });
+
   let inLogbookBlock = false;
   let logbookStartFound = false;
   let logbookEndFound = false;
+  let currentContentLines: string[] = [];
+  let logbookContent = "";
 
-  // First pass: extract footnote definitions and regular content separately
-  const contentLines: string[] = [];
-  for (const line of lines) {
+  // Process line by line to maintain proper positioning
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     const trimmed = line.trim();
-    // Check if line is a footnote definition: [fn:label] content
+    
+    // Handle footnotes
     if (trimmed.match(/^\[fn:[^\]]+\]\s+.+/)) {
       footnoteLines.push(line);
-    } else {
-      contentLines.push(line);
+      continue;
     }
-  }
-
-  // Second pass: split content at LOGBOOK (footnotes already extracted)
-  for (const line of contentLines) {
-    const trimmed = line.trim();
-
+    
+    // Handle LOGBOOK blocks
     if (trimmed === ":LOGBOOK:" && !logbookStartFound) {
+      // Save any accumulated content before LOGBOOK
+      if (currentContentLines.length > 0) {
+        sections.push({
+          type: 'content',
+          content: currentContentLines.join('\n')
+        });
+        currentContentLines = [];
+      }
+      
       logbookStartFound = true;
       inLogbookBlock = true;
       continue;
     } else if (trimmed === ":END:" && inLogbookBlock && !logbookEndFound) {
+      // Save LOGBOOK content
+      if (logbookContent.trim()) {
+        sections.push({
+          type: 'logbook',
+          content: logbookContent
+        });
+      }
+      
       inLogbookBlock = false;
       logbookEndFound = true;
       continue;
     } else if (inLogbookBlock) {
-      continue; // Skip LOGBOOK content lines
-    } else if (!logbookStartFound) {
-      beforeLines.push(line); // Content before LOGBOOK
-    } else if (logbookEndFound) {
-      afterLines.push(line); // Content after LOGBOOK
+      logbookContent += (logbookContent ? '\n' : '') + line;
+      continue;
     }
+    
+    // Handle timestamp lines
+    if (timestampsByLine.has(i)) {
+      // Save any accumulated content before timestamps
+      if (currentContentLines.length > 0) {
+        sections.push({
+          type: 'content',
+          content: currentContentLines.join('\n')
+        });
+        currentContentLines = [];
+      }
+      
+      // Add timestamp section
+      sections.push({
+        type: 'timestamps',
+        timestamps: timestampsByLine.get(i)!,
+        originalLineNumber: i
+      });
+      continue;
+    }
+    
+    // Regular content line
+    currentContentLines.push(line);
+  }
+  
+  // Save any remaining content
+  if (currentContentLines.length > 0) {
+    sections.push({
+      type: 'content',
+      content: currentContentLines.join('\n')
+    });
   }
 
   return {
-    beforeLogbook: beforeLines.join("\n"),
-    afterLogbook: afterLines.join("\n"),
+    sections,
     footnotes: footnoteLines.join("\n"),
     hasLogbook: logbookStartFound && logbookEndFound,
   };
@@ -322,18 +387,19 @@ export function NodeDetailPage() {
               <div className="max-w-none">
                 {node.content ? (
                   (() => {
-                    const { beforeLogbook, afterLogbook, footnotes, hasLogbook } = splitContentAtLogbook(node.content);
+                    const { sections, footnotes, hasLogbook } = splitContentWithTimestamps(node.content);
                     
-                    const renderContent = (content: string) => {
+                    const renderContent = (content: string, key?: number) => {
                       if (!content.trim()) return null;
                       
                       return node.file?.endsWith(".org") ? (
                         <OrgRenderer
+                          key={key}
                           content={removeFrontmatter(content)}
                           enableSyntaxHighlight={true}
                         />
                       ) : (
-                        <div className="markdown-content">
+                        <div key={key} className="markdown-content">
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeKatex, rehypeHighlight, rehypeRaw]}
@@ -367,21 +433,29 @@ export function NodeDetailPage() {
                       );
                     };
 
-
                     return (
                       <>
-                        {/* Content before LOGBOOK */}
-                        {renderContent(beforeLogbook)}
-                        
-                        {/* LOGBOOK section at its original position */}
-                        {hasLogbook && (
-                          <div className="my-8">
-                            <LogbookDisplay content={node.content} />
-                          </div>
-                        )}
-                        
-                        {/* Content after LOGBOOK */}
-                        {renderContent(afterLogbook)}
+                        {/* Render sections in their original order with timestamps at correct positions */}
+                        {sections.map((section, index) => {
+                          if (section.type === 'content') {
+                            return renderContent(section.content!, index);
+                          } else if (section.type === 'logbook') {
+                            return (
+                              <div key={index} className="my-8">
+                                <LogbookDisplay content={`:LOGBOOK:\n${section.content}\n:END:`} />
+                              </div>
+                            );
+                          } else if (section.type === 'timestamps') {
+                            return (
+                              <TimestampsDisplay 
+                                key={index}
+                                entries={section.timestamps!}
+                                className="my-3"
+                              />
+                            );
+                          }
+                          return null;
+                        })}
                         
                         {/* Footnotes section at the very end */}
                         {footnotes.trim() && (
@@ -402,7 +476,7 @@ export function NodeDetailPage() {
                                   );
                                 }
                                 return null;
-                              }).filter(Boolean)}
+                              })}
                             </div>
                           </div>
                         )}
