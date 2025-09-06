@@ -343,7 +343,9 @@ async function parseOrgContent(
     };
 
     // Create uniorg processor with Shiki syntax highlighting and KaTeX
-    const processorBuilder = unified().use(uniorgParse).use(uniorg2rehype);
+    const processorBuilder = unified()
+      .use(uniorgParse)
+      .use(uniorg2rehype, { allowDangerousHtml: true });
 
     // Add KaTeX math rendering
     processorBuilder.use(rehypeKatex);
@@ -491,10 +493,16 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
 
   // Step 2.6: Convert LaTeX math expressions to KaTeX-compatible format
   // Convert display math: $$...$$
-  processedHtml = processedHtml.replace(/\$\$([^$]+)\$\$/g, '<span class="katex-display">$$$$1$$</span>');
-  
-  // Convert inline math: $...$  
-  processedHtml = processedHtml.replace(/(?<!\$)\$([^$\n]+)\$(?!\$)/g, '<span class="katex-inline">$$$1$$</span>');
+  processedHtml = processedHtml.replace(
+    /\$\$([^$]+)\$\$/g,
+    '<span class="katex-display">$$$$1$$</span>',
+  );
+
+  // Convert inline math: $...$
+  processedHtml = processedHtml.replace(
+    /(?<!\$)\$([^$\n]+)\$(?!\$)/g,
+    '<span class="katex-inline">$$$1$$</span>',
+  );
 
   // Step 3: Style timestamp elements
   processedHtml = processedHtml.replace(
@@ -564,71 +572,71 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
   );
 
   // Step 4: Apply standard Tailwind classes
-  return (
-    processedHtml
-      // Headers (only add classes if not already present)
-      .replace(
-        /<h1(?![^>]*class=)([^>]*)>/g,
-        '<h1$1 class="text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 relative before:content-[\'#\'] before:text-gray-400 before:mr-2 before:font-mono">',
-      )
-      .replace(
-        /<h2(?![^>]*class=)([^>]*)>/g,
-        '<h2$1 class="text-lg font-semibold text-gray-800 mb-3 mt-5 relative before:content-[\'##\'] before:text-gray-400 before:mr-2 before:font-mono">',
-      )
-      .replace(
-        /<h3(?![^>]*class=)([^>]*)>/g,
-        '<h3$1 class="text-base font-semibold text-gray-800 mb-2 mt-4 relative before:content-[\'###\'] before:text-gray-400 before:mr-2 before:font-mono">',
-      )
-      .replace(
-        /<h4(?![^>]*class=)([^>]*)>/g,
-        '<h4$1 class="text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'####\'] before:text-gray-400 before:mr-2 before:font-mono">',
-      )
-      .replace(
-        /<h5(?![^>]*class=)([^>]*)>/g,
-        '<h5$1 class="text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'#####\'] before:text-gray-400 before:mr-2 before:font-mono">',
-      )
-      .replace(
-        /<h6(?![^>]*class=)([^>]*)>/g,
-        '<h6$1 class="text-sm font-medium text-gray-600 mb-1 mt-2 relative before:content-[\'######\'] before:text-gray-400 before:mr-2 before:font-mono">',
-      )
-      // Paragraphs
-      .replace(/<p([^>]*)>/g, '<p$1 class="text-gray-700 leading-relaxed mb-4">')
-      // Lists
-      .replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc list-inside mb-4 ml-4 space-y-1">')
-      .replace(/<ol([^>]*)>/g, '<ol$1 class="list-decimal list-inside mb-4 ml-4 space-y-1">')
-      .replace(/<li([^>]*)>/g, '<li$1 class="text-gray-700">')
-      // Code - handle both Shiki-styled and regular code blocks
-      .replace(
-        /<code(?![^>]*class=[^>]*shiki)([^>]*)>/g,
-        '<code$1 class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">',
-      )
-      .replace(
-        /<pre(?![^>]*class=[^>]*shiki)([^>]*)>/g,
-        '<pre$1 class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">',
-      )
-      // Shiki code blocks - enhance styling while letting CSS handle background colors
-      .replace(
-        /<pre class="shiki([^"]*)"([^>]*)>/g,
-        '<pre class="shiki$1 rounded-lg overflow-x-auto mb-4 text-sm border border-gray-200 shadow-sm p-4"$2>',
-      )
-      .replace(/<code class="shiki([^"]*)"([^>]*)>/g, '<code class="shiki$1 block"$2>')
-      // Tables
-      .replace(/<table([^>]*)>/g, '<table$1 class="min-w-full divide-y divide-gray-200 border">')
-      .replace(
-        /<th([^>]*)>/g,
-        '<th$1 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">',
-      )
-      .replace(/<td([^>]*)>/g, '<td$1 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">')
-      .replace(/<thead([^>]*)>/g, '<thead$1 class="bg-gray-50">')
-      .replace(/<tbody([^>]*)>/g, '<tbody$1 class="bg-white divide-y divide-gray-200">')
-      // Links
-      .replace(/<a([^>]*)>/g, '<a$1 class="text-blue-600 hover:text-blue-800 underline">')
-      // Strong and emphasis
-      .replace(/<strong([^>]*)>/g, '<strong$1 class="font-semibold text-gray-900">')
-      .replace(/<em([^>]*)>/g, '<em$1 class="italic">')
-      // Horizontal rule
-      .replace(/<hr([^>]*)>/g, '<hr$1 class="border-gray-300 my-8">')
-  );
+  const styledHtml = processedHtml
+    // Headers (only add classes if not already present)
+    .replace(
+      /<h1(?![^>]*class=)([^>]*)>/g,
+      "<h1$1 class=\"text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 relative before:content-['#'] before:text-gray-400 before:mr-2 before:font-mono\">",
+    )
+    .replace(
+      /<h2(?![^>]*class=)([^>]*)>/g,
+      "<h2$1 class=\"text-lg font-semibold text-gray-800 mb-3 mt-5 relative before:content-['##'] before:text-gray-400 before:mr-2 before:font-mono\">",
+    )
+    .replace(
+      /<h3(?![^>]*class=)([^>]*)>/g,
+      "<h3$1 class=\"text-base font-semibold text-gray-800 mb-2 mt-4 relative before:content-['###'] before:text-gray-400 before:mr-2 before:font-mono\">",
+    )
+    .replace(
+      /<h4(?![^>]*class=)([^>]*)>/g,
+      "<h4$1 class=\"text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-['####'] before:text-gray-400 before:mr-2 before:font-mono\">",
+    )
+    .replace(
+      /<h5(?![^>]*class=)([^>]*)>/g,
+      "<h5$1 class=\"text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-['#####'] before:text-gray-400 before:mr-2 before:font-mono\">",
+    )
+    .replace(
+      /<h6(?![^>]*class=)([^>]*)>/g,
+      "<h6$1 class=\"text-sm font-medium text-gray-600 mb-1 mt-2 relative before:content-['######'] before:text-gray-400 before:mr-2 before:font-mono\">",
+    )
+    // Paragraphs
+    .replace(/<p([^>]*)>/g, '<p$1 class="text-gray-700 leading-relaxed mb-4">')
+    // Lists
+    .replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc list-inside mb-4 ml-4 space-y-1">')
+    .replace(/<ol([^>]*)>/g, '<ol$1 class="list-decimal list-inside mb-4 ml-4 space-y-1">')
+    .replace(/<li([^>]*)>/g, '<li$1 class="text-gray-700">')
+    // Code - handle both Shiki-styled and regular code blocks
+    .replace(
+      /<code(?![^>]*class=[^>]*shiki)([^>]*)>/g,
+      '<code$1 class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">',
+    )
+    .replace(
+      /<pre(?![^>]*class=[^>]*shiki)([^>]*)>/g,
+      '<pre$1 class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">',
+    )
+    // Shiki code blocks - enhance styling while letting CSS handle background colors
+    .replace(
+      /<pre class="shiki([^"]*)"([^>]*)>/g,
+      '<pre class="shiki$1 rounded-lg overflow-x-auto mb-4 text-sm border border-gray-200 shadow-sm p-4"$2>',
+    )
+    .replace(/<code class="shiki([^"]*)"([^>]*)>/g, '<code class="shiki$1 block"$2>')
+    // Tables
+    .replace(/<table([^>]*)>/g, '<table$1 class="min-w-full divide-y divide-gray-200 border">')
+    .replace(
+      /<th([^>]*)>/g,
+      '<th$1 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">',
+    )
+    .replace(/<td([^>]*)>/g, '<td$1 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">')
+    .replace(/<thead([^>]*)>/g, '<thead$1 class="bg-gray-50">')
+    .replace(/<tbody([^>]*)>/g, '<tbody$1 class="bg-white divide-y divide-gray-200">')
+    // Links
+    .replace(/<a([^>]*)>/g, '<a$1 class="text-blue-600 hover:text-blue-800 underline">')
+    // Strong and emphasis
+    .replace(/<strong([^>]*)>/g, '<strong$1 class="font-semibold text-gray-900">')
+    .replace(/<em([^>]*)>/g, '<em$1 class="italic">')
+    // Horizontal rule
+    .replace(/<hr([^>]*)>/g, '<hr$1 class="border-gray-300 my-8">');
+
+  return styledHtml;
 }
 
 export function OrgRenderer({

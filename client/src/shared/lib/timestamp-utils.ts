@@ -1,5 +1,5 @@
 export interface TimestampEntry {
-  type: 'deadline' | 'scheduled' | 'closed';
+  type: "deadline" | "scheduled" | "closed";
   date: Date;
   originalText: string;
   lineNumber?: number;
@@ -9,12 +9,12 @@ export interface TimestampEntry {
  * Parse org-mode timestamps (DEADLINE, SCHEDULED, CLOSED) from content
  */
 export function parseTimestamps(content: string): TimestampEntry[] {
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   const entries: TimestampEntry[] = [];
-  
+
   lines.forEach((line, index) => {
     const trimmedLine = line.trim();
-    
+
     // DEADLINE: <2025-09-02 Tue>
     const deadlineMatch = trimmedLine.match(/^DEADLINE:\s*<([^>]+)>/);
     if (deadlineMatch) {
@@ -22,14 +22,14 @@ export function parseTimestamps(content: string): TimestampEntry[] {
       const parsedDate = parseOrgDate(dateStr);
       if (parsedDate) {
         entries.push({
-          type: 'deadline',
+          type: "deadline",
           date: parsedDate,
           originalText: trimmedLine,
-          lineNumber: index
+          lineNumber: index,
         });
       }
     }
-    
+
     // SCHEDULED: <2025-09-02 Tue>
     const scheduledMatch = trimmedLine.match(/^SCHEDULED:\s*<([^>]+)>/);
     if (scheduledMatch) {
@@ -37,14 +37,14 @@ export function parseTimestamps(content: string): TimestampEntry[] {
       const parsedDate = parseOrgDate(dateStr);
       if (parsedDate) {
         entries.push({
-          type: 'scheduled',
+          type: "scheduled",
           date: parsedDate,
           originalText: trimmedLine,
-          lineNumber: index
+          lineNumber: index,
         });
       }
     }
-    
+
     // CLOSED: [2025-08-29 Thu 14:30]
     const closedMatch = trimmedLine.match(/^CLOSED:\s*\[([^\]]+)\]/);
     if (closedMatch) {
@@ -52,15 +52,15 @@ export function parseTimestamps(content: string): TimestampEntry[] {
       const parsedDate = parseOrgDate(dateStr);
       if (parsedDate) {
         entries.push({
-          type: 'closed',
+          type: "closed",
           date: parsedDate,
           originalText: trimmedLine,
-          lineNumber: index
+          lineNumber: index,
         });
       }
     }
   });
-  
+
   return entries;
 }
 
@@ -74,8 +74,8 @@ export function parseTimestamps(content: string): TimestampEntry[] {
 function parseOrgDate(dateStr: string): Date | null {
   try {
     // Remove day of week (e.g., "Tue", "Thu") if present
-    const cleanDateStr = dateStr.replace(/\s+(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(\s|$)/, ' ').trim();
-    
+    const cleanDateStr = dateStr.replace(/\s+(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(\s|$)/, " ").trim();
+
     // Try different formats
     const formats = [
       // 2025-09-02
@@ -83,7 +83,7 @@ function parseOrgDate(dateStr: string): Date | null {
       // 2025-08-29 14:30
       /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})$/,
     ];
-    
+
     for (const format of formats) {
       const match = cleanDateStr.match(format);
       if (match) {
@@ -94,23 +94,23 @@ function parseOrgDate(dateStr: string): Date | null {
             parseInt(match[2]) - 1, // month (0-indexed)
             parseInt(match[3]), // day
             parseInt(match[4]), // hour
-            parseInt(match[5])  // minute
+            parseInt(match[5]), // minute
           );
         } else {
           // Date only
           return new Date(
             parseInt(match[1]), // year
             parseInt(match[2]) - 1, // month (0-indexed)
-            parseInt(match[3])  // day
+            parseInt(match[3]), // day
           );
         }
       }
     }
-    
+
     // Fallback: try native Date parsing
     return new Date(cleanDateStr);
   } catch (error) {
-    console.warn('Failed to parse org date:', dateStr, error);
+    console.warn("Failed to parse org date:", dateStr, error);
     return null;
   }
 }
@@ -120,48 +120,48 @@ function parseOrgDate(dateStr: string): Date | null {
  */
 export function formatTimestamp(entry: TimestampEntry): string {
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    weekday: 'short'
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
   };
-  
+
   // Add time if available (not midnight)
   if (entry.date.getHours() !== 0 || entry.date.getMinutes() !== 0) {
-    options.hour = '2-digit';
-    options.minute = '2-digit';
+    options.hour = "2-digit";
+    options.minute = "2-digit";
   }
-  
-  return entry.date.toLocaleDateString('ja-JP', options);
+
+  return entry.date.toLocaleDateString("ja-JP", options);
 }
 
 /**
  * Get display color for timestamp type
  */
-export function getTimestampColor(type: TimestampEntry['type']): string {
+export function getTimestampColor(type: TimestampEntry["type"]): string {
   switch (type) {
-    case 'deadline':
-      return 'text-red-600 bg-red-50 border-red-200';
-    case 'scheduled':
-      return 'text-blue-600 bg-blue-50 border-blue-200';
-    case 'closed':
-      return 'text-green-600 bg-green-50 border-green-200';
+    case "deadline":
+      return "text-red-600 bg-red-50 border-red-200";
+    case "scheduled":
+      return "text-blue-600 bg-blue-50 border-blue-200";
+    case "closed":
+      return "text-green-600 bg-green-50 border-green-200";
     default:
-      return 'text-gray-600 bg-gray-50 border-gray-200';
+      return "text-gray-600 bg-gray-50 border-gray-200";
   }
 }
 
 /**
  * Get display label for timestamp type
  */
-export function getTimestampLabel(type: TimestampEntry['type']): string {
+export function getTimestampLabel(type: TimestampEntry["type"]): string {
   switch (type) {
-    case 'deadline':
-      return 'DEADLINE';
-    case 'scheduled':
-      return 'SCHEDULED';
-    case 'closed':
-      return 'CLOSED';
+    case "deadline":
+      return "DEADLINE";
+    case "scheduled":
+      return "SCHEDULED";
+    case "closed":
+      return "CLOSED";
     default:
       return type.toUpperCase();
   }

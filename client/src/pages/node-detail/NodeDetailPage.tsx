@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import rehypeHighlight from "rehype-highlight";
@@ -15,6 +15,106 @@ import { OrgRenderer } from "../../features/org-rendering";
 import { extractPriority, PriorityLabel } from "../../shared/lib/priority-utils";
 import { parseTimestamps } from "../../shared/lib/timestamp-utils";
 import { TodoIcon } from "../../shared/lib/todo-utils";
+import {
+  replaceFootnoteReferencesWithLinks,
+  parseFootnoteDefinitions,
+  getFootnoteDefId,
+} from "../../shared/lib/footnote-utils";
+
+// Component to render org content with inline footnote links
+function InlineOrgRenderer({
+  content,
+  footnoteRefs,
+  footnoteMarkers,
+  referenceMap,
+  enableSyntaxHighlight,
+}: {
+  content: string;
+  footnoteRefs: string[];
+  footnoteMarkers: string[];
+  referenceMap: Map<string, string[]>;
+  enableSyntaxHighlight: boolean;
+}) {
+  const orgRef = useRef<HTMLDivElement>(null);
+
+  // Create content with markers replacing footnote references
+  const contentWithMarkers = React.useMemo(() => {
+    let processedContent = content;
+    footnoteRefs.forEach((fnRef, index) => {
+      const marker = footnoteMarkers[index];
+      // Replace first occurrence of each footnote reference
+      processedContent = processedContent.replace(fnRef, marker);
+    });
+    return processedContent;
+  }, [content, footnoteRefs, footnoteMarkers]);
+
+  useEffect(() => {
+    if (!orgRef.current) return;
+
+    const replaceMarkers = () => {
+      if (!orgRef.current) return;
+
+      footnoteMarkers.forEach((marker, index) => {
+        const fnRef = footnoteRefs[index];
+        const labelMatch = fnRef.match(/\[fn:([^\]]+)\]/);
+
+        if (!labelMatch) return;
+
+        const label = labelMatch[1];
+        const refIds = referenceMap.get(label);
+        const refId = refIds?.[0] || `fn-ref-${label}-1`;
+
+        // Find the marker text in the DOM
+        const walker = document.createTreeWalker(orgRef.current!, NodeFilter.SHOW_TEXT, null);
+
+        let textNode;
+        while ((textNode = walker.nextNode())) {
+          const nodeContent = textNode.textContent || "";
+          if (nodeContent.includes(marker)) {
+            const parent = textNode.parentNode;
+            if (!parent) continue;
+
+            const parts = nodeContent.split(marker);
+
+            // Create before text
+            if (parts[0]) {
+              parent.insertBefore(document.createTextNode(parts[0]), textNode);
+            }
+
+            // Create anchor link
+            const anchor = document.createElement("a");
+            anchor.href = `#fn-def-${label}`;
+            anchor.className =
+              "footnote-ref text-blue-600 bg-blue-50 px-1 rounded text-sm hover:bg-blue-100 cursor-pointer no-underline";
+            anchor.id = refId;
+            anchor.textContent = `[${label}]`;
+            parent.insertBefore(anchor, textNode);
+
+            // Create after text
+            if (parts[1]) {
+              parent.insertBefore(document.createTextNode(parts[1]), textNode);
+            }
+
+            // Remove original text node
+            parent.removeChild(textNode);
+            break; // Process only the first occurrence
+          }
+        }
+      });
+    };
+
+    // Use longer timeout to ensure OrgRenderer has completed rendering
+    const timer = setTimeout(replaceMarkers, 100);
+    return () => clearTimeout(timer);
+  }, [contentWithMarkers, footnoteMarkers, footnoteRefs, referenceMap]);
+
+  return (
+    <div ref={orgRef} style={{ display: "contents" }}>
+      <OrgRenderer content={contentWithMarkers} enableSyntaxHighlight={enableSyntaxHighlight} />
+    </div>
+  );
+}
+
 import { Layout } from "../../widgets/layout";
 
 // Simple function to remove frontmatter
@@ -32,7 +132,7 @@ function removeFrontmatter(content: string): string {
 // Enhanced content splitting with precise timestamp positioning
 function splitContentWithTimestamps(content: string): {
   sections: Array<{
-    type: 'content' | 'logbook' | 'timestamps';
+    type: "content" | "logbook" | "timestamps";
     content?: string;
     timestamps?: import("../../shared/lib/timestamp-utils").TimestampEntry[];
     originalLineNumber?: number;
@@ -43,7 +143,7 @@ function splitContentWithTimestamps(content: string): {
   const lines = content.split("\n");
   const footnoteLines: string[] = [];
   const sections: Array<{
-    type: 'content' | 'logbook' | 'timestamps';
+    type: "content" | "logbook" | "timestamps";
     content?: string;
     timestamps?: import("../../shared/lib/timestamp-utils").TimestampEntry[];
     originalLineNumber?: number;
@@ -51,9 +151,12 @@ function splitContentWithTimestamps(content: string): {
 
   // Parse timestamps and create a map by line number
   const timestamps = parseTimestamps(content);
-  const timestampsByLine = new Map<number, import("../../shared/lib/timestamp-utils").TimestampEntry[]>();
-  
-  timestamps.forEach(timestamp => {
+  const timestampsByLine = new Map<
+    number,
+    import("../../shared/lib/timestamp-utils").TimestampEntry[]
+  >();
+
+  timestamps.forEach((timestamp) => {
     if (timestamp.lineNumber !== undefined) {
       const existing = timestampsByLine.get(timestamp.lineNumber) || [];
       existing.push(timestamp);
@@ -71,24 +174,24 @@ function splitContentWithTimestamps(content: string): {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
-    
+
     // Handle footnotes
     if (trimmed.match(/^\[fn:[^\]]+\]\s+.+/)) {
       footnoteLines.push(line);
       continue;
     }
-    
+
     // Handle LOGBOOK blocks
     if (trimmed === ":LOGBOOK:" && !logbookStartFound) {
       // Save any accumulated content before LOGBOOK
       if (currentContentLines.length > 0) {
         sections.push({
-          type: 'content',
-          content: currentContentLines.join('\n')
+          type: "content",
+          content: currentContentLines.join("\n"),
         });
         currentContentLines = [];
       }
-      
+
       logbookStartFound = true;
       inLogbookBlock = true;
       continue;
@@ -96,48 +199,48 @@ function splitContentWithTimestamps(content: string): {
       // Save LOGBOOK content
       if (logbookContent.trim()) {
         sections.push({
-          type: 'logbook',
-          content: logbookContent
+          type: "logbook",
+          content: logbookContent,
         });
       }
-      
+
       inLogbookBlock = false;
       logbookEndFound = true;
       continue;
     } else if (inLogbookBlock) {
-      logbookContent += (logbookContent ? '\n' : '') + line;
+      logbookContent += (logbookContent ? "\n" : "") + line;
       continue;
     }
-    
+
     // Handle timestamp lines
     if (timestampsByLine.has(i)) {
       // Save any accumulated content before timestamps
       if (currentContentLines.length > 0) {
         sections.push({
-          type: 'content',
-          content: currentContentLines.join('\n')
+          type: "content",
+          content: currentContentLines.join("\n"),
         });
         currentContentLines = [];
       }
-      
+
       // Add timestamp section
       sections.push({
-        type: 'timestamps',
+        type: "timestamps",
         timestamps: timestampsByLine.get(i)!,
-        originalLineNumber: i
+        originalLineNumber: i,
       });
       continue;
     }
-    
+
     // Regular content line
     currentContentLines.push(line);
   }
-  
+
   // Save any remaining content
   if (currentContentLines.length > 0) {
     sections.push({
-      type: 'content',
-      content: currentContentLines.join('\n')
+      type: "content",
+      content: currentContentLines.join("\n"),
     });
   }
 
@@ -387,18 +490,159 @@ export function NodeDetailPage() {
               <div className="max-w-none">
                 {node.content ? (
                   (() => {
-                    const { sections, footnotes, hasLogbook } = splitContentWithTimestamps(node.content);
-                    
+                    // Extract footnote reference map for back-links from cleaned content
+                    const cleanedContent = removeFrontmatter(node.content);
+                    const { sections, footnotes, hasLogbook } =
+                      splitContentWithTimestamps(cleanedContent);
+                    const { referenceMap } = replaceFootnoteReferencesWithLinks(cleanedContent);
+
                     const renderContent = (content: string, key?: number) => {
                       if (!content.trim()) return null;
-                      
-                      return node.file?.endsWith(".org") ? (
-                        <OrgRenderer
-                          key={key}
-                          content={removeFrontmatter(content)}
-                          enableSyntaxHighlight={true}
-                        />
-                      ) : (
+
+                      if (node.file?.endsWith(".org")) {
+                        // Check if content has footnote references
+                        const footnoteRefs = content.match(/\[fn:[^\]]+\]/g);
+
+                        if (!footnoteRefs || footnoteRefs.length === 0) {
+                          // No footnotes, render normally
+                          return (
+                            <OrgRenderer key={key} content={content} enableSyntaxHighlight={true} />
+                          );
+                        }
+
+                        // Check if content has footnote references
+                        const contentFootnoteRefs = content.match(/\[fn:[^\]]+\]/g) || [];
+
+                        if (contentFootnoteRefs.length === 0) {
+                          // No footnotes, use normal OrgRenderer
+                          return (
+                            <OrgRenderer key={key} content={content} enableSyntaxHighlight={true} />
+                          );
+                        }
+
+                        // Has footnotes - replace them directly with HTML and use dangerouslySetInnerHTML
+                        const { content: htmlContent } =
+                          replaceFootnoteReferencesWithLinks(content);
+
+                        // Simple text processing to handle basic org formatting without breaking HTML
+                        const processedHtml = htmlContent
+                          // Process line by line to preserve structure
+                          .split("\n")
+                          .map((line) => {
+                            // Skip lines that are already HTML (contain < or >)
+                            if (line.includes("<") && line.includes(">")) {
+                              return line;
+                            }
+
+                            // Handle headers - check for org-mode headers first
+                            const headerMatch = line.match(/^(\*{1,6})\s+(.+)$/);
+                            if (headerMatch) {
+                              const [, stars, title] = headerMatch;
+                              const level = Math.min(stars.length, 6);
+                              const hashes = "#".repeat(level);
+
+                              // Process the title for TODO items, priorities, and other formatting
+                              let processedTitle = title;
+
+                              // TODO keyword processing
+                              const todoKeywords = [
+                                "TODO",
+                                "DONE",
+                                "DOING",
+                                "NEXT",
+                                "WAITING",
+                                "CANCELLED",
+                                "CANCELED",
+                              ];
+                              const todoColors: Record<string, string> = {
+                                TODO: "bg-orange-100 text-orange-800",
+                                DONE: "bg-green-100 text-green-800",
+                                DOING: "bg-blue-100 text-blue-800",
+                                NEXT: "bg-purple-100 text-purple-800",
+                                WAITING: "bg-yellow-100 text-yellow-800",
+                                CANCELLED: "bg-red-100 text-red-800",
+                                CANCELED: "bg-red-100 text-red-800",
+                              };
+
+                              todoKeywords.forEach((keyword) => {
+                                const colors = todoColors[keyword] || "bg-gray-100 text-gray-800";
+                                processedTitle = processedTitle.replace(
+                                  new RegExp(`\\b${keyword}\\b`, "g"),
+                                  `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${colors} mr-2 border border-current rounded">${keyword}</span>`,
+                                );
+                              });
+
+                              // Priority processing - [#A], [#B], [#C]
+                              const priorityColors: Record<string, string> = {
+                                A: "bg-red-100 text-red-800",
+                                B: "bg-yellow-100 text-yellow-800",
+                                C: "bg-blue-100 text-blue-800",
+                              };
+
+                              processedTitle = processedTitle.replace(
+                                /\[#([ABC])\]/g,
+                                (_, priority) => {
+                                  const colors =
+                                    priorityColors[priority] || "bg-gray-100 text-gray-800";
+                                  return `<span class="inline-flex items-center px-2 py-1 text-xs font-medium ${colors} mr-2 border border-current rounded">#${priority}</span>`;
+                                },
+                              );
+
+                              // Other formatting
+                              processedTitle = processedTitle
+                                .replace(/\/([^/<>]+)\//g, "<em>$1</em>")
+                                .replace(/_([^_<>]+)_/g, "<u>$1</u>")
+                                .replace(
+                                  /=([^=<>]+)=/g,
+                                  '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">$1</code>',
+                                )
+                                .replace(
+                                  /~([^~<>]+)~/g,
+                                  '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">$1</code>',
+                                );
+
+                              return `<h${level} class="text-gray-900 font-bold leading-tight mb-4 mt-6"><span class="text-gray-400 mr-2 text-sm">${hashes}</span>${processedTitle}</h${level}>`;
+                            }
+
+                            // Apply basic formatting to non-header lines only
+                            if (line.trim()) {
+                              // Skip lines that start with * (org headers) to avoid conflicts
+                              if (line.match(/^\*+\s/)) {
+                                return ""; // This should have been caught by header processing above
+                              }
+
+                              let formatted = line
+                                // Only apply bold formatting to text that's not part of org headers
+                                .replace(/\*([^*<>\n]+)\*/g, "<strong>$1</strong>")
+                                .replace(/\/([^/<>\n]+)\//g, "<em>$1</em>")
+                                .replace(/_([^_<>\n]+)_/g, "<u>$1</u>")
+                                .replace(
+                                  /=([^=<>\n]+)=/g,
+                                  '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">$1</code>',
+                                )
+                                .replace(
+                                  /~([^~<>\n]+)~/g,
+                                  '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">$1</code>',
+                                );
+
+                              return `<p class="mb-2 leading-relaxed">${formatted}</p>`;
+                            }
+
+                            return "";
+                          })
+                          .filter((line) => line.trim())
+                          .join("\n");
+
+                        return (
+                          <div
+                            key={key}
+                            className="org-content prose"
+                            dangerouslySetInnerHTML={{ __html: processedHtml }}
+                          />
+                        );
+                      }
+
+                      return (
                         <div key={key} className="markdown-content">
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkMath]}
@@ -418,7 +662,9 @@ export function NodeDetailPage() {
                                   <a
                                     href={href}
                                     target={href?.startsWith("http") ? "_blank" : undefined}
-                                    rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                                    rel={
+                                      href?.startsWith("http") ? "noopener noreferrer" : undefined
+                                    }
                                     {...props}
                                   >
                                     {children}
@@ -437,17 +683,17 @@ export function NodeDetailPage() {
                       <>
                         {/* Render sections in their original order with timestamps at correct positions */}
                         {sections.map((section, index) => {
-                          if (section.type === 'content') {
+                          if (section.type === "content") {
                             return renderContent(section.content!, index);
-                          } else if (section.type === 'logbook') {
+                          } else if (section.type === "logbook") {
                             return (
                               <div key={index} className="my-8">
                                 <LogbookDisplay content={`:LOGBOOK:\n${section.content}\n:END:`} />
                               </div>
                             );
-                          } else if (section.type === 'timestamps') {
+                          } else if (section.type === "timestamps") {
                             return (
-                              <TimestampsDisplay 
+                              <TimestampsDisplay
                                 key={index}
                                 entries={section.timestamps!}
                                 className="my-3"
@@ -456,27 +702,61 @@ export function NodeDetailPage() {
                           }
                           return null;
                         })}
-                        
+
                         {/* Footnotes section at the very end */}
                         {footnotes.trim() && (
                           <div className="mt-8 pt-6 border-t border-gray-200">
                             <div className="text-sm text-gray-600 mb-4 font-semibold">脚注</div>
-                            <div className="space-y-2">
-                              {footnotes.split('\n').filter(line => line.trim()).map((line, index) => {
-                                const match = line.trim().match(/^\[fn:([^\]]+)\]\s+(.+)$/);
-                                if (match) {
-                                  const [, label, content] = match;
-                                  return (
-                                    <div key={index} className="text-sm">
-                                      <span className="font-mono text-blue-600 bg-blue-50 px-1 rounded text-xs mr-2">
-                                        [fn:{label}]
-                                      </span>
-                                      <span className="text-gray-700">{content}</span>
-                                    </div>
-                                  );
-                                }
-                                return null;
-                              })}
+                            <div className="space-y-3">
+                              {footnotes
+                                .split("\n")
+                                .filter((line) => line.trim())
+                                .map((line, index) => {
+                                  const match = line.trim().match(/^\[fn:([^\]]+)\]\s+(.+)$/);
+                                  if (match) {
+                                    const [, label, content] = match;
+                                    return (
+                                      <div
+                                        key={index}
+                                        className="text-sm"
+                                        id={getFootnoteDefId(label)}
+                                      >
+                                        <div className="flex items-start space-x-2">
+                                          <span className="font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded text-xs font-medium shrink-0">
+                                            {label}
+                                          </span>
+                                          <span className="text-gray-700 leading-relaxed">
+                                            {content}
+                                          </span>
+                                          <div className="flex items-center space-x-1 shrink-0">
+                                            {referenceMap.get(label)?.map((refId, refIndex) => (
+                                              <a
+                                                key={refId}
+                                                href={`#${refId}`}
+                                                className="text-blue-500 hover:text-blue-700 text-xs"
+                                                title={`参照 ${refIndex + 1} に戻る`}
+                                              >
+                                                ↩
+                                                {referenceMap.get(label)!.length > 1
+                                                  ? refIndex + 1
+                                                  : ""}
+                                              </a>
+                                            )) || (
+                                              <a
+                                                href={`#fn-ref-${label}`}
+                                                className="text-blue-500 hover:text-blue-700 text-xs"
+                                                title="元の位置に戻る"
+                                              >
+                                                ↩
+                                              </a>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                })}
                             </div>
                           </div>
                         )}
@@ -517,7 +797,6 @@ export function NodeDetailPage() {
               </div>
             </div>
           )}
-
         </div>
 
         {/* Sidebar */}
