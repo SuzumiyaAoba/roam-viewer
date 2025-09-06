@@ -1,3 +1,4 @@
+import React from "react";
 import { Icon } from "@iconify/react";
 import { calculateDuration, formatLogbookDate, parseLogbook, type LogbookEntry } from "../shared/lib/logbook-utils";
 
@@ -127,6 +128,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
 }
 
 export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
   const entries = parseLogbook(content);
   
   if (entries.length === 0) {
@@ -147,59 +149,84 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
   const totalMinutes = Math.floor((totalDuration % (1000 * 60 * 60)) / (1000 * 60));
   const ongoingCount = clockEntries.filter(entry => !entry.endDate).length;
 
+  // 最新のエントリーを取得（状態変更を優先）
+  const latestEntry = stateEntries[0] || entries[0];
+  const displayEntries = isExpanded ? entries : [];
+
+  // ステータス用カラー関数
+  const getStateColor = (state: string) => {
+    switch (state) {
+      case 'TODO': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'DONE': return 'bg-green-100 text-green-800 border-green-200';
+      case 'CANCELLED': return 'bg-red-100 text-red-800 border-red-200';
+      case 'WAITING': return 'bg-purple-100 text-purple-800 border-purple-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
   return (
-    <div className={`logbook-display bg-slate-50 rounded-lg border border-slate-200 ${className}`}>
-      <div className="p-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-slate-200 rounded flex items-center justify-center">
-              <Icon icon="lucide:history" className="text-slate-600 w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-slate-700">
-                ログブック
-              </h2>
-              <p className="text-sm text-slate-500">
-                {entries.length}件のアクティビティ
-              </p>
-            </div>
-          </div>
-          
-          {/* Stats */}
-          <div className="flex items-center space-x-3 text-xs text-slate-500">
-            {stateEntries.length > 0 && (
-              <span>状態変更: {stateEntries.length}</span>
-            )}
-            {totalDuration > 0 && (
-              <span>合計時間: {totalHours > 0 && `${totalHours}h `}{totalMinutes}m</span>
-            )}
-            {ongoingCount > 0 && (
-              <span>進行中: {ongoingCount}</span>
-            )}
-          </div>
-        </div>
-        
-        {/* Timeline */}
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-3 top-0 bottom-0 w-px bg-slate-300"></div>
-          
-          <div className="space-y-3">
-            {entries.map((entry, index) => (
-              <div key={`${entry.startDate.toISOString()}-${index}`} className="relative">
-                {/* Timeline dot */}
-                <div className="absolute left-2 top-3 w-2 h-2 rounded-full bg-slate-400"></div>
-                
-                {/* Entry card */}
-                <div className="ml-6">
-                  <LogbookEntryCard entry={entry} />
+    <div className={`logbook-display ${className}`}>
+      {/* 最新状態の表示 */}
+      <div 
+        className="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded cursor-pointer hover:bg-slate-100 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center space-x-2">
+          <Icon 
+            icon={isExpanded ? "lucide:chevron-down" : "lucide:chevron-right"} 
+            className="text-slate-400 w-4 h-4" 
+          />
+          {latestEntry && (
+            <>
+              {latestEntry.type === 'state-change' ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-slate-600">最新状態:</span>
+                  <span className={`px-2 py-1 rounded text-xs font-medium border ${getStateColor(latestEntry.toState)}`}>
+                    {latestEntry.toState}
+                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
+              ) : (
+                <span className="text-sm text-slate-600">
+                  最新記録: {formatLogbookDate(latestEntry.startDate)}
+                </span>
+              )}
+            </>
+          )}
+        </div>
+        <div className="flex items-center space-x-2 text-xs text-slate-500">
+          <span>{entries.length}件</span>
+          {totalDuration > 0 && (
+            <span>({totalHours > 0 && `${totalHours}h `}{totalMinutes}m)</span>
+          )}
         </div>
       </div>
+
+      {/* 展開されたときの詳細表示 */}
+      {isExpanded && (
+        <div className="mt-2 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="p-3">
+            {/* Timeline */}
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-3 top-0 bottom-0 w-px bg-slate-300"></div>
+              
+              <div className="space-y-3">
+                {displayEntries.map((entry, index) => (
+                  <div key={`${entry.startDate.toISOString()}-${index}`} className="relative">
+                    {/* Timeline dot */}
+                    <div className="absolute left-2 top-3 w-2 h-2 rounded-full bg-slate-400"></div>
+                    
+                    {/* Entry card */}
+                    <div className="ml-6">
+                      <LogbookEntryCard entry={entry} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
