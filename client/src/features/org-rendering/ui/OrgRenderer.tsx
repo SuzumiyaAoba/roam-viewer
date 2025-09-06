@@ -439,14 +439,14 @@ function getPriorityColor(priority: string): string {
 // Helper function to get header classes by level
 function getHeaderClass(level: string): string {
   const classes: Record<string, string> = {
-    "1": "text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0",
-    "2": "text-2xl font-semibold text-gray-800 mb-3 mt-6",
-    "3": "text-xl font-semibold text-gray-800 mb-3 mt-5",
-    "4": "text-lg font-semibold text-gray-700 mb-2 mt-4",
-    "5": "text-base font-semibold text-gray-700 mb-2 mt-3",
-    "6": "text-sm font-semibold text-gray-700 mb-2 mt-3",
+    "1": "text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 border-b border-gray-200 pb-2",
+    "2": "text-lg font-semibold text-gray-800 mb-3 mt-5 border-l-4 border-blue-500 pl-3",
+    "3": "text-base font-semibold text-gray-800 mb-2 mt-4 border-l-2 border-green-500 pl-2",
+    "4": "text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-['▶'] before:text-orange-500 before:mr-2 before:text-xs",
+    "5": "text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-['•'] before:text-purple-500 before:mr-2 before:font-bold",
+    "6": "text-sm font-medium text-gray-600 mb-1 mt-2 italic",
   };
-  return classes[level] || "text-base font-semibold text-gray-700";
+  return classes[level] || "text-sm font-medium text-gray-700";
 }
 
 // Apply enhanced Tailwind CSS classes with improved TODO keyword handling
@@ -569,27 +569,27 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
       // Headers (only add classes if not already present)
       .replace(
         /<h1(?![^>]*class=)([^>]*)>/g,
-        '<h1$1 class="text-3xl font-bold text-gray-900 mb-4 mt-8 first:mt-0">',
+        '<h1$1 class="text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 border-b border-gray-200 pb-2">',
       )
       .replace(
         /<h2(?![^>]*class=)([^>]*)>/g,
-        '<h2$1 class="text-2xl font-semibold text-gray-800 mb-3 mt-6">',
+        '<h2$1 class="text-lg font-semibold text-gray-800 mb-3 mt-5 border-l-4 border-blue-500 pl-3">',
       )
       .replace(
         /<h3(?![^>]*class=)([^>]*)>/g,
-        '<h3$1 class="text-xl font-semibold text-gray-800 mb-3 mt-5">',
+        '<h3$1 class="text-base font-semibold text-gray-800 mb-2 mt-4 border-l-2 border-green-500 pl-2">',
       )
       .replace(
         /<h4(?![^>]*class=)([^>]*)>/g,
-        '<h4$1 class="text-lg font-semibold text-gray-700 mb-2 mt-4">',
+        '<h4$1 class="text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'▶\'] before:text-orange-500 before:mr-2 before:text-xs">',
       )
       .replace(
         /<h5(?![^>]*class=)([^>]*)>/g,
-        '<h5$1 class="text-base font-semibold text-gray-700 mb-2 mt-3">',
+        '<h5$1 class="text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'•\'] before:text-purple-500 before:mr-2 before:font-bold">',
       )
       .replace(
         /<h6(?![^>]*class=)([^>]*)>/g,
-        '<h6$1 class="text-sm font-semibold text-gray-700 mb-2 mt-3">',
+        '<h6$1 class="text-sm font-medium text-gray-600 mb-1 mt-2 italic">',
       )
       // Paragraphs
       .replace(/<p([^>]*)>/g, '<p$1 class="text-gray-700 leading-relaxed mb-4">')
