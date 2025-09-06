@@ -12,7 +12,7 @@ import {
   formatOrgTimestamp,
   type OrgTimestamp,
 } from "../../../shared/lib/date-utils";
-import { rehypeOrgEnhancements } from "../lib/rehype-org-enhancements";
+import { rehypeOrgEnhancements, type CustomClasses } from "../lib/rehype-org-enhancements";
 
 interface UniorgNode {
   type: string;
@@ -35,6 +35,10 @@ interface OrgRendererProps {
    * Whether to show syntax highlighting for code blocks
    */
   enableSyntaxHighlight?: boolean;
+  /**
+   * Custom CSS classes for various elements
+   */
+  customClasses?: CustomClasses;
 }
 
 // Extract and parse metadata from org content
@@ -321,6 +325,7 @@ function extractTimestampsFromAST(ast: UniorgNode): {
 async function parseOrgContent(
   content: string,
   enableSyntaxHighlight = true,
+  customClasses?: CustomClasses,
 ): Promise<{ metadata: OrgMetadata; htmlContent: string }> {
   try {
     // First, extract metadata and get cleaned content
@@ -391,7 +396,7 @@ async function parseOrgContent(
     }
 
     // Add org-mode specific enhancements and Tailwind CSS classes
-    processorBuilder.use(rehypeOrgEnhancements, { enableSyntaxHighlight });
+    processorBuilder.use(rehypeOrgEnhancements, { enableSyntaxHighlight, customClasses });
 
     const processor = processorBuilder.use(rehypeStringify, { allowDangerousHtml: true });
 
@@ -418,6 +423,7 @@ export function OrgRenderer({
   content,
   className = "",
   enableSyntaxHighlight = true,
+  customClasses,
 }: OrgRendererProps) {
   const [metadata, setMetadata] = useState<OrgMetadata>({});
   const [htmlContent, setHtmlContent] = useState<string>("");
@@ -430,7 +436,7 @@ export function OrgRenderer({
       setError(null);
 
       try {
-        const result = await parseOrgContent(content, enableSyntaxHighlight);
+        const result = await parseOrgContent(content, enableSyntaxHighlight, customClasses);
         setMetadata(result.metadata);
         setHtmlContent(result.htmlContent);
       } catch (err) {
@@ -448,7 +454,7 @@ export function OrgRenderer({
     }
 
     processContent();
-  }, [content, enableSyntaxHighlight]);
+  }, [content, enableSyntaxHighlight, customClasses]);
 
   if (isLoading) {
     return (

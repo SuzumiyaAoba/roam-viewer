@@ -1,45 +1,100 @@
 import { visit } from "unist-util-visit";
 import type { Element, Root, Text } from "hast";
 
+// Define custom class configuration types
+export interface CustomClasses {
+  todoKeywords?: {
+    [keyword: string]: string[];
+  };
+  priorities?: {
+    [priority: string]: string[];
+  };
+  headers?: {
+    [level: number]: string[];
+  };
+  timestamps?: {
+    range?: string[];
+    active?: string[];
+    inactive?: string[];
+    fallback?: string[];
+    rangeIcon?: string[];
+    arrowIcon?: string[];
+    clockIcon?: string[];
+    calendarIcon?: string[];
+  };
+  elements?: {
+    p?: string[];
+    ul?: string[];
+    ol?: string[];
+    li?: string[];
+    code?: string[];
+    pre?: string[];
+    preShiki?: string[];
+    table?: string[];
+    th?: string[];
+    td?: string[];
+    thead?: string[];
+    tbody?: string[];
+    a?: string[];
+    strong?: string[];
+    em?: string[];
+    hr?: string[];
+  };
+}
+
 interface PluginOptions {
   enableSyntaxHighlight?: boolean;
+  customClasses?: CustomClasses;
 }
+
+// Default class configurations
+const defaultTodoKeywordColors: Record<string, string[]> = {
+  TODO: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-orange-100", "text-orange-800", "mr-2"],
+  DONE: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-green-100", "text-green-800", "mr-2"],
+  DOING: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-blue-100", "text-blue-800", "mr-2"],
+  NEXT: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-purple-100", "text-purple-800", "mr-2"],
+  WAITING: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-yellow-100", "text-yellow-800", "mr-2"],
+  CANCELLED: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2"],
+  CANCELED: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2"],
+};
 
 // Helper function to get TODO keyword colors
-function getTodoKeywordColor(keyword: string): string[] {
-  const colors: Record<string, string[]> = {
-    TODO: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-orange-100", "text-orange-800", "mr-2"],
-    DONE: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-green-100", "text-green-800", "mr-2"],
-    DOING: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-blue-100", "text-blue-800", "mr-2"],
-    NEXT: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-purple-100", "text-purple-800", "mr-2"],
-    WAITING: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-yellow-100", "text-yellow-800", "mr-2"],
-    CANCELLED: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2"],
-    CANCELED: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2"],
-  };
-  return colors[keyword] || ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2"];
+function getTodoKeywordColor(keyword: string, customClasses?: CustomClasses): string[] {
+  const customColors = customClasses?.todoKeywords?.[keyword];
+  if (customColors) return customColors;
+  
+  return defaultTodoKeywordColors[keyword] || ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2"];
 }
+
+const defaultPriorityColors: Record<string, string[]> = {
+  A: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-red-100", "text-red-800", "mr-2", "border", "border-current", "rounded"],
+  B: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-yellow-100", "text-yellow-800", "mr-2", "border", "border-current", "rounded"],
+  C: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-green-100", "text-green-800", "mr-2", "border", "border-current", "rounded"],
+};
 
 // Helper function to get priority colors
-function getPriorityColor(priority: string): string[] {
-  const colors: Record<string, string[]> = {
-    A: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-red-100", "text-red-800", "mr-2", "border", "border-current", "rounded"],
-    B: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-yellow-100", "text-yellow-800", "mr-2", "border", "border-current", "rounded"],
-    C: ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-green-100", "text-green-800", "mr-2", "border", "border-current", "rounded"],
-  };
-  return colors[priority] || ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2", "border", "border-current", "rounded"];
+function getPriorityColor(priority: string, customClasses?: CustomClasses): string[] {
+  const customColors = customClasses?.priorities?.[priority];
+  if (customColors) return customColors;
+  
+  return defaultPriorityColors[priority] || ["inline-flex", "items-center", "px-2", "py-1", "text-xs", "font-medium", "bg-gray-100", "text-gray-800", "mr-2", "border", "border-current", "rounded"];
 }
 
+const defaultHeaderClasses: Record<number, string[]> = {
+  1: ["text-xl", "font-bold", "text-gray-900", "mb-3", "mt-6", "first:mt-0", "relative", "before:content-['#']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
+  2: ["text-lg", "font-semibold", "text-gray-800", "mb-3", "mt-5", "relative", "before:content-['##']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
+  3: ["text-base", "font-semibold", "text-gray-800", "mb-2", "mt-4", "relative", "before:content-['###']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
+  4: ["text-base", "font-medium", "text-gray-700", "mb-2", "mt-3", "relative", "before:content-['####']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
+  5: ["text-sm", "font-medium", "text-gray-700", "mb-2", "mt-3", "relative", "before:content-['#####']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
+  6: ["text-sm", "font-medium", "text-gray-600", "mb-1", "mt-2", "relative", "before:content-['######']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
+};
+
 // Helper function to get header classes by level
-function getHeaderClass(level: number): string[] {
-  const classes: Record<number, string[]> = {
-    1: ["text-xl", "font-bold", "text-gray-900", "mb-3", "mt-6", "first:mt-0", "relative", "before:content-['#']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
-    2: ["text-lg", "font-semibold", "text-gray-800", "mb-3", "mt-5", "relative", "before:content-['##']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
-    3: ["text-base", "font-semibold", "text-gray-800", "mb-2", "mt-4", "relative", "before:content-['###']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
-    4: ["text-base", "font-medium", "text-gray-700", "mb-2", "mt-3", "relative", "before:content-['####']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
-    5: ["text-sm", "font-medium", "text-gray-700", "mb-2", "mt-3", "relative", "before:content-['#####']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
-    6: ["text-sm", "font-medium", "text-gray-600", "mb-1", "mt-2", "relative", "before:content-['######']", "before:text-gray-400", "before:mr-2", "before:font-mono"],
-  };
-  return classes[level] || ["text-sm", "font-medium", "text-gray-700"];
+function getHeaderClass(level: number, customClasses?: CustomClasses): string[] {
+  const customHeaderClasses = customClasses?.headers?.[level];
+  if (customHeaderClasses) return customHeaderClasses;
+  
+  return defaultHeaderClasses[level] || ["text-sm", "font-medium", "text-gray-700"];
 }
 
 // Helper function to create an element
@@ -61,7 +116,7 @@ function createText(value: string): Text {
 }
 
 // Transform TODO keywords in headers and standalone spans
-function transformTodoKeywords(tree: Root): void {
+function transformTodoKeywords(tree: Root, customClasses?: CustomClasses): void {
   visit(tree, "element", (node: Element, _index, _parent) => {
     if (!node.children) return;
 
@@ -84,7 +139,7 @@ function transformTodoKeywords(tree: Root): void {
               
               // Create TODO keyword span
               const todoSpan = createElement("span", {
-                className: getTodoKeywordColor(keyword),
+                className: getTodoKeywordColor(keyword, customClasses),
               }, [createText(keyword)]);
 
               // Replace current text node with TODO span + remaining text
@@ -104,7 +159,7 @@ function transformTodoKeywords(tree: Root): void {
       // Add header classes if changes were made or if no class exists
       if (hasChanges || !node.properties?.className) {
         node.properties = node.properties || {};
-        node.properties.className = getHeaderClass(headerLevel);
+        node.properties.className = getHeaderClass(headerLevel, customClasses);
       }
     }
 
@@ -118,7 +173,7 @@ function transformTodoKeywords(tree: Root): void {
         const textChild = node.children.find(child => child.type === "text") as Text;
         if (textChild) {
           const keyword = textChild.value.trim();
-          node.properties.className = getTodoKeywordColor(keyword);
+          node.properties.className = getTodoKeywordColor(keyword, customClasses);
         }
       }
     }
@@ -126,7 +181,7 @@ function transformTodoKeywords(tree: Root): void {
 }
 
 // Transform priority indicators [#A], [#B], [#C]
-function transformPriorities(tree: Root): void {
+function transformPriorities(tree: Root, customClasses?: CustomClasses): void {
   visit(tree, "text", (node: Text, index, parent) => {
     if (!parent || !Array.isArray(parent.children)) return;
 
@@ -141,7 +196,7 @@ function transformPriorities(tree: Root): void {
       const afterText = node.value.substring(match.index + fullMatch.length);
       
       const prioritySpan = createElement("span", {
-        className: getPriorityColor(priority),
+        className: getPriorityColor(priority, customClasses),
       }, [createText(`#${priority}`)]);
 
       const replacement = [];
@@ -160,8 +215,20 @@ function transformPriorities(tree: Root): void {
   });
 }
 
+// Default timestamp classes
+const defaultTimestampClasses = {
+  range: ["inline-flex", "items-center", "gap-1", "px-3", "py-1", "bg-blue-50", "text-blue-700", "border", "border-blue-200", "rounded-lg", "text-sm", "font-medium"],
+  active: ["inline-flex", "items-center", "gap-1", "px-2", "py-1", "bg-green-50", "text-green-700", "border", "border-green-200", "rounded-md", "text-sm"],
+  inactive: ["inline-flex", "items-center", "gap-1", "px-2", "py-1", "bg-gray-50", "text-gray-600", "border", "border-gray-200", "rounded-md", "text-sm"],
+  fallback: ["inline-flex", "items-center", "gap-1", "px-2", "py-1", "bg-blue-50", "text-blue-600", "border", "border-blue-200", "rounded-md", "text-sm"],
+  rangeIcon: ["w-3", "h-3"],
+  arrowIcon: ["w-3", "h-3", "text-blue-500"],
+  clockIcon: ["w-3", "h-3"],
+  calendarIcon: ["w-3", "h-3"],
+};
+
 // Transform timestamp spans
-function transformTimestamps(tree: Root): void {
+function transformTimestamps(tree: Root, customClasses?: CustomClasses): void {
   visit(tree, "element", (node: Element) => {
     if (node.tagName === "span" && 
         node.properties?.className && 
@@ -183,10 +250,10 @@ function transformTimestamps(tree: Root): void {
           const startTime = rangeParts[0].trim().replace(/^[<[]|[>\]]$/g, "");
           const endTime = rangeParts[1].trim().replace(/^[<[]|[>\]]$/g, "");
 
-          node.properties.className = ["inline-flex", "items-center", "gap-1", "px-3", "py-1", "bg-blue-50", "text-blue-700", "border", "border-blue-200", "rounded-lg", "text-sm", "font-medium"];
+          node.properties.className = customClasses?.timestamps?.range || defaultTimestampClasses.range;
           node.children = [
             createElement("svg", {
-              className: ["w-3", "h-3"],
+              className: customClasses?.timestamps?.rangeIcon || defaultTimestampClasses.rangeIcon,
               fill: "none" as const,
               stroke: "currentColor" as const,
               viewBox: "0 0 24 24" as const,
@@ -200,7 +267,7 @@ function transformTimestamps(tree: Root): void {
             ]),
             createElement("span", {}, [createText(startTime)]),
             createElement("svg", {
-              className: ["w-3", "h-3", "text-blue-500"],
+              className: customClasses?.timestamps?.arrowIcon || defaultTimestampClasses.arrowIcon,
               fill: "none" as const,
               stroke: "currentColor" as const,
               viewBox: "0 0 24 24" as const,
@@ -217,10 +284,10 @@ function transformTimestamps(tree: Root): void {
         }
       } else if (isActive) {
         const cleanContent = content.replace(/^[<[]|[>\]]$/g, "");
-        node.properties.className = ["inline-flex", "items-center", "gap-1", "px-2", "py-1", "bg-green-50", "text-green-700", "border", "border-green-200", "rounded-md", "text-sm"];
+        node.properties.className = customClasses?.timestamps?.active || defaultTimestampClasses.active;
         node.children = [
           createElement("svg", {
-            className: ["w-3", "h-3"],
+            className: customClasses?.timestamps?.clockIcon || defaultTimestampClasses.clockIcon,
             fill: "none" as const,
             stroke: "currentColor" as const,
             viewBox: "0 0 24 24" as const,
@@ -236,10 +303,10 @@ function transformTimestamps(tree: Root): void {
         ];
       } else if (isInactive) {
         const cleanContent = content.replace(/^[<[]|[>\]]$/g, "");
-        node.properties.className = ["inline-flex", "items-center", "gap-1", "px-2", "py-1", "bg-gray-50", "text-gray-600", "border", "border-gray-200", "rounded-md", "text-sm"];
+        node.properties.className = customClasses?.timestamps?.inactive || defaultTimestampClasses.inactive;
         node.children = [
           createElement("svg", {
-            className: ["w-3", "h-3"],
+            className: customClasses?.timestamps?.calendarIcon || defaultTimestampClasses.calendarIcon,
             fill: "none" as const,
             stroke: "currentColor" as const,
             viewBox: "0 0 24 24" as const,
@@ -256,10 +323,10 @@ function transformTimestamps(tree: Root): void {
       } else {
         // Fallback styling
         const cleanContent = content.replace(/^[<[]|[>]]$/g, "");
-        node.properties.className = ["inline-flex", "items-center", "gap-1", "px-2", "py-1", "bg-blue-50", "text-blue-600", "border", "border-blue-200", "rounded-md", "text-sm"];
+        node.properties.className = customClasses?.timestamps?.fallback || defaultTimestampClasses.fallback;
         node.children = [
           createElement("svg", {
-            className: ["w-3", "h-3"],
+            className: customClasses?.timestamps?.clockIcon || defaultTimestampClasses.clockIcon,
             fill: "none" as const,
             stroke: "currentColor" as const,
             viewBox: "0 0 24 24" as const,
@@ -278,8 +345,28 @@ function transformTimestamps(tree: Root): void {
   });
 }
 
+// Default element classes
+const defaultElementClasses = {
+  p: ["text-gray-700", "leading-relaxed", "mb-4"],
+  ul: ["list-disc", "list-inside", "mb-4", "ml-4", "space-y-1"],
+  ol: ["list-decimal", "list-inside", "mb-4", "ml-4", "space-y-1"],
+  li: ["text-gray-700"],
+  code: ["bg-gray-100", "text-gray-800", "px-1.5", "py-0.5", "rounded", "text-sm", "font-mono"],
+  pre: ["bg-gray-900", "text-gray-100", "p-4", "rounded-lg", "overflow-x-auto", "mb-4", "text-sm"],
+  preShiki: ["rounded-lg", "overflow-x-auto", "mb-4", "text-sm", "border", "border-gray-200", "shadow-sm", "p-4"],
+  table: ["min-w-full", "divide-y", "divide-gray-200", "border"],
+  th: ["px-6", "py-3", "text-left", "text-xs", "font-medium", "text-gray-500", "uppercase", "tracking-wider"],
+  td: ["px-6", "py-4", "whitespace-nowrap", "text-sm", "text-gray-900"],
+  thead: ["bg-gray-50"],
+  tbody: ["bg-white", "divide-y", "divide-gray-200"],
+  a: ["text-blue-600", "hover:text-blue-800", "underline"],
+  strong: ["font-semibold", "text-gray-900"],
+  em: ["italic"],
+  hr: ["border-gray-300", "my-8"],
+};
+
 // Apply basic Tailwind CSS classes
-function applyBasicTailwindClasses(tree: Root, _enableSyntaxHighlight: boolean): void {
+function applyBasicTailwindClasses(tree: Root, _enableSyntaxHighlight: boolean, customClasses?: CustomClasses): void {
   visit(tree, "element", (node: Element) => {
     // Skip elements that already have classes to avoid conflicts
     const hasClasses = node.properties?.className && 
@@ -293,61 +380,61 @@ function applyBasicTailwindClasses(tree: Root, _enableSyntaxHighlight: boolean):
       case "h1":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = getHeaderClass(1);
+          node.properties.className = getHeaderClass(1, customClasses);
         }
         break;
       case "h2":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = getHeaderClass(2);
+          node.properties.className = getHeaderClass(2, customClasses);
         }
         break;
       case "h3":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = getHeaderClass(3);
+          node.properties.className = getHeaderClass(3, customClasses);
         }
         break;
       case "h4":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = getHeaderClass(4);
+          node.properties.className = getHeaderClass(4, customClasses);
         }
         break;
       case "h5":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = getHeaderClass(5);
+          node.properties.className = getHeaderClass(5, customClasses);
         }
         break;
       case "h6":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = getHeaderClass(6);
+          node.properties.className = getHeaderClass(6, customClasses);
         }
         break;
       case "p":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["text-gray-700", "leading-relaxed", "mb-4"];
+          node.properties.className = customClasses?.elements?.p || defaultElementClasses.p;
         }
         break;
       case "ul":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["list-disc", "list-inside", "mb-4", "ml-4", "space-y-1"];
+          node.properties.className = customClasses?.elements?.ul || defaultElementClasses.ul;
         }
         break;
       case "ol":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["list-decimal", "list-inside", "mb-4", "ml-4", "space-y-1"];
+          node.properties.className = customClasses?.elements?.ol || defaultElementClasses.ol;
         }
         break;
       case "li":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["text-gray-700"];
+          node.properties.className = customClasses?.elements?.li || defaultElementClasses.li;
         }
         break;
       case "code":
@@ -358,7 +445,7 @@ function applyBasicTailwindClasses(tree: Root, _enableSyntaxHighlight: boolean):
         
         if (!classNames.some(cls => typeof cls === 'string' && cls.includes("shiki"))) {
           node.properties = node.properties || {};
-          node.properties.className = ["bg-gray-100", "text-gray-800", "px-1.5", "py-0.5", "rounded", "text-sm", "font-mono"];
+          node.properties.className = customClasses?.elements?.code || defaultElementClasses.code;
         }
         break;
       case "pre":
@@ -372,64 +459,64 @@ function applyBasicTailwindClasses(tree: Root, _enableSyntaxHighlight: boolean):
           const existingClasses = Array.isArray(node.properties.className) 
             ? node.properties.className.filter((cls): cls is string => typeof cls === 'string')
             : [node.properties.className].filter((cls): cls is string => typeof cls === 'string');
-          node.properties.className = [...existingClasses, "rounded-lg", "overflow-x-auto", "mb-4", "text-sm", "border", "border-gray-200", "shadow-sm", "p-4"];
+          node.properties.className = [...existingClasses, ...(customClasses?.elements?.preShiki || defaultElementClasses.preShiki)];
         } else if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["bg-gray-900", "text-gray-100", "p-4", "rounded-lg", "overflow-x-auto", "mb-4", "text-sm"];
+          node.properties.className = customClasses?.elements?.pre || defaultElementClasses.pre;
         }
         break;
       case "table":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["min-w-full", "divide-y", "divide-gray-200", "border"];
+          node.properties.className = customClasses?.elements?.table || defaultElementClasses.table;
         }
         break;
       case "th":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["px-6", "py-3", "text-left", "text-xs", "font-medium", "text-gray-500", "uppercase", "tracking-wider"];
+          node.properties.className = customClasses?.elements?.th || defaultElementClasses.th;
         }
         break;
       case "td":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["px-6", "py-4", "whitespace-nowrap", "text-sm", "text-gray-900"];
+          node.properties.className = customClasses?.elements?.td || defaultElementClasses.td;
         }
         break;
       case "thead":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["bg-gray-50"];
+          node.properties.className = customClasses?.elements?.thead || defaultElementClasses.thead;
         }
         break;
       case "tbody":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["bg-white", "divide-y", "divide-gray-200"];
+          node.properties.className = customClasses?.elements?.tbody || defaultElementClasses.tbody;
         }
         break;
       case "a":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["text-blue-600", "hover:text-blue-800", "underline"];
+          node.properties.className = customClasses?.elements?.a || defaultElementClasses.a;
         }
         break;
       case "strong":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["font-semibold", "text-gray-900"];
+          node.properties.className = customClasses?.elements?.strong || defaultElementClasses.strong;
         }
         break;
       case "em":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["italic"];
+          node.properties.className = customClasses?.elements?.em || defaultElementClasses.em;
         }
         break;
       case "hr":
         if (!hasClasses) {
           node.properties = node.properties || {};
-          node.properties.className = ["border-gray-300", "my-8"];
+          node.properties.className = customClasses?.elements?.hr || defaultElementClasses.hr;
         }
         break;
     }
@@ -438,14 +525,14 @@ function applyBasicTailwindClasses(tree: Root, _enableSyntaxHighlight: boolean):
 
 // Main plugin function
 export function rehypeOrgEnhancements(options: PluginOptions = {}) {
-  const { enableSyntaxHighlight = true } = options;
+  const { enableSyntaxHighlight = true, customClasses } = options;
 
   return function transformer(tree: Root) {
     // Apply transformations in order
-    transformTodoKeywords(tree);
-    transformPriorities(tree);
-    transformTimestamps(tree);
-    applyBasicTailwindClasses(tree, enableSyntaxHighlight);
+    transformTodoKeywords(tree, customClasses);
+    transformPriorities(tree, customClasses);
+    transformTimestamps(tree, customClasses);
+    applyBasicTailwindClasses(tree, enableSyntaxHighlight, customClasses);
     
     return tree;
   };
