@@ -439,12 +439,12 @@ function getPriorityColor(priority: string): string {
 // Helper function to get header classes by level
 function getHeaderClass(level: string): string {
   const classes: Record<string, string> = {
-    "1": "text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 border-b border-gray-200 pb-2",
-    "2": "text-lg font-semibold text-gray-800 mb-3 mt-5 border-l-4 border-blue-500 pl-3",
-    "3": "text-base font-semibold text-gray-800 mb-2 mt-4 border-l-2 border-green-500 pl-2",
-    "4": "text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-['▶'] before:text-orange-500 before:mr-2 before:text-xs",
-    "5": "text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-['•'] before:text-purple-500 before:mr-2 before:font-bold",
-    "6": "text-sm font-medium text-gray-600 mb-1 mt-2 italic",
+    "1": "text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 relative before:content-['#'] before:text-gray-400 before:mr-2 before:font-mono",
+    "2": "text-lg font-semibold text-gray-800 mb-3 mt-5 relative before:content-['##'] before:text-gray-400 before:mr-2 before:font-mono",
+    "3": "text-base font-semibold text-gray-800 mb-2 mt-4 relative before:content-['###'] before:text-gray-400 before:mr-2 before:font-mono",
+    "4": "text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-['####'] before:text-gray-400 before:mr-2 before:font-mono",
+    "5": "text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-['#####'] before:text-gray-400 before:mr-2 before:font-mono",
+    "6": "text-sm font-medium text-gray-600 mb-1 mt-2 relative before:content-['######'] before:text-gray-400 before:mr-2 before:font-mono",
   };
   return classes[level] || "text-sm font-medium text-gray-700";
 }
@@ -569,27 +569,27 @@ function addEnhancedTailwindClasses(html: string, _enableSyntaxHighlight = true)
       // Headers (only add classes if not already present)
       .replace(
         /<h1(?![^>]*class=)([^>]*)>/g,
-        '<h1$1 class="text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 border-b border-gray-200 pb-2">',
+        '<h1$1 class="text-xl font-bold text-gray-900 mb-3 mt-6 first:mt-0 relative before:content-[\'#\'] before:text-gray-400 before:mr-2 before:font-mono">',
       )
       .replace(
         /<h2(?![^>]*class=)([^>]*)>/g,
-        '<h2$1 class="text-lg font-semibold text-gray-800 mb-3 mt-5 border-l-4 border-blue-500 pl-3">',
+        '<h2$1 class="text-lg font-semibold text-gray-800 mb-3 mt-5 relative before:content-[\'##\'] before:text-gray-400 before:mr-2 before:font-mono">',
       )
       .replace(
         /<h3(?![^>]*class=)([^>]*)>/g,
-        '<h3$1 class="text-base font-semibold text-gray-800 mb-2 mt-4 border-l-2 border-green-500 pl-2">',
+        '<h3$1 class="text-base font-semibold text-gray-800 mb-2 mt-4 relative before:content-[\'###\'] before:text-gray-400 before:mr-2 before:font-mono">',
       )
       .replace(
         /<h4(?![^>]*class=)([^>]*)>/g,
-        '<h4$1 class="text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'▶\'] before:text-orange-500 before:mr-2 before:text-xs">',
+        '<h4$1 class="text-base font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'####\'] before:text-gray-400 before:mr-2 before:font-mono">',
       )
       .replace(
         /<h5(?![^>]*class=)([^>]*)>/g,
-        '<h5$1 class="text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'•\'] before:text-purple-500 before:mr-2 before:font-bold">',
+        '<h5$1 class="text-sm font-medium text-gray-700 mb-2 mt-3 relative before:content-[\'#####\'] before:text-gray-400 before:mr-2 before:font-mono">',
       )
       .replace(
         /<h6(?![^>]*class=)([^>]*)>/g,
-        '<h6$1 class="text-sm font-medium text-gray-600 mb-1 mt-2 italic">',
+        '<h6$1 class="text-sm font-medium text-gray-600 mb-1 mt-2 relative before:content-[\'######\'] before:text-gray-400 before:mr-2 before:font-mono">',
       )
       // Paragraphs
       .replace(/<p([^>]*)>/g, '<p$1 class="text-gray-700 leading-relaxed mb-4">')
