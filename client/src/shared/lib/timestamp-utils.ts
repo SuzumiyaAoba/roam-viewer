@@ -163,6 +163,6 @@ export function getTimestampLabel(type: TimestampEntry["type"]): string {
     case "closed":
       return "CLOSED";
     default:
-      return type.toUpperCase();
+      return (type as string).toUpperCase();
   }
 }

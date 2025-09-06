@@ -3,7 +3,6 @@ import rehypeShiki from "@shikijs/rehype";
 import { useEffect, useState } from "react";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
-import remarkMath from "remark-math";
 import { unified } from "unified";
 import uniorgParse from "uniorg-parse";
 import uniorg2rehype from "uniorg-rehype";
@@ -345,7 +344,7 @@ async function parseOrgContent(
     // Create uniorg processor with Shiki syntax highlighting and KaTeX
     const processorBuilder = unified()
       .use(uniorgParse)
-      .use(uniorg2rehype, { allowDangerousHtml: true });
+      .use(uniorg2rehype as any, { allowDangerousHtml: true });
 
     // Add KaTeX math rendering
     processorBuilder.use(rehypeKatex);

@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import rehypeHighlight from "rehype-highlight";
@@ -17,103 +17,9 @@ import { parseTimestamps } from "../../shared/lib/timestamp-utils";
 import { TodoIcon } from "../../shared/lib/todo-utils";
 import {
   replaceFootnoteReferencesWithLinks,
-  parseFootnoteDefinitions,
   getFootnoteDefId,
 } from "../../shared/lib/footnote-utils";
 
-// Component to render org content with inline footnote links
-function InlineOrgRenderer({
-  content,
-  footnoteRefs,
-  footnoteMarkers,
-  referenceMap,
-  enableSyntaxHighlight,
-}: {
-  content: string;
-  footnoteRefs: string[];
-  footnoteMarkers: string[];
-  referenceMap: Map<string, string[]>;
-  enableSyntaxHighlight: boolean;
-}) {
-  const orgRef = useRef<HTMLDivElement>(null);
-
-  // Create content with markers replacing footnote references
-  const contentWithMarkers = React.useMemo(() => {
-    let processedContent = content;
-    footnoteRefs.forEach((fnRef, index) => {
-      const marker = footnoteMarkers[index];
-      // Replace first occurrence of each footnote reference
-      processedContent = processedContent.replace(fnRef, marker);
-    });
-    return processedContent;
-  }, [content, footnoteRefs, footnoteMarkers]);
-
-  useEffect(() => {
-    if (!orgRef.current) return;
-
-    const replaceMarkers = () => {
-      if (!orgRef.current) return;
-
-      footnoteMarkers.forEach((marker, index) => {
-        const fnRef = footnoteRefs[index];
-        const labelMatch = fnRef.match(/\[fn:([^\]]+)\]/);
-
-        if (!labelMatch) return;
-
-        const label = labelMatch[1];
-        const refIds = referenceMap.get(label);
-        const refId = refIds?.[0] || `fn-ref-${label}-1`;
-
-        // Find the marker text in the DOM
-        const walker = document.createTreeWalker(orgRef.current!, NodeFilter.SHOW_TEXT, null);
-
-        let textNode;
-        while ((textNode = walker.nextNode())) {
-          const nodeContent = textNode.textContent || "";
-          if (nodeContent.includes(marker)) {
-            const parent = textNode.parentNode;
-            if (!parent) continue;
-
-            const parts = nodeContent.split(marker);
-
-            // Create before text
-            if (parts[0]) {
-              parent.insertBefore(document.createTextNode(parts[0]), textNode);
-            }
-
-            // Create anchor link
-            const anchor = document.createElement("a");
-            anchor.href = `#fn-def-${label}`;
-            anchor.className =
-              "footnote-ref text-blue-600 bg-blue-50 px-1 rounded text-sm hover:bg-blue-100 cursor-pointer no-underline";
-            anchor.id = refId;
-            anchor.textContent = `[${label}]`;
-            parent.insertBefore(anchor, textNode);
-
-            // Create after text
-            if (parts[1]) {
-              parent.insertBefore(document.createTextNode(parts[1]), textNode);
-            }
-
-            // Remove original text node
-            parent.removeChild(textNode);
-            break; // Process only the first occurrence
-          }
-        }
-      });
-    };
-
-    // Use longer timeout to ensure OrgRenderer has completed rendering
-    const timer = setTimeout(replaceMarkers, 100);
-    return () => clearTimeout(timer);
-  }, [contentWithMarkers, footnoteMarkers, footnoteRefs, referenceMap]);
-
-  return (
-    <div ref={orgRef} style={{ display: "contents" }}>
-      <OrgRenderer content={contentWithMarkers} enableSyntaxHighlight={enableSyntaxHighlight} />
-    </div>
-  );
-}
 
 import { Layout } from "../../widgets/layout";
 
@@ -492,7 +398,7 @@ export function NodeDetailPage() {
                   (() => {
                     // Extract footnote reference map for back-links from cleaned content
                     const cleanedContent = removeFrontmatter(node.content);
-                    const { sections, footnotes, hasLogbook } =
+                    const { sections, footnotes } =
                       splitContentWithTimestamps(cleanedContent);
                     const { referenceMap } = replaceFootnoteReferencesWithLinks(cleanedContent);
 

@@ -55,7 +55,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
                   </>
                 )}
                 <span
-                  className={`px-2 py-1 rounded-md text-xs font-medium border ${getStateColor(entry.toState)}`}
+                  className={`px-2 py-1 rounded-md text-xs font-medium border ${getStateColor(entry.toState || '')}`}
                 >
                   {entry.toState}
                 </span>
@@ -150,7 +150,6 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
 
   const totalHours = Math.floor(totalDuration / (1000 * 60 * 60));
   const totalMinutes = Math.floor((totalDuration % (1000 * 60 * 60)) / (1000 * 60));
-  const ongoingCount = clockEntries.filter((entry) => !entry.endDate).length;
 
   // 最新のエントリーを取得（状態変更を優先）
   const latestEntry = stateEntries[0] || entries[0];
@@ -190,7 +189,7 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-slate-600">最新状態:</span>
                   <span
-                    className={`px-2 py-1 rounded text-xs font-medium border ${getStateColor(latestEntry.toState)}`}
+                    className={`px-2 py-1 rounded text-xs font-medium border ${getStateColor(latestEntry.toState || '')}`}
                   >
                     {latestEntry.toState}
                   </span>
