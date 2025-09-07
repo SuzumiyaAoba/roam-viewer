@@ -129,9 +129,7 @@ describe("ID generation functions", () => {
   });
 });
 
-// Temporarily disabled due to bun test hanging issue
-// TODO: Re-enable after identifying root cause
-describe.skip("Real org-mode content", () => {
+describe("Real org-mode content", () => {
   it("should handle actual org-mode footnote format", () => {
     const content = `** Footnotes
 
