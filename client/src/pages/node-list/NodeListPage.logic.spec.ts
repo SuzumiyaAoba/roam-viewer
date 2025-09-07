@@ -32,7 +32,6 @@ describe("NodeListPage multi-select logic", () => {
     });
 
     test("should clear all selections", () => {
-      const _currentSelection = new Set(["node1", "node2", "node3"]);
       const result = clearAllSelections();
       expect(result.size).toBe(0);
     });

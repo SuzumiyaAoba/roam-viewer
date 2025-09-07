@@ -9,7 +9,7 @@ import {
   type CustomClasses,
   type PluginOptions,
 } from "./rehype-org-enhancements";
-import type { Root, Element } from "hast";
+import type { Root, Element, Text, Properties, ElementContent } from "hast";
 
 // Helper function to create a mock hast tree
 function createMockTree(elements: Element[]): Root {
@@ -20,7 +20,7 @@ function createMockTree(elements: Element[]): Root {
 }
 
 // Helper function to create an element
-function createElement(tagName: string, properties: Record<string, unknown> = {}, children: (Element | Text)[] = []): Element {
+function createElement(tagName: string, properties: Properties = {}, children: ElementContent[] = []): Element {
   return {
     type: "element",
     tagName,
@@ -30,7 +30,7 @@ function createElement(tagName: string, properties: Record<string, unknown> = {}
 }
 
 // Helper function to create a text node
-function createText(value: string) {
+function createText(value: string): Text {
   return {
     type: "text",
     value,
@@ -41,38 +41,38 @@ describe("rehype-org-enhancements", () => {
   describe("Plugin Configuration", () => {
     test("should accept default options", () => {
       expect(() => {
-        const plugin = rehypeOrgEnhancements();
+        const plugin = (rehypeOrgEnhancements as any)();
         expect(typeof plugin).toBe("function");
       }).not.toThrow();
     });
 
     test("should validate options correctly", () => {
       expect(() => {
-        rehypeOrgEnhancements({
+        (rehypeOrgEnhancements as any)({
           enableSyntaxHighlight: "invalid" as unknown,
         });
       }).toThrow("enableSyntaxHighlight must be a boolean");
 
       expect(() => {
-        rehypeOrgEnhancements({
+        (rehypeOrgEnhancements as any)({
           customClasses: "invalid" as unknown,
         });
       }).toThrow("customClasses must be an object");
 
       expect(() => {
-        rehypeOrgEnhancements({
+        (rehypeOrgEnhancements as any)({
           validate: "invalid" as unknown,
         });
       }).toThrow("validate must be a boolean");
 
       expect(() => {
-        rehypeOrgEnhancements({
+        (rehypeOrgEnhancements as any)({
           todoKeywords: "invalid" as unknown,
         });
       }).toThrow("todoKeywords must be an array");
 
       expect(() => {
-        rehypeOrgEnhancements({
+        (rehypeOrgEnhancements as any)({
           priorityLevels: [123] as unknown,
         });
       }).toThrow("All priorityLevels must be strings");
@@ -80,7 +80,7 @@ describe("rehype-org-enhancements", () => {
 
     test("should disable validation when requested", () => {
       expect(() => {
-        const plugin = rehypeOrgEnhancements({
+        const plugin = (rehypeOrgEnhancements as any)({
           validate: false,
           // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
           enableSyntaxHighlight: "invalid" as any,
@@ -96,52 +96,52 @@ describe("rehype-org-enhancements", () => {
       };
 
       expect(() => {
-        rehypeOrgEnhancements(customOptions);
+        (rehypeOrgEnhancements as any)(customOptions);
       }).not.toThrow();
     });
   });
 
   describe("Plugin Execution", () => {
     test("should return transformer function", () => {
-      const plugin = rehypeOrgEnhancements();
+      const plugin = (rehypeOrgEnhancements as any)();
       expect(typeof plugin).toBe("function");
     });
 
-    test("should handle invalid tree gracefully in validation mode", () => {
-      const transformer = rehypeOrgEnhancements({ validate: true });
+    test("should handle invalid tree gracefully in validation mode", async () => {
+      const processor = unified().use(rehypeOrgEnhancements, { validate: true });
 
-      expect(() => {
+      await expect(async () => {
         // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
-        transformer(null as any);
-      }).toThrow("Expected root node");
+        await processor.run(null as any);
+      }).rejects.toThrow("Expected root node");
     });
 
-    test("should handle invalid tree gracefully in non-validation mode", () => {
-      const transformer = rehypeOrgEnhancements({ validate: false });
+    test("should handle invalid tree gracefully in non-validation mode", async () => {
+      const processor = unified().use(rehypeOrgEnhancements, { validate: false });
 
-      expect(() => {
+      await expect(async () => {
         // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
-        const result = transformer(null as any);
+        const result = await processor.run(null as any);
         expect(result).toBe(null);
-      }).not.toThrow();
+      }).resolves.not.toThrow();
     });
 
-    test("should process valid tree successfully", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should process valid tree successfully", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("p", {}, [createText("Hello world")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree);
       expect(result).toBeTruthy();
-      expect(result.type).toBe("root");
+      expect((result as Root).type).toBe("root");
     });
   });
 
   describe("TODO Keywords Transformation", () => {
-    test("should transform TODO keywords in headers", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should transform TODO keywords in headers", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Fix the bug")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const header = result.children[0] as Element;
 
       expect(header.properties?.className).toEqual(
@@ -154,44 +154,44 @@ describe("rehype-org-enhancements", () => {
       );
     });
 
-    test("should use custom TODO keyword classes", () => {
+    test("should use custom TODO keyword classes", async () => {
       const customClasses: CustomClasses = {
         todoKeywords: {
           TODO: ["custom-todo-class"],
         },
       };
 
-      const transformer = rehypeOrgEnhancements({ customClasses });
+      const processor = unified().use(rehypeOrgEnhancements, { customClasses });
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Fix the bug")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const header = result.children[0] as Element;
       const todoSpan = header.children[0] as Element;
 
       expect(todoSpan.properties?.className).toEqual(["custom-todo-class"]);
     });
 
-    test("should handle custom TODO keywords", () => {
-      const transformer = rehypeOrgEnhancements({
+    test("should handle custom TODO keywords", async () => {
+      const processor = unified().use(rehypeOrgEnhancements, {
         todoKeywords: ["CUSTOM", "TASK"],
       });
 
       const tree = createMockTree([createElement("h1", {}, [createText("CUSTOM Fix the bug")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const header = result.children[0] as Element;
       const todoSpan = header.children[0] as Element;
 
       expect((todoSpan.children[0] as Text).value).toBe("CUSTOM");
     });
 
-    test("should transform standalone TODO spans from uniorg", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should transform standalone TODO spans from uniorg", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("span", { className: ["todo-keyword", "TODO"] }, [createText("TODO")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -201,11 +201,11 @@ describe("rehype-org-enhancements", () => {
   });
 
   describe("Priority Transformation", () => {
-    test("should transform priority indicators", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should transform priority indicators", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("p", {}, [createText("Task [#A] is important")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const paragraph = result.children[0] as Element;
 
       // Should have: "Task ", priority span, " is important"
@@ -219,39 +219,39 @@ describe("rehype-org-enhancements", () => {
       expect((prioritySpan.children[0] as Text).value).toBe("#A");
     });
 
-    test("should use custom priority classes", () => {
+    test("should use custom priority classes", async () => {
       const customClasses: CustomClasses = {
         priorities: {
           A: ["custom-priority-a"],
         },
       };
 
-      const transformer = rehypeOrgEnhancements({ customClasses });
+      const processor = unified().use(rehypeOrgEnhancements, { customClasses });
       const tree = createMockTree([createElement("p", {}, [createText("Task [#A] is important")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const paragraph = result.children[0] as Element;
       const prioritySpan = paragraph.children[1] as Element;
 
       expect(prioritySpan.properties?.className).toEqual(["custom-priority-a"]);
     });
 
-    test("should handle custom priority levels", () => {
-      const transformer = rehypeOrgEnhancements({
+    test("should handle custom priority levels", async () => {
+      const processor = unified().use(rehypeOrgEnhancements, {
         priorityLevels: ["X", "Y", "Z"],
       });
 
       const tree = createMockTree([createElement("p", {}, [createText("Task [#X] is important")])]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const paragraph = result.children[0] as Element;
       const prioritySpan = paragraph.children[1] as Element;
 
       expect((prioritySpan.children[0] as Text).value).toBe("#X");
     });
 
-    test("should ignore unrecognized priority levels", () => {
-      const transformer = rehypeOrgEnhancements({
+    test("should ignore unrecognized priority levels", async () => {
+      const processor = unified().use(rehypeOrgEnhancements, {
         priorityLevels: ["A", "B"],
       });
 
@@ -259,7 +259,7 @@ describe("rehype-org-enhancements", () => {
         createElement("p", {}, [createText("Task [#Z] is not recognized")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const paragraph = result.children[0] as Element;
 
       // Should remain as single text node since Z is not recognized
@@ -269,13 +269,13 @@ describe("rehype-org-enhancements", () => {
   });
 
   describe("Timestamp Transformation", () => {
-    test("should transform active timestamps", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should transform active timestamps", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("span", { className: ["timestamp"] }, [createText("<2025-01-15 Wed>")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -288,13 +288,13 @@ describe("rehype-org-enhancements", () => {
       expect((span.children[1] as Text).value).toBe("2025-01-15 Wed");
     });
 
-    test("should transform inactive timestamps", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should transform inactive timestamps", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("span", { className: ["timestamp"] }, [createText("[2025-01-15 Wed]")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -302,15 +302,15 @@ describe("rehype-org-enhancements", () => {
       );
     });
 
-    test("should transform timestamp ranges", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should transform timestamp ranges", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("span", { className: ["timestamp"] }, [
           createText("<2025-01-15 Wed>--<2025-01-16 Thu>"),
         ]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -329,7 +329,7 @@ describe("rehype-org-enhancements", () => {
       );
     });
 
-    test("should use custom timestamp classes", () => {
+    test("should use custom timestamp classes", async () => {
       const customClasses: CustomClasses = {
         timestamps: {
           active: ["custom-active-timestamp"],
@@ -337,12 +337,12 @@ describe("rehype-org-enhancements", () => {
         },
       };
 
-      const transformer = rehypeOrgEnhancements({ customClasses });
+      const processor = unified().use(rehypeOrgEnhancements, { customClasses });
       const tree = createMockTree([
         createElement("span", { className: ["timestamp"] }, [createText("<2025-01-15 Wed>")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const span = result.children[0] as Element;
       const clockIcon = span.children[0] as Element;
 
@@ -352,15 +352,15 @@ describe("rehype-org-enhancements", () => {
   });
 
   describe("Basic Element Classes", () => {
-    test("should apply default classes to elements", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should apply default classes to elements", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("p", {}, [createText("Paragraph")]),
         createElement("ul", {}, [createElement("li", {}, [createText("Item")])]),
         createElement("code", {}, [createText("code")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
 
       const paragraph = result.children[0] as Element;
       const list = result.children[1] as Element;
@@ -379,7 +379,7 @@ describe("rehype-org-enhancements", () => {
       );
     });
 
-    test("should use custom element classes", () => {
+    test("should use custom element classes", async () => {
       const customClasses: CustomClasses = {
         elements: {
           p: ["custom-paragraph"],
@@ -388,42 +388,42 @@ describe("rehype-org-enhancements", () => {
         },
       };
 
-      const transformer = rehypeOrgEnhancements({ customClasses });
+      const processor = unified().use(rehypeOrgEnhancements, { customClasses });
       const tree = createMockTree([
         createElement("p", {}, [createText("Paragraph")]),
         createElement("ul", {}, [createElement("li", {}, [createText("Item")])]),
         createElement("code", {}, [createText("code")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
 
       expect((result.children[0] as Element).properties?.className).toEqual(["custom-paragraph"]);
       expect((result.children[1] as Element).properties?.className).toEqual(["custom-list"]);
       expect((result.children[2] as Element).properties?.className).toEqual(["custom-code"]);
     });
 
-    test("should not override existing classes on elements (except pre and code)", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should not override existing classes on elements (except pre and code)", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("p", { className: ["existing-class"] }, [createText("Paragraph")]),
         createElement("div", { className: ["existing-class"] }, [createText("Div")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
 
       expect((result.children[0] as Element).properties?.className).toEqual(["existing-class"]);
       expect((result.children[1] as Element).properties?.className).toEqual(["existing-class"]);
     });
 
-    test("should handle Shiki pre elements specially", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should handle Shiki pre elements specially", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("pre", { className: ["shiki", "github-light"] }, [
           createElement("code", {}, [createText("console.log('hello');")]),
         ]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       const pre = result.children[0] as Element;
 
       expect(pre.properties?.className).toEqual(
@@ -431,15 +431,15 @@ describe("rehype-org-enhancements", () => {
       );
     });
 
-    test("should apply header classes by level", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should apply header classes by level", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("h1", {}, [createText("Header 1")]),
         createElement("h3", {}, [createText("Header 3")]),
         createElement("h6", {}, [createText("Header 6")]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
 
       expect((result.children[0] as Element).properties?.className).toEqual(
         expect.arrayContaining(["text-xl", "font-bold"]),
@@ -454,8 +454,8 @@ describe("rehype-org-enhancements", () => {
   });
 
   describe("Error Handling", () => {
-    test("should handle errors gracefully in validation mode", () => {
-      const transformer = rehypeOrgEnhancements({ validate: true });
+    test("should handle errors gracefully in validation mode", async () => {
+      const processor = unified().use(rehypeOrgEnhancements, { validate: true });
 
       // Create an invalid tree that might cause errors
       const tree = createMockTree([
@@ -464,15 +464,15 @@ describe("rehype-org-enhancements", () => {
       ]);
 
       // In validation mode with malformed input, expect a handled error
-      expect(() => {
-        transformer(tree);
-      }).toThrow(/Error transforming TODO keywords/); // Should wrap errors properly
+      await expect(async () => {
+        await processor.run(tree);
+      }).rejects.toThrow(/Error transforming TODO keywords/); // Should wrap errors properly
     });
 
-    test("should continue processing in non-validation mode even with errors", () => {
+    test("should continue processing in non-validation mode even with errors", async () => {
       const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const transformer = rehypeOrgEnhancements({ validate: false });
+      const processor = unified().use(rehypeOrgEnhancements, { validate: false });
 
       // Create a tree that might cause processing errors
       const tree = createMockTree([
@@ -483,13 +483,13 @@ describe("rehype-org-enhancements", () => {
       ]);
 
       let result: unknown;
-      expect(() => {
-        result = transformer(tree);
-      }).not.toThrow();
+      await expect(async () => {
+        result = await processor.run(tree);
+      }).resolves.not.toThrow();
 
       // First and third elements should still be processed
       expect(result).toBeTruthy();
-      expect(result.children).toHaveLength(3);
+      expect((result as Root).children).toHaveLength(3);
 
       consoleSpy.mockRestore();
     });
@@ -517,8 +517,8 @@ describe("rehype-org-enhancements", () => {
       expect(todoSpan.properties?.className).toEqual(["test-todo-class"]);
     });
 
-    test("should handle complex org-mode content", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should handle complex org-mode content", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("h1", {}, [createText("TODO [#A] Important Task")]),
         createElement("p", {}, [createText("This task has priority [#A] and is urgent.")]),
@@ -529,7 +529,7 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
 
       expect(result.children).toHaveLength(4);
 
@@ -552,25 +552,25 @@ describe("rehype-org-enhancements", () => {
   });
 
   describe("Edge Cases", () => {
-    test("should handle empty tree", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should handle empty tree", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([]);
 
-      const result = transformer(tree);
+      const result = await processor.run(tree) as Root;
       expect(result.children).toHaveLength(0);
     });
 
-    test("should handle elements without children", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should handle elements without children", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("hr", {}, []), createElement("br", {}, [])]);
 
-      expect(() => {
-        const result = transformer(tree);
+      await expect(async () => {
+        const result = await processor.run(tree) as Root;
         expect(result.children).toHaveLength(2);
-      }).not.toThrow();
+      }).resolves.not.toThrow();
     });
 
-    test("should handle malformed class names", () => {
+    test("should handle malformed class names", async () => {
       const customClasses: CustomClasses = {
         todoKeywords: {
           // biome-ignore lint/suspicious/noExplicitAny: Testing invalid configuration
@@ -578,24 +578,24 @@ describe("rehype-org-enhancements", () => {
         },
       };
 
-      const transformer = rehypeOrgEnhancements({
+      const processor = unified().use(rehypeOrgEnhancements, {
         customClasses,
         validate: false,
       });
 
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Test")])]);
 
-      expect(() => {
-        const result = transformer(tree);
+      await expect(async () => {
+        const result = await processor.run(tree) as Root;
         // Should fall back to default classes
         const header = result.children[0] as Element;
         const todoSpan = header.children[0] as Element;
         expect(todoSpan.properties?.className).toEqual(expect.arrayContaining(["bg-orange-100"]));
-      }).not.toThrow();
+      }).resolves.not.toThrow();
     });
 
-    test("should handle deeply nested structures", () => {
-      const transformer = rehypeOrgEnhancements();
+    test("should handle deeply nested structures", async () => {
+      const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([
         createElement("div", {}, [
           createElement("section", {}, [
@@ -607,10 +607,10 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      expect(() => {
-        const result = transformer(tree);
+      await expect(async () => {
+        const result = await processor.run(tree) as Root;
         expect(result).toBeTruthy();
-      }).not.toThrow();
+      }).resolves.not.toThrow();
     });
   });
 });
