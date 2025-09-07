@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { OrgRenderer } from "./OrgRenderer";
 
 // Skip React component tests when running in Bun test environment (no DOM)
-const isVitest = typeof globalThis.process?.env?.VITEST !== 'undefined' || typeof document !== 'undefined';
+const isVitest =
+  typeof globalThis.process?.env?.VITEST !== "undefined" || typeof document !== "undefined";
 
 // Test data samples covering various org-mode syntax
 const ORG_SAMPLES = {
@@ -171,14 +172,14 @@ ${"Line of text that repeats many times to create long content. ".repeat(100)}
 
 *** Deep Nesting Test
 ${"*".repeat(10)} Very deep header level
-This tests deeply nested content handling.`
+This tests deeply nested content handling.`,
 };
 
 describe.skipIf(!isVitest)("OrgRenderer", () => {
   describe("Basic Syntax Rendering", () => {
     it("should render headers with correct HTML structure", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.headers} />);
-      
+
       await waitFor(() => {
         // Check for header elements with hash prefixes
         expect(screen.getByText("Header Level 1")).toBeInTheDocument();
@@ -189,19 +190,21 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should render text formatting correctly", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.textFormatting} />);
-      
+
       await waitFor(() => {
         // Check for formatted text with actual CSS classes
-        const container = screen.getByText(/bold text/).closest('div');
-        expect(container?.innerHTML).toContain('<strong class="font-semibold text-gray-900">bold text</strong>');
+        const container = screen.getByText(/bold text/).closest("div");
+        expect(container?.innerHTML).toContain(
+          '<strong class="font-semibold text-gray-900">bold text</strong>',
+        );
         expect(container?.innerHTML).toContain('<em class="italic">italic text</em>');
-        expect(container?.innerHTML).toContain('<code');
+        expect(container?.innerHTML).toContain("<code");
       });
     });
 
     it("should render unordered and ordered lists", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.lists} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("Unordered list item 1")).toBeInTheDocument();
         expect(screen.getByText("Ordered list item 1")).toBeInTheDocument();
@@ -211,7 +214,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should render checkboxes with correct states", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.checkboxes} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("Unchecked task")).toBeInTheDocument();
         expect(screen.getByText("Checked task")).toBeInTheDocument();
@@ -221,7 +224,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should render links and URLs", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.links} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("External Link")).toBeInTheDocument();
         expect(screen.getByText("Internal Link")).toBeInTheDocument();
@@ -231,7 +234,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should render tables with proper structure", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.tables} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("Name")).toBeInTheDocument();
         expect(screen.getByText("Alice")).toBeInTheDocument();
@@ -243,45 +246,52 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
   describe("Advanced Features", () => {
     it("should render TODO keywords with proper styling", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.todos} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("Important task")).toBeInTheDocument();
         expect(screen.getByText("Completed task")).toBeInTheDocument();
-        
+
         // Check for TODO keyword badges with actual CSS classes
-        const container = screen.getByText(/Important task/).closest('div');
-        expect(container?.innerHTML).toContain('TODO');
-        expect(container?.innerHTML).toContain('bg-orange-100');
+        const container = screen.getByText(/Important task/).closest("div");
+        expect(container?.innerHTML).toContain("TODO");
+        expect(container?.innerHTML).toContain("bg-orange-100");
       });
     });
 
     it("should render priority indicators", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.priorities} />);
-      
+
       await waitFor(() => {
-        const container = screen.getByText(/High priority task/).closest('div');
-        expect(container?.innerHTML).toContain('priority-A');
-        expect(container?.innerHTML).toContain('bg-red-100');
-        expect(screen.getByText('A')).toBeInTheDocument();
+        const container = screen.getByText(/High priority task/).closest("div");
+        expect(container?.innerHTML).toContain("priority-A");
+        expect(container?.innerHTML).toContain("bg-red-100");
+        expect(screen.getByText("#A")).toBeInTheDocument();
       });
     });
 
     it("should render code blocks with syntax highlighting when enabled", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.codeBlocks} enableSyntaxHighlight={true} />);
-      
+
       await waitFor(() => {
         // Check for syntax highlighted code blocks
-        const codeBlock = document.querySelector('pre.shiki');
+        const codeBlock = document.querySelector("pre.shiki");
         expect(codeBlock).toBeInTheDocument();
-        
+
         // Check for text content within the code block (syntax highlighting breaks up text)
         const functionElements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes('function') && element?.textContent?.includes('hello') || false;
+          return (
+            (element?.textContent?.includes("function") &&
+              element?.textContent?.includes("hello")) ||
+            false
+          );
         });
         expect(functionElements.length).toBeGreaterThan(0);
-        
+
         const consoleElements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes('console') && element?.textContent?.includes('log') || false;
+          return (
+            (element?.textContent?.includes("console") && element?.textContent?.includes("log")) ||
+            false
+          );
         });
         expect(consoleElements.length).toBeGreaterThan(0);
       });
@@ -289,11 +299,15 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should render code blocks without syntax highlighting when disabled", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.codeBlocks} enableSyntaxHighlight={false} />);
-      
+
       await waitFor(() => {
         // Even without syntax highlighting, text may be broken up by elements
         const functionElements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes('function') && element?.textContent?.includes('hello') || false;
+          return (
+            (element?.textContent?.includes("function") &&
+              element?.textContent?.includes("hello")) ||
+            false
+          );
         });
         expect(functionElements.length).toBeGreaterThan(0);
       });
@@ -301,11 +315,11 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should render mathematical expressions", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.math} />);
-      
+
       await waitFor(() => {
         // Math expressions should be processed by KaTeX
-        const container = screen.getByText(/E = mc/).closest('div');
-        expect(container?.innerHTML).toContain('katex');
+        const container = screen.getByText(/E = mc/).closest("div");
+        expect(container?.innerHTML).toContain("katex");
       });
     });
   });
@@ -313,23 +327,23 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
   describe("Complex Content", () => {
     it("should handle complex nested content with multiple features", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.complex} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("Project Planning")).toBeInTheDocument();
         expect(screen.getByText("Design phase")).toBeInTheDocument();
         expect(screen.getByText("Create wireframes")).toBeInTheDocument();
         expect(screen.getByText("Research phase")).toBeInTheDocument();
-        
+
         // Check for mixed formatting
-        const container = screen.getByText(/Design phase/).closest('div');
-        expect(container?.innerHTML).toContain('TODO');
-        expect(container?.innerHTML).toContain('#A');
+        const container = screen.getByText(/Design phase/).closest("div");
+        expect(container?.innerHTML).toContain("TODO");
+        expect(container?.innerHTML).toContain("#A");
       });
     });
 
     it("should handle Japanese content correctly", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.japanese} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("日本語見出し")).toBeInTheDocument();
         expect(screen.getByText(/日本語のテストです/)).toBeInTheDocument();
@@ -339,7 +353,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should handle special characters and Unicode", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.specialChars} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText(/Special characters/)).toBeInTheDocument();
         expect(screen.getByText(/αβγδε/)).toBeInTheDocument();
@@ -361,7 +375,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
     it("should handle malformed content gracefully", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.malformed} />);
-      
+
       await waitFor(() => {
         // Should render what it can without crashing
         expect(screen.getByText(/Incomplete header/)).toBeInTheDocument();
@@ -371,11 +385,11 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
     it("should handle very long content without performance issues", async () => {
       const startTime = Date.now();
       render(<OrgRenderer content={ORG_SAMPLES.longContent} />);
-      
+
       await waitFor(() => {
         expect(screen.getByText("Very Long Content Test")).toBeInTheDocument();
       });
-      
+
       const endTime = Date.now();
       // Should render within reasonable time (< 5 seconds)
       expect(endTime - startTime).toBeLessThan(5000);
@@ -384,10 +398,8 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
   describe("Props Handling", () => {
     it("should apply custom className", async () => {
-      const { container } = render(
-        <OrgRenderer content="* Test" className="custom-class" />
-      );
-      
+      const { container } = render(<OrgRenderer content="* Test" className="custom-class" />);
+
       await waitFor(() => {
         expect(container.firstChild).toHaveClass("custom-class");
       });
@@ -397,25 +409,31 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
       const codeContent = `#+BEGIN_SRC javascript
 console.log("test");
 #+END_SRC`;
-      
+
       // Test with syntax highlighting enabled
       const { rerender } = render(
-        <OrgRenderer content={codeContent} enableSyntaxHighlight={true} />
+        <OrgRenderer content={codeContent} enableSyntaxHighlight={true} />,
       );
-      
+
       await waitFor(() => {
         const consoleElements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes('console') && element?.textContent?.includes('log') || false;
+          return (
+            (element?.textContent?.includes("console") && element?.textContent?.includes("log")) ||
+            false
+          );
         });
         expect(consoleElements.length).toBeGreaterThan(0);
       });
-      
+
       // Test with syntax highlighting disabled
       rerender(<OrgRenderer content={codeContent} enableSyntaxHighlight={false} />);
-      
+
       await waitFor(() => {
         const consoleElements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes('console') && element?.textContent?.includes('log') || false;
+          return (
+            (element?.textContent?.includes("console") && element?.textContent?.includes("log")) ||
+            false
+          );
         });
         expect(consoleElements.length).toBeGreaterThan(0);
       });
@@ -425,13 +443,13 @@ console.log("test");
   describe("Accessibility", () => {
     it("should generate accessible HTML structure", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.headers} />);
-      
+
       await waitFor(() => {
         // Check for proper heading hierarchy
-        const h1 = screen.getByRole('heading', { level: 1 });
-        const h2 = screen.getByRole('heading', { level: 2 });
-        const h3 = screen.getByRole('heading', { level: 3 });
-        
+        const h1 = screen.getByRole("heading", { level: 1 });
+        const h2 = screen.getByRole("heading", { level: 2 });
+        const h3 = screen.getByRole("heading", { level: 3 });
+
         expect(h1).toBeInTheDocument();
         expect(h2).toBeInTheDocument();
         expect(h3).toBeInTheDocument();
@@ -440,29 +458,29 @@ console.log("test");
 
     it("should generate accessible table structure", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.tables} />);
-      
+
       await waitFor(() => {
-        const table = screen.getByRole('table');
+        const table = screen.getByRole("table");
         expect(table).toBeInTheDocument();
-        
-        const columnHeaders = screen.getAllByRole('columnheader');
+
+        const columnHeaders = screen.getAllByRole("columnheader");
         expect(columnHeaders).toHaveLength(3);
       });
     });
 
     it("should generate accessible links", async () => {
       render(<OrgRenderer content={ORG_SAMPLES.links} />);
-      
+
       await waitFor(() => {
-        const links = screen.getAllByRole('link');
+        const links = screen.getAllByRole("link");
         expect(links.length).toBeGreaterThan(0);
-        
+
         // Links should have proper href attributes
-        const externalLink = screen.getByText('External Link').closest('a');
-        expect(externalLink).toHaveAttribute('href', 'https://example.com');
-        
+        const externalLink = screen.getByText("External Link").closest("a");
+        expect(externalLink).toHaveAttribute("href", "https://example.com");
+
         // Check that links are properly styled
-        expect(externalLink).toHaveClass('text-blue-600');
+        expect(externalLink).toHaveClass("text-blue-600");
       });
     });
   });
@@ -470,7 +488,7 @@ console.log("test");
   describe("Performance", () => {
     it("should render multiple times without memory leaks", async () => {
       const { rerender } = render(<OrgRenderer content="* Test 1" />);
-      
+
       // Re-render multiple times with different content
       for (let i = 2; i <= 10; i++) {
         rerender(<OrgRenderer content={`* Test ${i}`} />);
@@ -482,19 +500,14 @@ console.log("test");
 
     it("should handle rapid content changes", async () => {
       const { rerender } = render(<OrgRenderer content="* Initial" />);
-      
+
       // Rapidly change content
-      const contents = [
-        "** Second",
-        "*** Third", 
-        "**** Fourth",
-        "***** Fifth"
-      ];
-      
+      const contents = ["** Second", "*** Third", "**** Fourth", "***** Fifth"];
+
       for (const content of contents) {
         rerender(<OrgRenderer content={content} />);
       }
-      
+
       await waitFor(() => {
         expect(screen.getByText("Fifth")).toBeInTheDocument();
       });
