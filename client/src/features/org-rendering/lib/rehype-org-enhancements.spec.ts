@@ -20,7 +20,7 @@ function createMockTree(elements: Element[]): Root {
 }
 
 // Helper function to create an element
-function createElement(tagName: string, properties: any = {}, children: any[] = []): Element {
+function createElement(tagName: string, properties: Record<string, unknown> = {}, children: (Element | Text)[] = []): Element {
   return {
     type: "element",
     tagName,
@@ -49,31 +49,31 @@ describe("rehype-org-enhancements", () => {
     test("should validate options correctly", () => {
       expect(() => {
         rehypeOrgEnhancements({
-          enableSyntaxHighlight: "invalid" as any,
+          enableSyntaxHighlight: "invalid" as unknown,
         });
       }).toThrow("enableSyntaxHighlight must be a boolean");
 
       expect(() => {
         rehypeOrgEnhancements({
-          customClasses: "invalid" as any,
+          customClasses: "invalid" as unknown,
         });
       }).toThrow("customClasses must be an object");
 
       expect(() => {
         rehypeOrgEnhancements({
-          validate: "invalid" as any,
+          validate: "invalid" as unknown,
         });
       }).toThrow("validate must be a boolean");
 
       expect(() => {
         rehypeOrgEnhancements({
-          todoKeywords: "invalid" as any,
+          todoKeywords: "invalid" as unknown,
         });
       }).toThrow("todoKeywords must be an array");
 
       expect(() => {
         rehypeOrgEnhancements({
-          priorityLevels: [123] as any,
+          priorityLevels: [123] as unknown,
         });
       }).toThrow("All priorityLevels must be strings");
     });
@@ -82,6 +82,7 @@ describe("rehype-org-enhancements", () => {
       expect(() => {
         const plugin = rehypeOrgEnhancements({
           validate: false,
+          // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
           enableSyntaxHighlight: "invalid" as any,
         });
         expect(typeof plugin).toBe("function");
@@ -110,6 +111,7 @@ describe("rehype-org-enhancements", () => {
       const transformer = rehypeOrgEnhancements({ validate: true });
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
         transformer(null as any);
       }).toThrow("Expected root node");
     });
@@ -118,6 +120,7 @@ describe("rehype-org-enhancements", () => {
       const transformer = rehypeOrgEnhancements({ validate: false });
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
         const result = transformer(null as any);
         expect(result).toBe(null);
       }).not.toThrow();
@@ -179,7 +182,7 @@ describe("rehype-org-enhancements", () => {
       const header = result.children[0] as Element;
       const todoSpan = header.children[0] as Element;
 
-      expect((todoSpan.children[0] as any).value).toBe("CUSTOM");
+      expect((todoSpan.children[0] as Text).value).toBe("CUSTOM");
     });
 
     test("should transform standalone TODO spans from uniorg", () => {
@@ -213,7 +216,7 @@ describe("rehype-org-enhancements", () => {
       expect(prioritySpan.properties?.className).toEqual(
         expect.arrayContaining(["bg-red-100", "text-red-800"]),
       );
-      expect((prioritySpan.children[0] as any).value).toBe("#A");
+      expect((prioritySpan.children[0] as Text).value).toBe("#A");
     });
 
     test("should use custom priority classes", () => {
@@ -244,7 +247,7 @@ describe("rehype-org-enhancements", () => {
       const paragraph = result.children[0] as Element;
       const prioritySpan = paragraph.children[1] as Element;
 
-      expect((prioritySpan.children[0] as any).value).toBe("#X");
+      expect((prioritySpan.children[0] as Text).value).toBe("#X");
     });
 
     test("should ignore unrecognized priority levels", () => {
@@ -261,7 +264,7 @@ describe("rehype-org-enhancements", () => {
 
       // Should remain as single text node since Z is not recognized
       expect(paragraph.children).toHaveLength(1);
-      expect((paragraph.children[0] as any).value).toBe("Task [#Z] is not recognized");
+      expect((paragraph.children[0] as Text).value).toBe("Task [#Z] is not recognized");
     });
   });
 
@@ -282,7 +285,7 @@ describe("rehype-org-enhancements", () => {
       // Should have SVG icon and text
       expect(span.children).toHaveLength(2);
       expect((span.children[0] as Element).tagName).toBe("svg");
-      expect((span.children[1] as any).value).toBe("2025-01-15 Wed");
+      expect((span.children[1] as Text).value).toBe("2025-01-15 Wed");
     });
 
     test("should transform inactive timestamps", () => {
@@ -317,11 +320,11 @@ describe("rehype-org-enhancements", () => {
       // Should have: clock icon, start time, arrow icon, end time
       expect(span.children).toHaveLength(4);
       expect((span.children[0] as Element).tagName).toBe("svg"); // Clock icon
-      expect((span.children[1] as Element).children[0] as any).toEqual(
+      expect((span.children[1] as Element).children[0] as Text).toEqual(
         expect.objectContaining({ value: "2025-01-15 Wed" }),
       );
       expect((span.children[2] as Element).tagName).toBe("svg"); // Arrow icon
-      expect((span.children[3] as Element).children[0] as any).toEqual(
+      expect((span.children[3] as Element).children[0] as Text).toEqual(
         expect.objectContaining({ value: "2025-01-16 Thu" }),
       );
     });
@@ -456,6 +459,7 @@ describe("rehype-org-enhancements", () => {
 
       // Create an invalid tree that might cause errors
       const tree = createMockTree([
+        // biome-ignore lint/suspicious/noExplicitAny: Intentionally testing error handling with invalid child
         createElement("span", { className: ["timestamp"] }, [null as any]),
       ]);
 
@@ -473,11 +477,12 @@ describe("rehype-org-enhancements", () => {
       // Create a tree that might cause processing errors
       const tree = createMockTree([
         createElement("h1", {}, [createText("TODO Fix bug")]),
+        // biome-ignore lint/suspicious/noExplicitAny: Testing error condition with invalid child
         createElement("span", { className: ["timestamp"] }, [null as any]), // This might cause an error
         createElement("p", {}, [createText("This should still be processed")]),
       ]);
 
-      let result;
+      let result: unknown;
       expect(() => {
         result = transformer(tree);
       }).not.toThrow();
@@ -568,6 +573,7 @@ describe("rehype-org-enhancements", () => {
     test("should handle malformed class names", () => {
       const customClasses: CustomClasses = {
         todoKeywords: {
+          // biome-ignore lint/suspicious/noExplicitAny: Testing invalid configuration
           TODO: null as any, // Invalid class array
         },
       };
@@ -611,12 +617,16 @@ describe("rehype-org-enhancements", () => {
 
 // Mock vitest's vi if not available
 declare global {
+  // biome-ignore lint/suspicious/noExplicitAny: Global mock declaration
   var vi: any;
 }
 
 if (typeof vi === "undefined") {
+  // biome-ignore lint/suspicious/noExplicitAny: Mock implementation
   (global as any).vi = {
+    // biome-ignore lint/suspicious/noExplicitAny: Mock spyOn parameter
     spyOn: (obj: any, method: string) => ({
+      // biome-ignore lint/complexity/noBannedTypes: Mock function type
       mockImplementation: (fn: Function) => {
         const original = obj[method];
         obj[method] = fn;

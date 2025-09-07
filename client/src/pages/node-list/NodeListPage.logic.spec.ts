@@ -32,7 +32,7 @@ describe("NodeListPage multi-select logic", () => {
     });
 
     test("should clear all selections", () => {
-      const currentSelection = new Set(["node1", "node2", "node3"]);
+      const _currentSelection = new Set(["node1", "node2", "node3"]);
       const result = clearAllSelections();
       expect(result.size).toBe(0);
     });
@@ -177,7 +177,7 @@ function toggleNodeSelection(currentSelection: Set<string>, nodeId: string): Set
   return newSelection;
 }
 
-function selectAllNodes(nodes: Array<{ id: string; [key: string]: any }>): Set<string> {
+function selectAllNodes(nodes: Array<{ id: string; [key: string]: unknown }>): Set<string> {
   return new Set(nodes.map((node) => node.id));
 }
 
@@ -197,7 +197,7 @@ function canPerformBulkDelete(selectedNodes: Set<string>): boolean {
 
 function areAllNodesSelected(
   selectedNodes: Set<string>,
-  allNodes: Array<{ id: string; [key: string]: any }>,
+  allNodes: Array<{ id: string; [key: string]: unknown }>,
 ): boolean {
   return selectedNodes.size === allNodes.length && allNodes.length > 0;
 }

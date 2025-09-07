@@ -20,7 +20,6 @@ import {
   getFootnoteDefId,
 } from "../../shared/lib/footnote-utils";
 
-
 import { Layout } from "../../widgets/layout";
 
 // Simple function to remove frontmatter
@@ -130,11 +129,14 @@ function splitContentWithTimestamps(content: string): {
       }
 
       // Add timestamp section
-      sections.push({
-        type: "timestamps",
-        timestamps: timestampsByLine.get(i)!,
-        originalLineNumber: i,
-      });
+      const timestamps = timestampsByLine.get(i);
+      if (timestamps) {
+        sections.push({
+          type: "timestamps",
+          timestamps,
+          originalLineNumber: i,
+        });
+      }
       continue;
     }
 
@@ -398,8 +400,7 @@ export function NodeDetailPage() {
                   (() => {
                     // Extract footnote reference map for back-links from cleaned content
                     const cleanedContent = removeFrontmatter(node.content);
-                    const { sections, footnotes } =
-                      splitContentWithTimestamps(cleanedContent);
+                    const { sections, footnotes } = splitContentWithTimestamps(cleanedContent);
                     const { referenceMap } = replaceFootnoteReferencesWithLinks(cleanedContent);
 
                     const renderContent = (content: string, key?: number) => {
@@ -517,7 +518,7 @@ export function NodeDetailPage() {
                                 return ""; // This should have been caught by header processing above
                               }
 
-                              let formatted = line
+                              const formatted = line
                                 // Only apply bold formatting to text that's not part of org headers
                                 .replace(/\*([^*<>\n]+)\*/g, "<strong>$1</strong>")
                                 .replace(/\/([^/<>\n]+)\//g, "<em>$1</em>")
@@ -543,6 +544,7 @@ export function NodeDetailPage() {
                           <div
                             key={key}
                             className="org-content prose"
+                            // biome-ignore lint/security/noDangerouslySetInnerHtml: Org content requires HTML rendering for proper formatting
                             dangerouslySetInnerHTML={{ __html: processedHtml }}
                           />
                         );
@@ -589,19 +591,19 @@ export function NodeDetailPage() {
                       <>
                         {/* Render sections in their original order with timestamps at correct positions */}
                         {sections.map((section, index) => {
-                          if (section.type === "content") {
-                            return renderContent(section.content!, index);
+                          if (section.type === "content" && section.content) {
+                            return renderContent(section.content, index);
                           } else if (section.type === "logbook") {
                             return (
-                              <div key={index} className="my-8">
+                              <div key={`logbook-${section.originalLineNumber || index}`} className="my-8">
                                 <LogbookDisplay content={`:LOGBOOK:\n${section.content}\n:END:`} />
                               </div>
                             );
-                          } else if (section.type === "timestamps") {
+                          } else if (section.type === "timestamps" && section.timestamps) {
                             return (
                               <TimestampsDisplay
-                                key={index}
-                                entries={section.timestamps!}
+                                key={`timestamps-${section.originalLineNumber || index}`}
+                                entries={section.timestamps}
                                 className="my-3"
                               />
                             );
@@ -617,13 +619,13 @@ export function NodeDetailPage() {
                               {footnotes
                                 .split("\n")
                                 .filter((line) => line.trim())
-                                .map((line, index) => {
+                                .map((line, _index) => {
                                   const match = line.trim().match(/^\[fn:([^\]]+)\]\s+(.+)$/);
                                   if (match) {
                                     const [, label, content] = match;
                                     return (
                                       <div
-                                        key={index}
+                                        key={`footnote-${label}`}
                                         className="text-sm"
                                         id={getFootnoteDefId(label)}
                                       >
@@ -643,7 +645,7 @@ export function NodeDetailPage() {
                                                 title={`参照 ${refIndex + 1} に戻る`}
                                               >
                                                 ↩
-                                                {referenceMap.get(label)!.length > 1
+                                                {(referenceMap.get(label)?.length ?? 0) > 1
                                                   ? refIndex + 1
                                                   : ""}
                                               </a>

@@ -350,6 +350,7 @@ async function parseOrgContent(
     // Create uniorg processor with Shiki syntax highlighting and KaTeX
     const processorBuilder = unified()
       .use(uniorgParse)
+      // biome-ignore lint/suspicious/noExplicitAny: uniorg2rehype plugin typing incompatibility
       .use(uniorg2rehype as any, { allowDangerousHtml: true });
 
     // Add KaTeX math rendering
@@ -357,7 +358,7 @@ async function parseOrgContent(
 
     // Add Shiki syntax highlighting if enabled
     if (enableSyntaxHighlight) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: rehypeShiki plugin typing incompatibility
       processorBuilder.use(rehypeShiki as any, {
         themes: {
           light: "github-light",

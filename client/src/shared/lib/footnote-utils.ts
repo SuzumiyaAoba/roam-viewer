@@ -16,14 +16,16 @@ export interface FootnoteDefinition {
 export function parseFootnoteReferences(content: string): FootnoteReference[] {
   const references: FootnoteReference[] = [];
   const referenceRegex = /\[fn:([^\]]+)\]/g;
-  let match;
+  let match: RegExpExecArray | null;
 
-  while ((match = referenceRegex.exec(content)) !== null) {
+  match = referenceRegex.exec(content);
+  while (match !== null) {
     references.push({
       label: match[1],
       position: match.index,
       originalText: match[0],
     });
+    match = referenceRegex.exec(content);
   }
 
   return references;
@@ -66,9 +68,10 @@ export function replaceFootnoteReferencesWithLinks(content: string): {
   // First pass: find all footnote references with their positions
   const references: Array<{ label: string; position: number }> = [];
   const referenceRegex = /\[fn:([^\]]+)\]/g;
-  let match;
+  let match: RegExpExecArray | null;
 
-  while ((match = referenceRegex.exec(content)) !== null) {
+  match = referenceRegex.exec(content);
+  while (match !== null) {
     // Check if this is inside a footnote definition line
     const lineStart = content.lastIndexOf("\n", match.index) + 1;
     const lineEnd = content.indexOf("\n", match.index);
@@ -83,6 +86,7 @@ export function replaceFootnoteReferencesWithLinks(content: string): {
       label: match[1],
       position: match.index,
     });
+    match = referenceRegex.exec(content);
   }
 
   // Sort by position to process from end to start (to avoid position shifting)
@@ -98,7 +102,10 @@ export function replaceFootnoteReferencesWithLinks(content: string): {
     if (!referenceMap.has(ref.label)) {
       referenceMap.set(ref.label, []);
     }
-    referenceMap.get(ref.label)!.unshift(refId); // unshift because we're processing backwards
+    const labelRefs = referenceMap.get(ref.label);
+    if (labelRefs) {
+      labelRefs.unshift(refId); // unshift because we're processing backwards
+    }
 
     const replacement = `<a href="#fn-def-${ref.label}" class="footnote-ref text-blue-600 bg-blue-50 px-1 rounded text-sm hover:bg-blue-100 cursor-pointer no-underline" id="${refId}">[${ref.label}]</a>`;
 

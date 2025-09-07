@@ -4,9 +4,9 @@
  * @version 2.0.0
  */
 
-import { visit } from "unist-util-visit";
-import type { Element, Root, Text, Node } from "hast";
+import type { Element, Node, Root, Text } from "hast";
 import type { Plugin, Transformer } from "unified";
+import { visit } from "unist-util-visit";
 
 // ============================================================================
 // CONSTANTS
@@ -486,11 +486,7 @@ const VALIDATION_ERRORS = {
  * @param stringErrorMsg - Error message for non-string items
  * @throws {Error} If validation fails
  */
-function validateStringArray(
-  option: unknown,
-  arrayErrorMsg: string,
-  stringErrorMsg: string,
-): void {
+function validateStringArray(option: unknown, arrayErrorMsg: string, stringErrorMsg: string): void {
   if (!Array.isArray(option)) {
     throw new Error(arrayErrorMsg);
   }
@@ -579,21 +575,12 @@ function resolveOptions(options: PluginOptions = {}): ResolvedOptions {
 }
 
 /**
- * Checks if a node is a valid hast element
- * @param node - Node to check
- * @returns True if node is a valid element
- */
-function isElement(node: Node): node is Element {
-  return node && node.type === "element" && typeof node.tagName === "string";
-}
-
-/**
  * Checks if a node is a valid text node
  * @param node - Node to check
  * @returns True if node is a valid text node
  */
 function isText(node: Node): node is Text {
-  return node && node.type === "text" && typeof node.value === "string";
+  return node && node.type === "text" && typeof (node as Text).value === "string";
 }
 
 /**
@@ -610,11 +597,13 @@ function getClasses(
 ): string[] {
   try {
     const parts = path.split(".");
-    let current: any = customClasses;
+    let current: unknown = customClasses;
 
     for (const part of parts) {
-      if (current?.[part] !== undefined) {
-        current = current[part];
+      // biome-ignore lint/suspicious/noExplicitAny: Dynamic property access requires any
+      if (current && typeof current === "object" && part in current && (current as any)[part] !== undefined) {
+        // biome-ignore lint/suspicious/noExplicitAny: Dynamic property access requires any
+        current = (current as any)[part];
       } else {
         return [...defaultClasses];
       }
@@ -639,8 +628,8 @@ function getClasses(
  */
 function createElement(
   tagName: string,
-  properties: Record<string, any> = {},
-  children: any[] = [],
+  properties: Record<string, string | number | boolean | (string | number)[] | null | undefined> = {},
+  children: (Element | Text)[] = [],
 ): Element {
   return {
     type: "element",
@@ -708,8 +697,8 @@ function createTimestampContent(
   content: string,
   iconType: keyof typeof SVG_ICONS,
   customClasses: CustomClasses,
-  classPath: string,
-  defaultClasses: readonly string[],
+  _classPath: string,
+  _defaultClasses: readonly string[],
   iconClassPath: string,
   defaultIconClasses: readonly string[],
 ): (Element | Text)[] {
@@ -725,7 +714,7 @@ function createTimestampContent(
  * @returns True if level is valid (1-6)
  */
 function isValidHeaderLevel(level: number): boolean {
-  return !isNaN(level) && level >= HEADER_LEVELS.MIN && level <= HEADER_LEVELS.MAX;
+  return !Number.isNaN(level) && level >= HEADER_LEVELS.MIN && level <= HEADER_LEVELS.MAX;
 }
 
 /**
@@ -761,11 +750,7 @@ function processTodoKeywordInText(
     DEFAULT_TODO_KEYWORDS[keyword] || DEFAULT_TODO_KEYWORDS.TODO,
   );
 
-  const todoSpan = createElement(
-    "span",
-    { className: todoClasses },
-    [createText(keyword)],
-  );
+  const todoSpan = createElement("span", { className: todoClasses }, [createText(keyword)]);
 
   return { remainingText, todoSpan };
 }
@@ -891,11 +876,7 @@ function createPrioritySpan(priority: string, options: ResolvedOptions): Element
     DEFAULT_PRIORITIES[priority] || DEFAULT_PRIORITIES.A,
   );
 
-  return createElement(
-    "span",
-    { className: priorityClasses },
-    [createText(`#${priority}`)],
-  );
+  return createElement("span", { className: priorityClasses }, [createText(`#${priority}`)]);
 }
 
 /**
@@ -910,15 +891,16 @@ function processPriorityIndicators(
 ): PriorityTransformResult[] {
   const priorityPattern = PATTERNS.PRIORITY(options.priorityLevels);
   const changes: PriorityTransformResult[] = [];
-  let match;
+  let match: RegExpExecArray | null;
 
   // Reset regex lastIndex to ensure we start from the beginning
   priorityPattern.lastIndex = 0;
 
-  while ((match = priorityPattern.exec(node.value)) !== null) {
+  match = priorityPattern.exec(node.value);
+  while (match !== null) {
     const fullMatch = match[0];
     const priority = match[1].replace("#", "");
-    
+
     // Double-check priority is valid (regex should ensure this, but be safe)
     if (!options.priorityLevels.includes(priority)) continue;
 
@@ -927,7 +909,7 @@ function processPriorityIndicators(
 
     const prioritySpan = createPrioritySpan(priority, options);
     const replacement: (Element | Text)[] = [];
-    
+
     if (beforeText) replacement.push(createText(beforeText));
     replacement.push(prioritySpan);
     if (afterText) replacement.push(createText(afterText));
@@ -935,6 +917,8 @@ function processPriorityIndicators(
     changes.push({ index: 0, replacement }); // Index will be set by caller
     break; // Handle one match at a time to avoid index confusion
   }
+
+  match = priorityPattern.exec(node.value);
 
   return changes;
 }
@@ -950,10 +934,7 @@ function isValidForPriorityTransform(
   index: number | undefined,
 ): parent is Element & { children: (Element | Text)[] } {
   return (
-    parent !== null &&
-    index !== undefined &&
-    "children" in parent &&
-    Array.isArray(parent.children)
+    parent !== null && index !== undefined && "children" in parent && Array.isArray(parent.children)
   );
 }
 
@@ -964,15 +945,16 @@ function isValidForPriorityTransform(
  */
 function transformPriorities(tree: Root, options: ResolvedOptions): void {
   try {
-    visit(tree, "text", (node: Text, index, parent) => {
-      if (!isValidForPriorityTransform(parent, index)) return;
+    visit(tree, "text", (node: Text, index: number | undefined, parent: Element | Root | undefined) => {
+      if (!isValidForPriorityTransform(parent || null, index)) return;
+      if (parent && index !== undefined) {
+        const changes = processPriorityIndicators(node, options);
 
-      const changes = processPriorityIndicators(node, options);
-      
-      // Apply changes (we know there's at most one change due to early break)
-      changes.forEach(({ replacement }) => {
-        parent.children.splice(index, 1, ...replacement);
-      });
+        // Apply changes (we know there's at most one change due to early break)
+        changes.forEach(({ replacement }) => {
+          parent.children.splice(index, 1, ...replacement);
+        });
+      }
     });
   } catch (error) {
     if (options.validate) {
@@ -1161,7 +1143,7 @@ function transformTimestamps(tree: Root, options: ResolvedOptions): void {
   try {
     visit(tree, "element", (node: Element) => {
       if (!node || !node.tagName) return;
-      
+
       if (isTimestampElement(node)) {
         transformTimestampElement(node, options);
       }
@@ -1200,9 +1182,7 @@ const BASIC_ELEMENT_MAP = [
 function hasExistingClasses(node: Element): boolean {
   return Boolean(
     node.properties?.className &&
-    (Array.isArray(node.properties.className)
-      ? node.properties.className.length > 0
-      : true),
+      (Array.isArray(node.properties.className) ? node.properties.className.length > 0 : true),
   );
 }
 
@@ -1254,13 +1234,9 @@ function processHeaderElement(node: Element, options: ResolvedOptions): void {
 function processCodeElement(node: Element, options: ResolvedOptions): void {
   const classNames = normalizeClassNames(node.properties?.className);
   const hasShiki = classNames.some((cls) => cls.includes("shiki"));
-  
+
   if (!hasShiki) {
-    const classes = getClasses(
-      options.customClasses,
-      "elements.code",
-      DEFAULT_ELEMENTS.code,
-    );
+    const classes = getClasses(options.customClasses, "elements.code", DEFAULT_ELEMENTS.code);
     applyClasses(node, classes);
   }
 }
@@ -1273,7 +1249,7 @@ function processCodeElement(node: Element, options: ResolvedOptions): void {
 function processPreElement(node: Element, options: ResolvedOptions): void {
   const classNames = normalizeClassNames(node.properties?.className);
   const hasShiki = classNames.some((cls) => cls.includes("shiki"));
-  
+
   if (hasShiki) {
     // Merge existing classes with Shiki-specific styling
     const preShikiClasses = getClasses(
@@ -1283,11 +1259,7 @@ function processPreElement(node: Element, options: ResolvedOptions): void {
     );
     applyClasses(node, [...classNames, ...preShikiClasses]);
   } else if (!hasExistingClasses(node)) {
-    const classes = getClasses(
-      options.customClasses,
-      "elements.pre",
-      DEFAULT_ELEMENTS.pre,
-    );
+    const classes = getClasses(options.customClasses, "elements.pre", DEFAULT_ELEMENTS.pre);
     applyClasses(node, classes);
   }
 }
@@ -1377,7 +1349,7 @@ function logPerformance(
   config: PluginPerformanceConfig,
 ): void {
   if (!config.enablePerformanceLogging) return;
-  
+
   if (duration > config.performanceThreshold) {
     console.warn(`rehype-org-enhancements: ${operation} took ${duration}ms`);
   } else {
@@ -1493,7 +1465,7 @@ function applyTransformations(tree: Root, options: ResolvedOptions): void {
  *   });
  * ```
  */
-export const rehypeOrgEnhancements: Plugin<[PluginOptions?], Root, Root> = function (options = {}) {
+export const rehypeOrgEnhancements: Plugin<[PluginOptions?], Root, Root> = (options = {}) => {
   // Validate options if validation is enabled (default: true)
   if (options.validate !== false) {
     validateOptions(options);
@@ -1507,14 +1479,14 @@ export const rehypeOrgEnhancements: Plugin<[PluginOptions?], Root, Root> = funct
    * @param tree - Root hast tree node
    * @returns Processed tree
    */
-  const transformer: Transformer<Root, Root> = function (tree) {
+  const transformer: Transformer<Root, Root> = (tree) => {
     // Validate input tree structure
     if (!validateTree(tree, resolvedOptions.validate)) {
       return tree;
     }
 
     const startTime = performance.now();
-    
+
     try {
       // Apply all transformations with error handling and performance monitoring
       applyTransformations(tree, resolvedOptions);
@@ -1538,5 +1510,4 @@ export const rehypeOrgEnhancements: Plugin<[PluginOptions?], Root, Root> = funct
 // Export default for convenience
 export default rehypeOrgEnhancements;
 
-// Export types for external use
-export type { CustomClasses, PluginOptions };
+// Types are already exported above with the interface declarations

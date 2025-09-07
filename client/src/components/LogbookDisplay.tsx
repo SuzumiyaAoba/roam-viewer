@@ -55,7 +55,7 @@ function LogbookEntryCard({ entry }: LogbookEntryProps) {
                   </>
                 )}
                 <span
-                  className={`px-2 py-1 rounded-md text-xs font-medium border ${getStateColor(entry.toState || '')}`}
+                  className={`px-2 py-1 rounded-md text-xs font-medium border ${getStateColor(entry.toState || "")}`}
                 >
                   {entry.toState}
                 </span>
@@ -144,7 +144,7 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
   const totalDuration = clockEntries
     .filter((entry) => entry.endDate)
     .reduce((total, entry) => {
-      const duration = entry.endDate!.getTime() - entry.startDate.getTime();
+      const duration = (entry.endDate?.getTime() ?? 0) - entry.startDate.getTime();
       return total + duration;
     }, 0);
 
@@ -174,8 +174,9 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
   return (
     <div className={`logbook-display ${className}`}>
       {/* 最新状態の表示 */}
-      <div
-        className="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded cursor-pointer hover:bg-slate-100 transition-colors"
+      <button
+        type="button"
+        className="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded cursor-pointer hover:bg-slate-100 transition-colors w-full text-left"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center space-x-2">
@@ -184,22 +185,20 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
             className="text-slate-400 w-4 h-4"
           />
           {latestEntry && (
-            <>
-              {latestEntry.type === "state-change" ? (
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-slate-600">最新状態:</span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium border ${getStateColor(latestEntry.toState || '')}`}
-                  >
-                    {latestEntry.toState}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-sm text-slate-600">
-                  最新記録: {formatLogbookDate(latestEntry.startDate)}
+            latestEntry.type === "state-change" ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-slate-600">最新状態:</span>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-medium border ${getStateColor(latestEntry.toState || "")}`}
+                >
+                  {latestEntry.toState}
                 </span>
-              )}
-            </>
+              </div>
+            ) : (
+              <span className="text-sm text-slate-600">
+                最新記録: {formatLogbookDate(latestEntry.startDate)}
+              </span>
+            )
           )}
         </div>
         <div className="flex items-center space-x-2 text-xs text-slate-500">
@@ -211,7 +210,7 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
             </span>
           )}
         </div>
-      </div>
+      </button>
 
       {/* 展開されたときの詳細表示 */}
       {isExpanded && (

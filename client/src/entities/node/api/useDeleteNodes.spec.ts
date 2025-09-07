@@ -9,7 +9,7 @@ describe("Bulk delete logic", () => {
   });
 
   test("should filter out invalid node IDs", () => {
-    const nodeIds = ["valid-id", "", "another-valid-id", null as any, undefined as any];
+    const nodeIds = ["valid-id", "", "another-valid-id", null as unknown, undefined as unknown] as (string | null | undefined)[];
     const result = filterValidNodeIds(nodeIds);
     expect(result).toEqual(["valid-id", "another-valid-id"]);
   });
@@ -44,8 +44,8 @@ describe("Bulk delete logic", () => {
     expect(isValidNodeId("node_123")).toBe(true);
     expect(isValidNodeId("")).toBe(false);
     expect(isValidNodeId(" ")).toBe(false);
-    expect(isValidNodeId(null as any)).toBe(false);
-    expect(isValidNodeId(undefined as any)).toBe(false);
+    expect(isValidNodeId(null as unknown)).toBe(false);
+    expect(isValidNodeId(undefined as unknown)).toBe(false);
   });
 
   test("should count selected nodes correctly", () => {
@@ -90,7 +90,7 @@ function toggleSelection(currentSelection: Set<string>, nodeId: string): Set<str
   return newSelection;
 }
 
-function isValidNodeId(id: any): id is string {
+function isValidNodeId(id: unknown): id is string {
   return typeof id === "string" && id.trim().length > 0;
 }
 

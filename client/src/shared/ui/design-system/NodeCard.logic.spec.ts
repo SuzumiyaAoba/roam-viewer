@@ -7,7 +7,7 @@ describe("NodeCard logic", () => {
       const content = "A".repeat(200);
       const maxLength = 100;
       const result = truncateContent(content, maxLength);
-      expect(result).toBe("A".repeat(100) + "...");
+      expect(result).toBe(`${"A".repeat(100)}...`);
     });
 
     test("should not truncate content within max length", () => {
@@ -157,7 +157,7 @@ describe("NodeCard logic", () => {
 function truncateContent(content: string, maxLength: number): string {
   if (!content) return "";
   if (content.length <= maxLength) return content;
-  return content.substring(0, maxLength) + "...";
+  return `${content.substring(0, maxLength)}...`;
 }
 
 function processTags(tags: string[], maxTags: number) {
@@ -170,7 +170,7 @@ function processTags(tags: string[], maxTags: number) {
   };
 }
 
-function shouldShowCheckbox(showCheckbox: boolean, isSelected: boolean): boolean {
+function shouldShowCheckbox(showCheckbox: boolean, _isSelected: boolean): boolean {
   return showCheckbox;
 }
 

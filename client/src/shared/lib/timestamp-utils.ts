@@ -90,18 +90,18 @@ function parseOrgDate(dateStr: string): Date | null {
         if (match[4] && match[5]) {
           // With time
           return new Date(
-            parseInt(match[1]), // year
-            parseInt(match[2]) - 1, // month (0-indexed)
-            parseInt(match[3]), // day
-            parseInt(match[4]), // hour
-            parseInt(match[5]), // minute
+            parseInt(match[1], 10), // year
+            parseInt(match[2], 10) - 1, // month (0-indexed)
+            parseInt(match[3], 10), // day
+            parseInt(match[4], 10), // hour
+            parseInt(match[5], 10), // minute
           );
         } else {
           // Date only
           return new Date(
-            parseInt(match[1]), // year
-            parseInt(match[2]) - 1, // month (0-indexed)
-            parseInt(match[3]), // day
+            parseInt(match[1], 10), // year
+            parseInt(match[2], 10) - 1, // month (0-indexed)
+            parseInt(match[3], 10), // day
           );
         }
       }

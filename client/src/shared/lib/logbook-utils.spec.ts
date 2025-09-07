@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseLogbook, type LogbookEntry } from "./logbook-utils";
+import { parseLogbook } from "./logbook-utils";
 
 describe("parseLogbook", () => {
   it("should parse state change entries", () => {

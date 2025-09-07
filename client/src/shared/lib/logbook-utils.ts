@@ -27,7 +27,7 @@ export function parseLogbook(content: string): LogbookEntry[] {
 
     // End of LOGBOOK section
     if (trimmed === ":END:" && inLogbook) {
-      if (currentEntry && currentEntry.startDate) {
+      if (currentEntry?.startDate) {
         entries.push({
           type: currentEntry.type || "clock",
           startDate: currentEntry.startDate,
@@ -69,7 +69,7 @@ export function parseLogbook(content: string): LogbookEntry[] {
           const startDate = parseOrgDate(startDateStr);
           const endDate = endDateStr ? parseOrgDate(endDateStr) : undefined;
 
-          if (currentEntry && currentEntry.startDate) {
+          if (currentEntry?.startDate) {
             entries.push({
               type: currentEntry.type || "clock",
               startDate: currentEntry.startDate,
@@ -121,7 +121,7 @@ export function parseLogbook(content: string): LogbookEntry[] {
         try {
           const date = parseOrgDate(dateStr);
 
-          if (currentEntry && currentEntry.startDate) {
+          if (currentEntry?.startDate) {
             entries.push({
               type: currentEntry.type || "state-change",
               startDate: currentEntry.startDate,
@@ -150,13 +150,12 @@ export function parseLogbook(content: string): LogbookEntry[] {
       if (currentEntry && (trimmed.startsWith("- ") || !trimmed.startsWith("CLOCK:"))) {
         const noteText = trimmed.startsWith("- ") ? trimmed.slice(2) : trimmed;
         currentEntry.note = currentEntry.note ? `${currentEntry.note} ${noteText}` : noteText;
-        continue;
       }
     }
   }
 
   // Add any remaining entry
-  if (currentEntry && currentEntry.startDate) {
+  if (currentEntry?.startDate) {
     entries.push({
       type: currentEntry.type || "clock",
       startDate: currentEntry.startDate,
@@ -202,7 +201,7 @@ function parseOrgDate(dateStr: string): Date {
 
   // Fallback to built-in parser
   const parsed = new Date(cleanDateStr);
-  if (isNaN(parsed.getTime())) {
+  if (Number.isNaN(parsed.getTime())) {
     throw new Error(`Unable to parse date: ${dateStr}`);
   }
 

@@ -278,7 +278,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
         expect(codeBlock).toBeInTheDocument();
 
         // Check for text content within the code block (syntax highlighting breaks up text)
-        const functionElements = screen.getAllByText((content, element) => {
+        const functionElements = screen.getAllByText((_content, element) => {
           return (
             (element?.textContent?.includes("function") &&
               element?.textContent?.includes("hello")) ||
@@ -287,7 +287,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
         });
         expect(functionElements.length).toBeGreaterThan(0);
 
-        const consoleElements = screen.getAllByText((content, element) => {
+        const consoleElements = screen.getAllByText((_content, element) => {
           return (
             (element?.textContent?.includes("console") && element?.textContent?.includes("log")) ||
             false
@@ -302,7 +302,7 @@ describe.skipIf(!isVitest)("OrgRenderer", () => {
 
       await waitFor(() => {
         // Even without syntax highlighting, text may be broken up by elements
-        const functionElements = screen.getAllByText((content, element) => {
+        const functionElements = screen.getAllByText((_content, element) => {
           return (
             (element?.textContent?.includes("function") &&
               element?.textContent?.includes("hello")) ||
@@ -416,7 +416,7 @@ console.log("test");
       );
 
       await waitFor(() => {
-        const consoleElements = screen.getAllByText((content, element) => {
+        const consoleElements = screen.getAllByText((_content, element) => {
           return (
             (element?.textContent?.includes("console") && element?.textContent?.includes("log")) ||
             false
@@ -429,7 +429,7 @@ console.log("test");
       rerender(<OrgRenderer content={codeContent} enableSyntaxHighlight={false} />);
 
       await waitFor(() => {
-        const consoleElements = screen.getAllByText((content, element) => {
+        const consoleElements = screen.getAllByText((_content, element) => {
           return (
             (element?.textContent?.includes("console") && element?.textContent?.includes("log")) ||
             false
