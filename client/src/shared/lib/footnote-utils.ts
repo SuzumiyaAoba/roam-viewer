@@ -18,12 +18,14 @@ export function parseFootnoteReferences(content: string): FootnoteReference[] {
   const referenceRegex = /\[fn:([^\]]+)\]/g;
   let match: RegExpExecArray | null;
 
-  while ((match = referenceRegex.exec(content)) !== null) {
+  match = referenceRegex.exec(content);
+  while (match !== null) {
     references.push({
       label: match[1],
       position: match.index,
       originalText: match[0],
     });
+    match = referenceRegex.exec(content);
   }
 
   return references;
@@ -68,21 +70,22 @@ export function replaceFootnoteReferencesWithLinks(content: string): {
   const referenceRegex = /\[fn:([^\]]+)\]/g;
   let match: RegExpExecArray | null;
 
-  while ((match = referenceRegex.exec(content)) !== null) {
+  match = referenceRegex.exec(content);
+  while (match !== null) {
     // Check if this is inside a footnote definition line
     const lineStart = content.lastIndexOf("\n", match.index) + 1;
     const lineEnd = content.indexOf("\n", match.index);
     const lineContent = content.slice(lineStart, lineEnd === -1 ? content.length : lineEnd);
 
     // Skip if this is a footnote definition
-    if (lineContent.trim().match(/^\[fn:[^\]]+\]\s+.+$/)) {
-      continue; // This is now safe because the while condition handles the next match
+    if (!lineContent.trim().match(/^\[fn:[^\]]+\]\s+.+$/)) {
+      references.push({
+        label: match[1],
+        position: match.index,
+      });
     }
-
-    references.push({
-      label: match[1],
-      position: match.index,
-    });
+    
+    match = referenceRegex.exec(content);
   }
 
   // Sort by position to process from end to start (to avoid position shifting)
