@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 import { TimestampsDisplay } from "./TimestampDisplay";
 import type { TimestampEntry } from "../shared/lib/timestamp-utils";
 

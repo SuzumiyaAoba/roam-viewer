@@ -24,7 +24,8 @@
       },
       "correctness": {
         "recommended": true,
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn"
       },
       "style": {
         "recommended": true
@@ -34,6 +35,18 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["**/*.stories.*"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off"
+          }
+        }
+      }
+    }
+  ],
   "assist": {
     "enabled": true,
     "actions": {

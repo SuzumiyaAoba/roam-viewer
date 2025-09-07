@@ -18,8 +18,7 @@ const config: StorybookConfig = {
     options: {},
   },
   typescript: {
-    check: false,
-    checkOptions: {},
+    check: true,
     reactDocgen: "react-docgen-typescript",
     reactDocgenTypescriptOptions: {
       shouldExtractLiteralValuesFromEnum: true,
