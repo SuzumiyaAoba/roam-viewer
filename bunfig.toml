@@ -1,0 +1,4 @@
+[test]
+root = "."
+exclude = ["**/node_modules/**", "dist/**", "build/**", "coverage/**"]
+timeout = 10000

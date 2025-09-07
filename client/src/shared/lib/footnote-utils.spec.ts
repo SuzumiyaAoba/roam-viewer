@@ -131,13 +131,13 @@ describe("ID generation functions", () => {
 
 describe("Real org-mode content", () => {
   it("should handle actual org-mode footnote format", () => {
-    const content = `** 脚注
+    const content = `** Footnotes
 
-これは脚注の例です[fn:1]。別の脚注もあります[fn:note2]。
+This is footnote example[fn:1]. Another footnote here[fn:note2].
 
-[fn:1] これは最初の脚注の内容です。
+[fn:1] This is first footnote content.
 
-[fn:note2] これは名前付き脚注です。`;
+[fn:note2] This is named footnote.`;
 
     const references = parseFootnoteReferences(content);
     const definitions = parseFootnoteDefinitions(content);

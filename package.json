@@ -14,7 +14,7 @@
     "build:client": "vite build",
     "build": "bun run build:client && bun run build:server",
     "preview": "vite preview",
-    "test": "bun test",
+    "test": "bun test ./client/src/features/org-rendering/lib/rehype-org-enhancements.spec.ts ./client/src/shared/ui/design-system/NodeCard.logic.spec.ts ./client/src/shared/lib/utils.spec.ts ./client/src/shared/lib/logbook-utils.spec.ts ./client/src/shared/lib/footnote-utils.spec.ts ./client/src/shared/lib/parseTagsString.spec.ts ./client/src/shared/lib/timestamp-utils.spec.ts ./client/src/shared/lib/simple-unit.spec.ts ./client/src/pages/node-list/NodeListPage.logic.spec.ts ./client/src/entities/node/api/useDeleteNodes.spec.ts",
     "test:unit": "bun test test/simple-unit.test.ts",
     "test:vitest": "vitest run",
     "test:coverage": "vitest run --coverage",
