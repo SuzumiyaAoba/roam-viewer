@@ -1,12 +1,55 @@
 /**
  * @fileoverview A unified rehype plugin for enhancing org-mode content with custom CSS classes
  * @author Claude Code
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 import { visit } from "unist-util-visit";
 import type { Element, Root, Text, Node } from "hast";
 import type { Plugin, Transformer } from "unified";
+
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+
+/** Regular expression patterns used throughout the plugin */
+const PATTERNS = {
+  HEADER: /^h[1-6]$/,
+  PRIORITY: (levels: string[]) => new RegExp(`\\[(#?[${levels.join("")}])\\]`, "g"),
+  TODO_KEYWORD: (keyword: string) => new RegExp(`^${keyword}\\s+`, ""),
+  TIMESTAMP_CLEANUP: /^[<[]|[>\]]$/g,
+} as const;
+
+/** SVG icon definitions for timestamps */
+const SVG_ICONS = {
+  CLOCK: {
+    viewBox: "0 0 24 24",
+    path: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+  },
+  ARROW: {
+    viewBox: "0 0 24 24",
+    path: "M13 7l5 5-5 5M6 12h12",
+  },
+  CALENDAR: {
+    viewBox: "0 0 24 24",
+    path: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z",
+  },
+} as const;
+
+/** Header level constants */
+const HEADER_LEVELS = {
+  MIN: 1,
+  MAX: 6,
+} as const;
+
+/** Common SVG properties to reduce duplication */
+const SVG_PROPS = {
+  fill: "none" as const,
+  stroke: "currentColor" as const,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  strokeWidth: "2" as const,
+} as const;
 
 /**
  * Custom CSS classes configuration for various org-mode elements
@@ -424,42 +467,99 @@ interface ResolvedOptions {
 }
 
 /**
- * Validates plugin options
+ * Validation error messages
+ */
+const VALIDATION_ERRORS = {
+  ENABLE_SYNTAX_HIGHLIGHT: "enableSyntaxHighlight must be a boolean",
+  CUSTOM_CLASSES: "customClasses must be an object",
+  VALIDATE: "validate must be a boolean",
+  TODO_KEYWORDS_ARRAY: "todoKeywords must be an array",
+  TODO_KEYWORDS_STRINGS: "All todoKeywords must be strings",
+  PRIORITY_LEVELS_ARRAY: "priorityLevels must be an array",
+  PRIORITY_LEVELS_STRINGS: "All priorityLevels must be strings",
+} as const;
+
+/**
+ * Validates a string array option
+ * @param option - Option value to validate
+ * @param arrayErrorMsg - Error message for non-array
+ * @param stringErrorMsg - Error message for non-string items
+ * @throws {Error} If validation fails
+ */
+function validateStringArray(
+  option: unknown,
+  arrayErrorMsg: string,
+  stringErrorMsg: string,
+): void {
+  if (!Array.isArray(option)) {
+    throw new Error(arrayErrorMsg);
+  }
+  if (option.some((item) => typeof item !== "string")) {
+    throw new Error(stringErrorMsg);
+  }
+}
+
+/**
+ * Validates boolean option
+ * @param option - Option value to validate
+ * @param errorMsg - Error message if not boolean
+ * @throws {Error} If validation fails
+ */
+function validateBoolean(option: unknown, errorMsg: string): void {
+  if (typeof option !== "boolean") {
+    throw new Error(errorMsg);
+  }
+}
+
+/**
+ * Validates object option
+ * @param option - Option value to validate
+ * @param errorMsg - Error message if not object
+ * @throws {Error} If validation fails
+ */
+function validateObject(option: unknown, errorMsg: string): void {
+  if (typeof option !== "object" || option === null || Array.isArray(option)) {
+    throw new Error(errorMsg);
+  }
+}
+
+/**
+ * Validates plugin options with improved error messages and structure
  * @param options - Plugin options to validate
  * @throws {Error} If options are invalid
  */
 function validateOptions(options: PluginOptions): void {
-  if (
-    options.enableSyntaxHighlight !== undefined &&
-    typeof options.enableSyntaxHighlight !== "boolean"
-  ) {
-    throw new Error("enableSyntaxHighlight must be a boolean");
+  // Validate enableSyntaxHighlight
+  if (options.enableSyntaxHighlight !== undefined) {
+    validateBoolean(options.enableSyntaxHighlight, VALIDATION_ERRORS.ENABLE_SYNTAX_HIGHLIGHT);
   }
 
-  if (options.customClasses !== undefined && typeof options.customClasses !== "object") {
-    throw new Error("customClasses must be an object");
+  // Validate customClasses
+  if (options.customClasses !== undefined) {
+    validateObject(options.customClasses, VALIDATION_ERRORS.CUSTOM_CLASSES);
   }
 
-  if (options.validate !== undefined && typeof options.validate !== "boolean") {
-    throw new Error("validate must be a boolean");
+  // Validate validate option
+  if (options.validate !== undefined) {
+    validateBoolean(options.validate, VALIDATION_ERRORS.VALIDATE);
   }
 
+  // Validate todoKeywords
   if (options.todoKeywords !== undefined) {
-    if (!Array.isArray(options.todoKeywords)) {
-      throw new Error("todoKeywords must be an array");
-    }
-    if (options.todoKeywords.some((keyword) => typeof keyword !== "string")) {
-      throw new Error("All todoKeywords must be strings");
-    }
+    validateStringArray(
+      options.todoKeywords,
+      VALIDATION_ERRORS.TODO_KEYWORDS_ARRAY,
+      VALIDATION_ERRORS.TODO_KEYWORDS_STRINGS,
+    );
   }
 
+  // Validate priorityLevels
   if (options.priorityLevels !== undefined) {
-    if (!Array.isArray(options.priorityLevels)) {
-      throw new Error("priorityLevels must be an array");
-    }
-    if (options.priorityLevels.some((level) => typeof level !== "string")) {
-      throw new Error("All priorityLevels must be strings");
-    }
+    validateStringArray(
+      options.priorityLevels,
+      VALIDATION_ERRORS.PRIORITY_LEVELS_ARRAY,
+      VALIDATION_ERRORS.PRIORITY_LEVELS_STRINGS,
+    );
   }
 }
 
@@ -563,6 +663,186 @@ function createText(value: string): Text {
 }
 
 /**
+ * Creates an SVG icon element with consistent properties
+ * @param iconType - Type of icon from SVG_ICONS
+ * @param customClasses - Custom CSS classes
+ * @param classPath - Path to classes in custom configuration
+ * @param defaultClasses - Default classes to use
+ * @returns SVG element
+ */
+function createSvgIcon(
+  iconType: keyof typeof SVG_ICONS,
+  customClasses: CustomClasses,
+  classPath: string,
+  defaultClasses: readonly string[],
+): Element {
+  const icon = SVG_ICONS[iconType];
+  return createElement(
+    "svg",
+    {
+      className: getClasses(customClasses, classPath, defaultClasses),
+      ...SVG_PROPS,
+      viewBox: icon.viewBox,
+    },
+    [
+      createElement("path", {
+        ...SVG_PROPS,
+        d: icon.path,
+      }),
+    ],
+  );
+}
+
+/**
+ * Creates a timestamp span with icon and text
+ * @param content - Text content
+ * @param iconType - Type of icon to use
+ * @param customClasses - Custom CSS classes
+ * @param classPath - Path to classes in custom configuration
+ * @param defaultClasses - Default classes
+ * @param iconClassPath - Path to icon classes
+ * @param defaultIconClasses - Default icon classes
+ * @returns Array of child elements
+ */
+function createTimestampContent(
+  content: string,
+  iconType: keyof typeof SVG_ICONS,
+  customClasses: CustomClasses,
+  classPath: string,
+  defaultClasses: readonly string[],
+  iconClassPath: string,
+  defaultIconClasses: readonly string[],
+): (Element | Text)[] {
+  return [
+    createSvgIcon(iconType, customClasses, iconClassPath, defaultIconClasses),
+    createText(content),
+  ];
+}
+
+/**
+ * Checks if a header level is valid
+ * @param level - Header level to validate
+ * @returns True if level is valid (1-6)
+ */
+function isValidHeaderLevel(level: number): boolean {
+  return !isNaN(level) && level >= HEADER_LEVELS.MIN && level <= HEADER_LEVELS.MAX;
+}
+
+/**
+ * Extracts header level from tag name
+ * @param tagName - HTML tag name (e.g., 'h1', 'h2')
+ * @returns Header level (1-6) or null if invalid
+ */
+function extractHeaderLevel(tagName: string): number | null {
+  if (!PATTERNS.HEADER.test(tagName)) return null;
+  const level = parseInt(tagName.charAt(1), 10);
+  return isValidHeaderLevel(level) ? level : null;
+}
+
+/**
+ * Processes TODO keyword in header text node
+ * @param child - Text node containing TODO keyword
+ * @param keyword - TODO keyword to process
+ * @param options - Resolved plugin options
+ * @returns Object with remaining text and todo span, or null if no match
+ */
+function processTodoKeywordInText(
+  child: Text,
+  keyword: string,
+  options: ResolvedOptions,
+): { remainingText: string; todoSpan: Element } | null {
+  const pattern = PATTERNS.TODO_KEYWORD(keyword);
+  if (!pattern.test(child.value)) return null;
+
+  const remainingText = child.value.replace(pattern, "").trim();
+  const todoClasses = getClasses(
+    options.customClasses,
+    `todoKeywords.${keyword}`,
+    DEFAULT_TODO_KEYWORDS[keyword] || DEFAULT_TODO_KEYWORDS.TODO,
+  );
+
+  const todoSpan = createElement(
+    "span",
+    { className: todoClasses },
+    [createText(keyword)],
+  );
+
+  return { remainingText, todoSpan };
+}
+
+/**
+ * Transforms TODO keywords in header elements
+ * @param node - Header element
+ * @param options - Resolved plugin options
+ * @returns True if any changes were made
+ */
+function transformHeaderTodoKeywords(node: Element, options: ResolvedOptions): boolean {
+  const headerLevel = extractHeaderLevel(node.tagName);
+  if (!headerLevel || !node.children) return false;
+
+  let hasChanges = false;
+
+  for (let i = 0; i < node.children.length; i++) {
+    const child = node.children[i];
+    if (!child || !isText(child)) continue;
+
+    for (const keyword of options.todoKeywords) {
+      const result = processTodoKeywordInText(child, keyword, options);
+      if (result) {
+        const { remainingText, todoSpan } = result;
+        const newChildren: Array<Element | Text> = [todoSpan];
+        if (remainingText) {
+          newChildren.push(createText(remainingText));
+        }
+
+        node.children.splice(i, 1, ...newChildren);
+        hasChanges = true;
+        break;
+      }
+    }
+  }
+
+  // Add header classes if changes were made or if no class exists
+  if (hasChanges || !node.properties?.className) {
+    node.properties = node.properties || {};
+    node.properties.className = getClasses(
+      options.customClasses,
+      `headers.${headerLevel}`,
+      DEFAULT_HEADERS[headerLevel] || DEFAULT_HEADERS[1],
+    );
+  }
+
+  return hasChanges;
+}
+
+/**
+ * Transforms standalone TODO keyword spans (from uniorg)
+ * @param node - Span element with TODO keyword class
+ * @param options - Resolved plugin options
+ */
+function transformStandaloneTodoKeywords(node: Element, options: ResolvedOptions): void {
+  if (!node.properties?.className) return;
+
+  const classNames = Array.isArray(node.properties.className)
+    ? node.properties.className
+    : [node.properties.className];
+
+  if (!classNames.some((cls: unknown) => typeof cls === "string" && cls.includes("todo-keyword"))) {
+    return;
+  }
+
+  const textChild = node.children?.find((child) => child && child.type === "text") as Text;
+  if (textChild && options.todoKeywords.includes(textChild.value.trim())) {
+    const keyword = textChild.value.trim();
+    node.properties.className = getClasses(
+      options.customClasses,
+      `todoKeywords.${keyword}`,
+      DEFAULT_TODO_KEYWORDS[keyword] || DEFAULT_TODO_KEYWORDS.TODO,
+    );
+  }
+}
+
+/**
  * Transforms TODO keywords in headers and standalone spans
  * @param tree - Hast tree
  * @param options - Resolved plugin options
@@ -573,77 +853,14 @@ function transformTodoKeywords(tree: Root, options: ResolvedOptions): void {
       if (!node || !node.children) return;
 
       // Handle TODO keywords in headers
-      if (/^h[1-6]$/.test(node.tagName)) {
-        const headerLevel = parseInt(node.tagName.charAt(1), 10);
-        if (isNaN(headerLevel) || headerLevel < 1 || headerLevel > 6) return;
-
-        let hasChanges = false;
-
-        for (let i = 0; i < node.children.length; i++) {
-          const child = node.children[i];
-          if (!child || !isText(child)) continue;
-
-          for (const keyword of options.todoKeywords) {
-            const pattern = new RegExp(`^${keyword}\\s+`, "");
-            if (pattern.test(child.value)) {
-              const remainingText = child.value.replace(pattern, "").trim();
-
-              const todoClasses = getClasses(
-                options.customClasses,
-                `todoKeywords.${keyword}`,
-                DEFAULT_TODO_KEYWORDS[keyword] || DEFAULT_TODO_KEYWORDS.TODO,
-              );
-
-              const todoSpan = createElement(
-                "span",
-                {
-                  className: todoClasses,
-                },
-                [createText(keyword)],
-              );
-
-              const newChildren: Array<Element | Text> = [todoSpan];
-              if (remainingText) {
-                newChildren.push(createText(remainingText));
-              }
-
-              node.children.splice(i, 1, ...newChildren);
-              hasChanges = true;
-              break;
-            }
-          }
-        }
-
-        // Add header classes if changes were made or if no class exists
-        if (hasChanges || !node.properties?.className) {
-          node.properties = node.properties || {};
-          node.properties.className = getClasses(
-            options.customClasses,
-            `headers.${headerLevel}`,
-            DEFAULT_HEADERS[headerLevel] || DEFAULT_HEADERS[1],
-          );
-        }
+      if (PATTERNS.HEADER.test(node.tagName)) {
+        transformHeaderTodoKeywords(node, options);
+        return;
       }
 
       // Handle TODO keywords in standalone spans (from uniorg)
-      if (node.tagName === "span" && node.properties?.className) {
-        const classNames = Array.isArray(node.properties.className)
-          ? node.properties.className
-          : [node.properties.className];
-
-        if (
-          classNames.some((cls: any) => typeof cls === "string" && cls.includes("todo-keyword"))
-        ) {
-          const textChild = node.children?.find((child) => child && child.type === "text") as Text;
-          if (textChild && options.todoKeywords.includes(textChild.value.trim())) {
-            const keyword = textChild.value.trim();
-            node.properties.className = getClasses(
-              options.customClasses,
-              `todoKeywords.${keyword}`,
-              DEFAULT_TODO_KEYWORDS[keyword] || DEFAULT_TODO_KEYWORDS.TODO,
-            );
-          }
-        }
+      if (node.tagName === "span") {
+        transformStandaloneTodoKeywords(node, options);
       }
     });
   } catch (error) {
@@ -654,6 +871,93 @@ function transformTodoKeywords(tree: Root, options: ResolvedOptions): void {
 }
 
 /**
+ * Priority transformation result
+ */
+interface PriorityTransformResult {
+  index: number;
+  replacement: (Element | Text)[];
+}
+
+/**
+ * Creates a priority span element
+ * @param priority - Priority level (A, B, C, etc.)
+ * @param options - Resolved plugin options
+ * @returns Priority span element
+ */
+function createPrioritySpan(priority: string, options: ResolvedOptions): Element {
+  const priorityClasses = getClasses(
+    options.customClasses,
+    `priorities.${priority}`,
+    DEFAULT_PRIORITIES[priority] || DEFAULT_PRIORITIES.A,
+  );
+
+  return createElement(
+    "span",
+    { className: priorityClasses },
+    [createText(`#${priority}`)],
+  );
+}
+
+/**
+ * Processes priority indicators in a text node
+ * @param node - Text node to process
+ * @param options - Resolved plugin options
+ * @returns Array of transformation results
+ */
+function processPriorityIndicators(
+  node: Text,
+  options: ResolvedOptions,
+): PriorityTransformResult[] {
+  const priorityPattern = PATTERNS.PRIORITY(options.priorityLevels);
+  const changes: PriorityTransformResult[] = [];
+  let match;
+
+  // Reset regex lastIndex to ensure we start from the beginning
+  priorityPattern.lastIndex = 0;
+
+  while ((match = priorityPattern.exec(node.value)) !== null) {
+    const fullMatch = match[0];
+    const priority = match[1].replace("#", "");
+    
+    // Double-check priority is valid (regex should ensure this, but be safe)
+    if (!options.priorityLevels.includes(priority)) continue;
+
+    const beforeText = node.value.substring(0, match.index);
+    const afterText = node.value.substring(match.index + fullMatch.length);
+
+    const prioritySpan = createPrioritySpan(priority, options);
+    const replacement: (Element | Text)[] = [];
+    
+    if (beforeText) replacement.push(createText(beforeText));
+    replacement.push(prioritySpan);
+    if (afterText) replacement.push(createText(afterText));
+
+    changes.push({ index: 0, replacement }); // Index will be set by caller
+    break; // Handle one match at a time to avoid index confusion
+  }
+
+  return changes;
+}
+
+/**
+ * Validates parent and index for priority transformation
+ * @param parent - Parent node
+ * @param index - Index of current node
+ * @returns True if valid for transformation
+ */
+function isValidForPriorityTransform(
+  parent: Node | null,
+  index: number | undefined,
+): parent is Element & { children: (Element | Text)[] } {
+  return (
+    parent !== null &&
+    index !== undefined &&
+    "children" in parent &&
+    Array.isArray(parent.children)
+  );
+}
+
+/**
  * Transforms priority indicators [#A], [#B], [#C]
  * @param tree - Hast tree
  * @param options - Resolved plugin options
@@ -661,45 +965,12 @@ function transformTodoKeywords(tree: Root, options: ResolvedOptions): void {
 function transformPriorities(tree: Root, options: ResolvedOptions): void {
   try {
     visit(tree, "text", (node: Text, index, parent) => {
-      if (!parent || !Array.isArray(parent.children) || index === undefined) return;
+      if (!isValidForPriorityTransform(parent, index)) return;
 
-      const priorityPattern = new RegExp(`\\[(#?[${options.priorityLevels.join("")}])\\]`, "g");
-      let match;
-      const changes: Array<{ index: number; replacement: any[] }> = [];
-
-      while ((match = priorityPattern.exec(node.value)) !== null) {
-        const fullMatch = match[0];
-        const priority = match[1].replace("#", "");
-        if (!options.priorityLevels.includes(priority)) continue;
-
-        const beforeText = node.value.substring(0, match.index);
-        const afterText = node.value.substring(match.index + fullMatch.length);
-
-        const priorityClasses = getClasses(
-          options.customClasses,
-          `priorities.${priority}`,
-          DEFAULT_PRIORITIES[priority] || DEFAULT_PRIORITIES.A,
-        );
-
-        const prioritySpan = createElement(
-          "span",
-          {
-            className: priorityClasses,
-          },
-          [createText(`#${priority}`)],
-        );
-
-        const replacement = [];
-        if (beforeText) replacement.push(createText(beforeText));
-        replacement.push(prioritySpan);
-        if (afterText) replacement.push(createText(afterText));
-
-        changes.push({ index, replacement });
-        break; // Handle one match at a time
-      }
-
-      // Apply changes
-      changes.forEach(({ index, replacement }) => {
+      const changes = processPriorityIndicators(node, options);
+      
+      // Apply changes (we know there's at most one change due to early break)
+      changes.forEach(({ replacement }) => {
         parent.children.splice(index, 1, ...replacement);
       });
     });
@@ -711,6 +982,177 @@ function transformPriorities(tree: Root, options: ResolvedOptions): void {
 }
 
 /**
+ * Timestamp type definitions for better type safety
+ */
+type TimestampType = "range" | "active" | "inactive" | "fallback";
+
+/**
+ * Configuration for timestamp processing
+ */
+interface TimestampConfig {
+  type: TimestampType;
+  iconType: keyof typeof SVG_ICONS;
+  classPath: string;
+  iconClassPath: string;
+  defaultClasses: readonly string[];
+  defaultIconClasses: readonly string[];
+}
+
+/**
+ * Determines timestamp type and returns configuration
+ * @param content - Timestamp content
+ * @returns Timestamp configuration or null if invalid
+ */
+function getTimestampConfig(content: string): TimestampConfig | null {
+  const isRange = content.includes("--");
+  const isActive = content.startsWith("<") && content.endsWith(">");
+  const isInactive = content.startsWith("[") && content.endsWith("]");
+
+  if (isRange) {
+    return {
+      type: "range",
+      iconType: "CLOCK",
+      classPath: "timestamps.range",
+      iconClassPath: "timestamps.rangeIcon",
+      defaultClasses: DEFAULT_TIMESTAMPS.range,
+      defaultIconClasses: DEFAULT_TIMESTAMPS.rangeIcon,
+    };
+  }
+
+  if (isActive) {
+    return {
+      type: "active",
+      iconType: "CLOCK",
+      classPath: "timestamps.active",
+      iconClassPath: "timestamps.clockIcon",
+      defaultClasses: DEFAULT_TIMESTAMPS.active,
+      defaultIconClasses: DEFAULT_TIMESTAMPS.clockIcon,
+    };
+  }
+
+  if (isInactive) {
+    return {
+      type: "inactive",
+      iconType: "CALENDAR",
+      classPath: "timestamps.inactive",
+      iconClassPath: "timestamps.calendarIcon",
+      defaultClasses: DEFAULT_TIMESTAMPS.inactive,
+      defaultIconClasses: DEFAULT_TIMESTAMPS.calendarIcon,
+    };
+  }
+
+  // Fallback
+  return {
+    type: "fallback",
+    iconType: "CLOCK",
+    classPath: "timestamps.fallback",
+    iconClassPath: "timestamps.clockIcon",
+    defaultClasses: DEFAULT_TIMESTAMPS.fallback,
+    defaultIconClasses: DEFAULT_TIMESTAMPS.clockIcon,
+  };
+}
+
+/**
+ * Creates timestamp range content with start/end times and arrow
+ * @param content - Raw timestamp content
+ * @param options - Resolved plugin options
+ * @param config - Timestamp configuration
+ * @returns Array of child elements for range timestamp
+ */
+function createRangeTimestampContent(
+  content: string,
+  options: ResolvedOptions,
+  config: TimestampConfig,
+): (Element | Text)[] {
+  const rangeParts = content.split("--");
+  if (rangeParts.length !== 2) {
+    // Fallback to simple timestamp if parsing fails
+    const cleanContent = content.replace(PATTERNS.TIMESTAMP_CLEANUP, "");
+    return createTimestampContent(
+      cleanContent,
+      config.iconType,
+      options.customClasses,
+      config.classPath,
+      config.defaultClasses,
+      config.iconClassPath,
+      config.defaultIconClasses,
+    );
+  }
+
+  const startTime = rangeParts[0].trim().replace(PATTERNS.TIMESTAMP_CLEANUP, "");
+  const endTime = rangeParts[1].trim().replace(PATTERNS.TIMESTAMP_CLEANUP, "");
+
+  return [
+    createSvgIcon(
+      config.iconType,
+      options.customClasses,
+      config.iconClassPath,
+      config.defaultIconClasses,
+    ),
+    createElement("span", {}, [createText(startTime)]),
+    createSvgIcon(
+      "ARROW",
+      options.customClasses,
+      "timestamps.arrowIcon",
+      DEFAULT_TIMESTAMPS.arrowIcon,
+    ),
+    createElement("span", {}, [createText(endTime)]),
+  ];
+}
+
+/**
+ * Transforms a single timestamp element
+ * @param node - Timestamp span element
+ * @param options - Resolved plugin options
+ */
+function transformTimestampElement(node: Element, options: ResolvedOptions): void {
+  const textChild = node.children?.find((child) => child && child.type === "text") as Text;
+  if (!textChild) return;
+
+  const content = textChild.value;
+  const config = getTimestampConfig(content);
+  if (!config) return;
+
+  // Apply timestamp classes
+  node.properties.className = getClasses(
+    options.customClasses,
+    config.classPath,
+    config.defaultClasses,
+  );
+
+  // Create appropriate content based on timestamp type
+  if (config.type === "range") {
+    node.children = createRangeTimestampContent(content, options, config);
+  } else {
+    const cleanContent = content.replace(PATTERNS.TIMESTAMP_CLEANUP, "");
+    node.children = createTimestampContent(
+      cleanContent,
+      config.iconType,
+      options.customClasses,
+      config.classPath,
+      config.defaultClasses,
+      config.iconClassPath,
+      config.defaultIconClasses,
+    );
+  }
+}
+
+/**
+ * Checks if an element is a timestamp span
+ * @param node - Element to check
+ * @returns True if element is a timestamp span
+ */
+function isTimestampElement(node: Element): boolean {
+  if (node.tagName !== "span" || !node.properties?.className) return false;
+
+  const classNames = Array.isArray(node.properties.className)
+    ? node.properties.className
+    : [node.properties.className];
+
+  return classNames.includes("timestamp");
+}
+
+/**
  * Transforms timestamp spans
  * @param tree - Hast tree
  * @param options - Resolved plugin options
@@ -719,181 +1161,150 @@ function transformTimestamps(tree: Root, options: ResolvedOptions): void {
   try {
     visit(tree, "element", (node: Element) => {
       if (!node || !node.tagName) return;
-      if (
-        node.tagName === "span" &&
-        node.properties?.className &&
-        (Array.isArray(node.properties.className)
-          ? node.properties.className
-          : [node.properties.className]
-        ).includes("timestamp")
-      ) {
-        const textChild = node.children?.find((child) => child && child.type === "text") as Text;
-        if (!textChild) return;
-
-        const content = textChild.value;
-        const isRange = content.includes("--");
-        const isActive = content.startsWith("<") && content.endsWith(">");
-        const isInactive = content.startsWith("[") && content.endsWith("]");
-
-        if (isRange) {
-          // Handle timestamp ranges
-          const rangeParts = content.split("--");
-          if (rangeParts.length === 2) {
-            const startTime = rangeParts[0].trim().replace(/^[<[]|[>\]]$/g, "");
-            const endTime = rangeParts[1].trim().replace(/^[<[]|[>\]]$/g, "");
-
-            node.properties.className = getClasses(
-              options.customClasses,
-              "timestamps.range",
-              DEFAULT_TIMESTAMPS.range,
-            );
-            node.children = [
-              createElement(
-                "svg",
-                {
-                  className: getClasses(
-                    options.customClasses,
-                    "timestamps.rangeIcon",
-                    DEFAULT_TIMESTAMPS.rangeIcon,
-                  ),
-                  fill: "none" as const,
-                  stroke: "currentColor" as const,
-                  viewBox: "0 0 24 24" as const,
-                },
-                [
-                  createElement("path", {
-                    strokeLinecap: "round" as const,
-                    strokeLinejoin: "round" as const,
-                    strokeWidth: "2" as const,
-                    d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" as const,
-                  }),
-                ],
-              ),
-              createElement("span", {}, [createText(startTime)]),
-              createElement(
-                "svg",
-                {
-                  className: getClasses(
-                    options.customClasses,
-                    "timestamps.arrowIcon",
-                    DEFAULT_TIMESTAMPS.arrowIcon,
-                  ),
-                  fill: "none" as const,
-                  stroke: "currentColor" as const,
-                  viewBox: "0 0 24 24" as const,
-                },
-                [
-                  createElement("path", {
-                    strokeLinecap: "round" as const,
-                    strokeLinejoin: "round" as const,
-                    strokeWidth: "2" as const,
-                    d: "M13 7l5 5-5 5M6 12h12" as const,
-                  }),
-                ],
-              ),
-              createElement("span", {}, [createText(endTime)]),
-            ];
-          }
-        } else if (isActive) {
-          const cleanContent = content.replace(/^[<[]|[>\]]$/g, "");
-          node.properties.className = getClasses(
-            options.customClasses,
-            "timestamps.active",
-            DEFAULT_TIMESTAMPS.active,
-          );
-          node.children = [
-            createElement(
-              "svg",
-              {
-                className: getClasses(
-                  options.customClasses,
-                  "timestamps.clockIcon",
-                  DEFAULT_TIMESTAMPS.clockIcon,
-                ),
-                fill: "none" as const,
-                stroke: "currentColor" as const,
-                viewBox: "0 0 24 24" as const,
-              },
-              [
-                createElement("path", {
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                  strokeWidth: "2" as const,
-                  d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" as const,
-                }),
-              ],
-            ),
-            createText(cleanContent),
-          ];
-        } else if (isInactive) {
-          const cleanContent = content.replace(/^[<[]|[>\]]$/g, "");
-          node.properties.className = getClasses(
-            options.customClasses,
-            "timestamps.inactive",
-            DEFAULT_TIMESTAMPS.inactive,
-          );
-          node.children = [
-            createElement(
-              "svg",
-              {
-                className: getClasses(
-                  options.customClasses,
-                  "timestamps.calendarIcon",
-                  DEFAULT_TIMESTAMPS.calendarIcon,
-                ),
-                fill: "none" as const,
-                stroke: "currentColor" as const,
-                viewBox: "0 0 24 24" as const,
-              },
-              [
-                createElement("path", {
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                  strokeWidth: "2" as const,
-                  d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" as const,
-                }),
-              ],
-            ),
-            createText(cleanContent),
-          ];
-        } else {
-          // Fallback styling
-          const cleanContent = content.replace(/^[<[]|[>]]$/g, "");
-          node.properties.className = getClasses(
-            options.customClasses,
-            "timestamps.fallback",
-            DEFAULT_TIMESTAMPS.fallback,
-          );
-          node.children = [
-            createElement(
-              "svg",
-              {
-                className: getClasses(
-                  options.customClasses,
-                  "timestamps.clockIcon",
-                  DEFAULT_TIMESTAMPS.clockIcon,
-                ),
-                fill: "none" as const,
-                stroke: "currentColor" as const,
-                viewBox: "0 0 24 24" as const,
-              },
-              [
-                createElement("path", {
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                  strokeWidth: "2" as const,
-                  d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" as const,
-                }),
-              ],
-            ),
-            createText(cleanContent),
-          ];
-        }
+      
+      if (isTimestampElement(node)) {
+        transformTimestampElement(node, options);
       }
     });
   } catch (error) {
     if (options.validate) {
       throw new Error(`Error transforming timestamps: ${error}`);
+    }
+  }
+}
+
+/**
+ * Element mapping for basic styling
+ */
+const BASIC_ELEMENT_MAP = [
+  ["p", "elements.p", DEFAULT_ELEMENTS.p],
+  ["ul", "elements.ul", DEFAULT_ELEMENTS.ul],
+  ["ol", "elements.ol", DEFAULT_ELEMENTS.ol],
+  ["li", "elements.li", DEFAULT_ELEMENTS.li],
+  ["table", "elements.table", DEFAULT_ELEMENTS.table],
+  ["th", "elements.th", DEFAULT_ELEMENTS.th],
+  ["td", "elements.td", DEFAULT_ELEMENTS.td],
+  ["thead", "elements.thead", DEFAULT_ELEMENTS.thead],
+  ["tbody", "elements.tbody", DEFAULT_ELEMENTS.tbody],
+  ["a", "elements.a", DEFAULT_ELEMENTS.a],
+  ["strong", "elements.strong", DEFAULT_ELEMENTS.strong],
+  ["em", "elements.em", DEFAULT_ELEMENTS.em],
+  ["hr", "elements.hr", DEFAULT_ELEMENTS.hr],
+] as const;
+
+/**
+ * Checks if an element has existing CSS classes
+ * @param node - Element to check
+ * @returns True if element has classes
+ */
+function hasExistingClasses(node: Element): boolean {
+  return Boolean(
+    node.properties?.className &&
+    (Array.isArray(node.properties.className)
+      ? node.properties.className.length > 0
+      : true),
+  );
+}
+
+/**
+ * Normalizes class names to string array
+ * @param className - Class name(s) to normalize
+ * @returns Array of string class names
+ */
+function normalizeClassNames(className: unknown): string[] {
+  if (!className) return [];
+  if (Array.isArray(className)) {
+    return className.filter((cls): cls is string => typeof cls === "string");
+  }
+  return typeof className === "string" ? [className] : [];
+}
+
+/**
+ * Applies classes to an element, ensuring properties object exists
+ * @param node - Element to apply classes to
+ * @param classes - Classes to apply
+ */
+function applyClasses(node: Element, classes: string[]): void {
+  node.properties = node.properties || {};
+  node.properties.className = classes;
+}
+
+/**
+ * Processes header elements for basic styling
+ * @param node - Header element
+ * @param options - Resolved plugin options
+ */
+function processHeaderElement(node: Element, options: ResolvedOptions): void {
+  const level = extractHeaderLevel(node.tagName);
+  if (!level || hasExistingClasses(node)) return;
+
+  const classes = getClasses(
+    options.customClasses,
+    `headers.${level}`,
+    DEFAULT_HEADERS[level] || DEFAULT_HEADERS[1],
+  );
+  applyClasses(node, classes);
+}
+
+/**
+ * Processes code elements with special Shiki handling
+ * @param node - Code element
+ * @param options - Resolved plugin options
+ */
+function processCodeElement(node: Element, options: ResolvedOptions): void {
+  const classNames = normalizeClassNames(node.properties?.className);
+  const hasShiki = classNames.some((cls) => cls.includes("shiki"));
+  
+  if (!hasShiki) {
+    const classes = getClasses(
+      options.customClasses,
+      "elements.code",
+      DEFAULT_ELEMENTS.code,
+    );
+    applyClasses(node, classes);
+  }
+}
+
+/**
+ * Processes pre elements with special Shiki handling
+ * @param node - Pre element
+ * @param options - Resolved plugin options
+ */
+function processPreElement(node: Element, options: ResolvedOptions): void {
+  const classNames = normalizeClassNames(node.properties?.className);
+  const hasShiki = classNames.some((cls) => cls.includes("shiki"));
+  
+  if (hasShiki) {
+    // Merge existing classes with Shiki-specific styling
+    const preShikiClasses = getClasses(
+      options.customClasses,
+      "elements.preShiki",
+      DEFAULT_ELEMENTS.preShiki,
+    );
+    applyClasses(node, [...classNames, ...preShikiClasses]);
+  } else if (!hasExistingClasses(node)) {
+    const classes = getClasses(
+      options.customClasses,
+      "elements.pre",
+      DEFAULT_ELEMENTS.pre,
+    );
+    applyClasses(node, classes);
+  }
+}
+
+/**
+ * Processes basic elements for styling
+ * @param node - Element to process
+ * @param options - Resolved plugin options
+ */
+function processBasicElement(node: Element, options: ResolvedOptions): void {
+  if (hasExistingClasses(node)) return;
+
+  for (const [tagName, path, defaultClasses] of BASIC_ELEMENT_MAP) {
+    if (node.tagName === tagName) {
+      const classes = getClasses(options.customClasses, path, defaultClasses);
+      applyClasses(node, classes);
+      break;
     }
   }
 }
@@ -906,102 +1317,23 @@ function transformTimestamps(tree: Root, options: ResolvedOptions): void {
 function applyBasicClasses(tree: Root, options: ResolvedOptions): void {
   try {
     visit(tree, "element", (node: Element) => {
-      const hasClasses =
-        node.properties?.className &&
-        (Array.isArray(node.properties.className) ? node.properties.className.length > 0 : true);
+      if (!node || !node.tagName) return;
 
+      // Skip elements that already have classes (except pre and code which need special handling)
+      const hasClasses = hasExistingClasses(node);
       if (hasClasses && node.tagName !== "pre" && node.tagName !== "code") {
         return;
       }
 
-      // Apply header classes
-      if (/^h[1-6]$/.test(node.tagName)) {
-        const level = parseInt(node.tagName.charAt(1), 10);
-        if (!hasClasses && level >= 1 && level <= 6) {
-          node.properties = node.properties || {};
-          node.properties.className = getClasses(
-            options.customClasses,
-            `headers.${level}`,
-            DEFAULT_HEADERS[level] || DEFAULT_HEADERS[1],
-          );
-        }
-        return;
-      }
-
-      // Apply element-specific classes
-      const elementMap: Array<[string, string]> = [
-        ["p", "elements.p"],
-        ["ul", "elements.ul"],
-        ["ol", "elements.ol"],
-        ["li", "elements.li"],
-        ["table", "elements.table"],
-        ["th", "elements.th"],
-        ["td", "elements.td"],
-        ["thead", "elements.thead"],
-        ["tbody", "elements.tbody"],
-        ["a", "elements.a"],
-        ["strong", "elements.strong"],
-        ["em", "elements.em"],
-        ["hr", "elements.hr"],
-      ];
-
-      for (const [tagName, path] of elementMap) {
-        if (node.tagName === tagName && !hasClasses) {
-          node.properties = node.properties || {};
-          node.properties.className = getClasses(
-            options.customClasses,
-            path,
-            DEFAULT_ELEMENTS[tagName as keyof typeof DEFAULT_ELEMENTS],
-          );
-          break;
-        }
-      }
-
-      // Handle code elements
-      if (node.tagName === "code") {
-        const classNames = Array.isArray(node.properties?.className)
-          ? node.properties.className
-          : node.properties?.className
-            ? [node.properties.className]
-            : [];
-
-        if (!classNames.some((cls) => typeof cls === "string" && cls.includes("shiki"))) {
-          node.properties = node.properties || {};
-          node.properties.className = getClasses(
-            options.customClasses,
-            "elements.code",
-            DEFAULT_ELEMENTS.code,
-          );
-        }
-      }
-
-      // Handle pre elements
-      if (node.tagName === "pre") {
-        const preClassNames = Array.isArray(node.properties?.className)
-          ? node.properties.className
-          : node.properties?.className
-            ? [node.properties.className]
-            : [];
-
-        if (preClassNames.some((cls) => typeof cls === "string" && cls.includes("shiki"))) {
-          node.properties = node.properties || {};
-          const existingClasses = Array.isArray(node.properties.className)
-            ? node.properties.className.filter((cls): cls is string => typeof cls === "string")
-            : [node.properties.className].filter((cls): cls is string => typeof cls === "string");
-          const preShikiClasses = getClasses(
-            options.customClasses,
-            "elements.preShiki",
-            DEFAULT_ELEMENTS.preShiki,
-          );
-          node.properties.className = [...existingClasses, ...preShikiClasses];
-        } else if (!hasClasses) {
-          node.properties = node.properties || {};
-          node.properties.className = getClasses(
-            options.customClasses,
-            "elements.pre",
-            DEFAULT_ELEMENTS.pre,
-          );
-        }
+      // Handle different element types
+      if (PATTERNS.HEADER.test(node.tagName)) {
+        processHeaderElement(node, options);
+      } else if (node.tagName === "code") {
+        processCodeElement(node, options);
+      } else if (node.tagName === "pre") {
+        processPreElement(node, options);
+      } else {
+        processBasicElement(node, options);
       }
     });
   } catch (error) {
@@ -1011,16 +1343,108 @@ function applyBasicClasses(tree: Root, options: ResolvedOptions): void {
   }
 }
 
+// ============================================================================
+// MAIN PLUGIN FUNCTION
+// ============================================================================
+
+/**
+ * Plugin performance configuration
+ */
+interface PluginPerformanceConfig {
+  /** Whether to enable performance monitoring */
+  enablePerformanceLogging: boolean;
+  /** Performance threshold in milliseconds for warnings */
+  performanceThreshold: number;
+}
+
+/**
+ * Default performance configuration
+ */
+const DEFAULT_PERFORMANCE_CONFIG: PluginPerformanceConfig = {
+  enablePerformanceLogging: false,
+  performanceThreshold: 100, // ms
+};
+
+/**
+ * Logs performance metrics if enabled
+ * @param operation - Name of the operation
+ * @param duration - Duration in milliseconds
+ * @param config - Performance configuration
+ */
+function logPerformance(
+  operation: string,
+  duration: number,
+  config: PluginPerformanceConfig,
+): void {
+  if (!config.enablePerformanceLogging) return;
+  
+  if (duration > config.performanceThreshold) {
+    console.warn(`rehype-org-enhancements: ${operation} took ${duration}ms`);
+  } else {
+    console.debug(`rehype-org-enhancements: ${operation} took ${duration}ms`);
+  }
+}
+
+/**
+ * Validates the input tree structure
+ * @param tree - Tree to validate
+ * @param validate - Whether to throw on invalid tree
+ * @returns True if tree is valid, false otherwise
+ */
+function validateTree(tree: unknown, validate: boolean): tree is Root {
+  if (!tree || typeof tree !== "object" || (tree as Root).type !== "root") {
+    if (validate) {
+      throw new Error("Expected root node");
+    }
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Applies all transformations to the tree with error handling and performance monitoring
+ * @param tree - Root tree node
+ * @param options - Resolved plugin options
+ */
+function applyTransformations(tree: Root, options: ResolvedOptions): void {
+  const performanceConfig = DEFAULT_PERFORMANCE_CONFIG;
+  const transformations = [
+    { name: "TODO keywords", fn: transformTodoKeywords },
+    { name: "priorities", fn: transformPriorities },
+    { name: "timestamps", fn: transformTimestamps },
+    { name: "basic classes", fn: applyBasicClasses },
+  ] as const;
+
+  for (const { name, fn } of transformations) {
+    const startTime = performance.now();
+    try {
+      fn(tree, options);
+    } catch (error) {
+      if (options.validate) {
+        throw new Error(`Error in ${name} transformation: ${error}`);
+      }
+      console.warn(`rehype-org-enhancements: ${name} transformation failed:`, error);
+    }
+    const endTime = performance.now();
+    logPerformance(`${name} transformation`, endTime - startTime, performanceConfig);
+  }
+}
+
 /**
  * Main plugin function for rehype-org-enhancements
  *
- * This plugin enhances org-mode content parsed by uniorg with custom CSS classes
- * and styling for TODO keywords, priorities, timestamps, and basic HTML elements.
+ * This unified plugin enhances org-mode content parsed by uniorg with custom CSS classes
+ * and styling for various org-mode elements including:
+ *
+ * - **TODO Keywords**: Transforms TODO, DONE, DOING, etc. with customizable styling
+ * - **Priority Indicators**: Handles [#A], [#B], [#C] priority markers
+ * - **Timestamps**: Styles active/inactive timestamps and ranges with icons
+ * - **Basic Elements**: Applies consistent styling to HTML elements
  *
  * @param options - Plugin configuration options
- * @returns Unified transformer function
+ * @returns Unified transformer function that processes hast trees
  *
- * @example
+ * @example Basic usage
  * ```typescript
  * import { unified } from 'unified';
  * import { rehypeOrgEnhancements } from './rehype-org-enhancements';
@@ -1028,46 +1452,82 @@ function applyBasicClasses(tree: Root, options: ResolvedOptions): void {
  * const processor = unified()
  *   .use(uniorgParse)
  *   .use(uniorg2rehype)
+ *   .use(rehypeOrgEnhancements);
+ * ```
+ *
+ * @example With custom classes
+ * ```typescript
+ * const processor = unified()
+ *   .use(uniorgParse)
+ *   .use(uniorg2rehype)
  *   .use(rehypeOrgEnhancements, {
  *     customClasses: {
  *       todoKeywords: {
- *         TODO: ['custom-todo-class'],
+ *         TODO: ['bg-orange-200', 'text-orange-800'],
+ *         DONE: ['bg-green-200', 'text-green-800'],
+ *       },
+ *       priorities: {
+ *         A: ['bg-red-200', 'text-red-800', 'font-bold'],
+ *       },
+ *       timestamps: {
+ *         active: ['bg-blue-100', 'text-blue-700'],
+ *       },
+ *       elements: {
+ *         p: ['text-gray-800', 'leading-relaxed'],
+ *         code: ['bg-slate-100', 'rounded', 'px-2'],
  *       },
  *     },
+ *     todoKeywords: ['TODO', 'DONE', 'WAITING', 'DELEGATED'],
+ *     priorityLevels: ['A', 'B', 'C', 'D'],
+ *   });
+ * ```
+ *
+ * @example Performance and validation options
+ * ```typescript
+ * const processor = unified()
+ *   .use(uniorgParse)
+ *   .use(uniorg2rehype)
+ *   .use(rehypeOrgEnhancements, {
+ *     validate: false, // Disable validation for better performance
+ *     enableSyntaxHighlight: true, // Enable syntax highlighting integration
  *   });
  * ```
  */
 export const rehypeOrgEnhancements: Plugin<[PluginOptions?], Root, Root> = function (options = {}) {
-  // Validate options if validation is enabled
+  // Validate options if validation is enabled (default: true)
   if (options.validate !== false) {
     validateOptions(options);
   }
 
-  // Resolve options with defaults
-  const resolvedOptions = resolveOptions(options);
+  // Resolve options with defaults and create immutable config
+  const resolvedOptions = Object.freeze(resolveOptions(options));
 
-  // Return transformer function
+  /**
+   * Transformer function that processes hast trees
+   * @param tree - Root hast tree node
+   * @returns Processed tree
+   */
   const transformer: Transformer<Root, Root> = function (tree) {
-    if (!tree || tree.type !== "root") {
-      if (resolvedOptions.validate) {
-        throw new Error("Expected root node");
-      }
+    // Validate input tree structure
+    if (!validateTree(tree, resolvedOptions.validate)) {
       return tree;
     }
 
+    const startTime = performance.now();
+    
     try {
-      // Apply transformations in logical order
-      transformTodoKeywords(tree, resolvedOptions);
-      transformPriorities(tree, resolvedOptions);
-      transformTimestamps(tree, resolvedOptions);
-      applyBasicClasses(tree, resolvedOptions);
+      // Apply all transformations with error handling and performance monitoring
+      applyTransformations(tree, resolvedOptions);
     } catch (error) {
+      // Re-throw validation errors, log others
       if (resolvedOptions.validate) {
         throw error;
       }
-      // In non-validation mode, log error but continue
-      console.warn("rehype-org-enhancements warning:", error);
+      console.warn("rehype-org-enhancements: Transformation failed:", error);
     }
+
+    const endTime = performance.now();
+    logPerformance("total plugin execution", endTime - startTime, DEFAULT_PERFORMANCE_CONFIG);
 
     return tree;
   };
