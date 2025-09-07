@@ -35,7 +35,6 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.stories.tsx",
-    "client/src/shared/ui/design-system",
     "client/src/test"
   ]
 }

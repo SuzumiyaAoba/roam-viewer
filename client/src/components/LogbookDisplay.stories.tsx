@@ -255,7 +255,8 @@ CLOCK: [2024-01-16 Tue 13:30]--[2024-01-16 Tue 16:00] =>  2:30
 };
 
 // Error handling examples
-export const InvalidContent: Story = {
+export const InvalidContent = {
+  args: { content: "", className: "" },
   render: () => (
     <div className="space-y-6">
       <div>

@@ -34,38 +34,42 @@ type Story = StoryObj<typeof meta>;
 const scheduledEntry: TimestampEntry = {
   type: "scheduled",
   date: new Date("2024-01-15T09:00:00"),
+  originalText: "SCHEDULED: <2024-01-15 Mon 09:00>",
   lineNumber: 1,
 };
 
 const deadlineEntry: TimestampEntry = {
   type: "deadline",
   date: new Date("2024-01-20T17:00:00"),
+  originalText: "DEADLINE: <2024-01-20 Sat 17:00>",
   lineNumber: 2,
 };
 
 const closedEntry: TimestampEntry = {
   type: "closed",
   date: new Date("2024-01-16T14:30:00"),
+  originalText: "CLOSED: <2024-01-16 Tue 14:30>",
   lineNumber: 3,
 };
 
 const dateOnlyEntry: TimestampEntry = {
   type: "scheduled",
   date: new Date("2024-02-01T00:00:00"),
+  originalText: "SCHEDULED: <2024-02-01 Thu>",
   lineNumber: 4,
 };
 
 const rangeEntry: TimestampEntry = {
   type: "scheduled",
   date: new Date("2024-01-25T09:00:00"),
-  endDate: new Date("2024-01-25T17:00:00"),
+  originalText: "SCHEDULED: <2024-01-25 Thu 09:00>--<2024-01-25 Thu 17:00>",
   lineNumber: 5,
 };
 
 const multiDayEntry: TimestampEntry = {
   type: "scheduled",
   date: new Date("2024-03-01T00:00:00"),
-  endDate: new Date("2024-03-03T00:00:00"),
+  originalText: "SCHEDULED: <2024-03-01 Fri>--<2024-03-03 Sun>",
   lineNumber: 6,
 };
 
@@ -166,12 +170,13 @@ export const MeetingSchedule: Story = {
       {
         type: "scheduled",
         date: new Date("2024-01-15T09:00:00"),
-        endDate: new Date("2024-01-15T10:30:00"),
+        originalText: "SCHEDULED: <2024-01-15 Mon 09:00>--<2024-01-15 Mon 10:30>",
         lineNumber: 1,
       },
       {
         type: "deadline",
         date: new Date("2024-01-15T08:30:00"),
+        originalText: "DEADLINE: <2024-01-15 Mon 08:30>",
         lineNumber: 2,
       },
     ],
@@ -191,16 +196,19 @@ export const ProjectTimeline: Story = {
       {
         type: "scheduled",
         date: new Date("2024-02-01T09:00:00"),
+        originalText: "SCHEDULED: <2024-02-01 Thu 09:00>",
         lineNumber: 1,
       },
       {
         type: "deadline",
         date: new Date("2024-02-15T17:00:00"),
+        originalText: "DEADLINE: <2024-02-15 Thu 17:00>",
         lineNumber: 2,
       },
       {
         type: "closed",
         date: new Date("2024-02-14T16:30:00"),
+        originalText: "CLOSED: <2024-02-14 Wed 16:30>",
         lineNumber: 3,
       },
     ],
@@ -248,16 +256,19 @@ export const AllTypes: Story = {
       {
         type: "scheduled",
         date: new Date("2024-01-15T09:00:00"),
+        originalText: "SCHEDULED: <2024-01-15 Mon 09:00>",
         lineNumber: 1,
       },
       {
         type: "deadline",
         date: new Date("2024-01-20T17:00:00"),
+        originalText: "DEADLINE: <2024-01-20 Sat 17:00>",
         lineNumber: 2,
       },
       {
         type: "closed",
         date: new Date("2024-01-16T14:30:00"),
+        originalText: "CLOSED: <2024-01-16 Tue 14:30>",
         lineNumber: 3,
       },
     ],
@@ -272,7 +283,8 @@ export const AllTypes: Story = {
 };
 
 // Edge cases and variations
-export const EdgeCases: Story = {
+export const EdgeCases = {
+  args: { entries: [], className: "" },
   render: () => (
     <div className="space-y-6">
       <div>
@@ -285,6 +297,7 @@ export const EdgeCases: Story = {
           entries={[{
             type: "deadline",
             date: new Date("2023-12-01T17:00:00"), // Past date
+            originalText: "DEADLINE: <2023-12-01 Fri 17:00>",
             lineNumber: 1,
           }]}
         />
@@ -296,6 +309,7 @@ export const EdgeCases: Story = {
           entries={[{
             type: "scheduled",
             date: new Date("2025-06-01T09:00:00"), // Future date
+            originalText: "SCHEDULED: <2025-06-01 Sun 09:00>",
             lineNumber: 2,
           }]}
         />
@@ -307,7 +321,7 @@ export const EdgeCases: Story = {
           entries={[{
             type: "scheduled",
             date: new Date("2024-03-15T00:00:00"),
-            endDate: new Date("2024-03-18T00:00:00"),
+            originalText: "SCHEDULED: <2024-03-15 Fri>--<2024-03-18 Mon>",
             lineNumber: 3,
           }]}
         />
@@ -319,7 +333,7 @@ export const EdgeCases: Story = {
           entries={[{
             type: "scheduled",
             date: new Date("2024-01-20T14:00:00"),
-            endDate: new Date("2024-01-20T16:30:00"),
+            originalText: "SCHEDULED: <2024-01-20 Sat 14:00>--<2024-01-20 Sat 16:30>",
             lineNumber: 4,
           }]}
         />
@@ -331,6 +345,7 @@ export const EdgeCases: Story = {
           entries={[{
             type: "deadline",
             date: new Date("2024-01-25T00:00:00"),
+            originalText: "DEADLINE: <2024-01-25 Thu>",
             lineNumber: 5,
           }]}
         />
@@ -347,7 +362,8 @@ export const EdgeCases: Story = {
 };
 
 // Real-world examples
-export const TaskManagementExample: Story = {
+export const TaskManagementExample = {
+  args: { entries: [], className: "" },
   render: () => (
     <div className="space-y-6">
       <div>

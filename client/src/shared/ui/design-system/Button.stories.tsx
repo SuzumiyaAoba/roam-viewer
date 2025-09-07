@@ -24,8 +24,6 @@ const meta = {
         "secondary",
         "ghost",
         "link",
-        "success",
-        "warning",
       ],
       description: "The visual variant of the button",
     },
@@ -33,14 +31,6 @@ const meta = {
       control: { type: "select" },
       options: ["sm", "default", "lg", "icon"],
       description: "The size of the button",
-    },
-    fullWidth: {
-      control: "boolean",
-      description: "Whether the button should take full width of its container",
-    },
-    loading: {
-      control: "boolean",
-      description: "Whether the button is in a loading state",
     },
     disabled: {
       control: "boolean",
@@ -98,19 +88,6 @@ export const Link: Story = {
   },
 };
 
-export const Success: Story = {
-  args: {
-    variant: "success",
-    children: "Success",
-  },
-};
-
-export const Warning: Story = {
-  args: {
-    variant: "warning",
-    children: "Warning",
-  },
-};
 
 // Size variations
 export const Small: Story = {
@@ -135,13 +112,6 @@ export const Icon: Story = {
 };
 
 // State variations
-export const Loading: Story = {
-  args: {
-    loading: true,
-    children: "Loading...",
-  },
-};
-
 export const Disabled: Story = {
   args: {
     disabled: true,
@@ -149,32 +119,6 @@ export const Disabled: Story = {
   },
 };
 
-export const FullWidth: Story = {
-  args: {
-    fullWidth: true,
-    children: "Full Width Button",
-  },
-  parameters: {
-    layout: "padded",
-  },
-};
-
-// Interactive examples
-export const WithIcons: Story = {
-  args: {
-    children: "Save Changes",
-    leftIcon: "💾",
-    rightIcon: "→",
-  },
-};
-
-export const LoadingWithText: Story = {
-  args: {
-    loading: true,
-    children: "Saving...",
-    variant: "default",
-  },
-};
 
 // All variants showcase
 export const AllVariants: Story = {
@@ -186,8 +130,6 @@ export const AllVariants: Story = {
       <Button variant="secondary">Secondary</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="link">Link</Button>
-      <Button variant="success">Success</Button>
-      <Button variant="warning">Warning</Button>
     </div>
   ),
   parameters: {
