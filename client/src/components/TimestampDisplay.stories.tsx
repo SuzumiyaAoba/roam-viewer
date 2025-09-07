@@ -377,7 +377,7 @@ export const TaskManagementExample = {
             entries={[{
               type: "scheduled",
               date: new Date("2024-01-22T10:00:00"),
-              endDate: new Date("2024-01-22T11:30:00"),
+              originalText: "SCHEDULED: <2024-01-22 Mon 10:00>--<2024-01-22 Mon 11:30>",
               lineNumber: 1,
             }]}
           />
@@ -391,11 +391,13 @@ export const TaskManagementExample = {
               {
                 type: "deadline",
                 date: new Date("2024-01-31T17:00:00"),
+                originalText: "DEADLINE: <2024-01-31 Wed 17:00>",
                 lineNumber: 2,
               },
               {
                 type: "closed",
                 date: new Date("2024-01-30T16:45:00"),
+                originalText: "CLOSED: [2024-01-30 Tue 16:45]",
                 lineNumber: 3,
               },
             ]}
@@ -409,7 +411,7 @@ export const TaskManagementExample = {
             entries={[{
               type: "scheduled",
               date: new Date("2024-03-10T00:00:00"),
-              endDate: new Date("2024-03-13T00:00:00"),
+              originalText: "SCHEDULED: <2024-03-10 Sun>--<2024-03-13 Wed>",
               lineNumber: 4,
             }]}
           />
@@ -423,11 +425,13 @@ export const TaskManagementExample = {
               {
                 type: "deadline",
                 date: new Date("2024-01-16T12:00:00"),
+                originalText: "DEADLINE: <2024-01-16 Tue 12:00>",
                 lineNumber: 5,
               },
               {
                 type: "scheduled", 
                 date: new Date("2024-01-16T09:00:00"),
+                originalText: "SCHEDULED: <2024-01-16 Tue 09:00>",
                 lineNumber: 6,
               },
             ]}
