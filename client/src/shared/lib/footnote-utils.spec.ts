@@ -139,17 +139,9 @@ describe("Real org-mode content", () => {
 
 [fn:note2] これは名前付き脚注です。`;
 
-    console.log("=== Real Org-Mode Test ===");
-    console.log("Original content:");
-    console.log(content);
-
     const references = parseFootnoteReferences(content);
     const definitions = parseFootnoteDefinitions(content);
     const withLinks = replaceFootnoteReferencesWithLinks(content);
-
-    console.log("Found references:", references);
-    console.log("Found definitions:", definitions);
-    console.log("Content with links:", withLinks);
 
     expect(references).toHaveLength(4); // 2 references + 2 in definitions
     expect(definitions).toHaveLength(2);

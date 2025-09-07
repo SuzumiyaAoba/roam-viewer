@@ -14,7 +14,6 @@ DEADLINE: <2025-09-02 Tue>
 Some other content.`;
 
     const entries = parseTimestamps(content);
-    console.log("DEADLINE entries:", entries);
 
     expect(entries).toHaveLength(1);
     expect(entries[0]).toMatchObject({
@@ -34,7 +33,6 @@ CLOSED: [2025-08-29 Thu 14:30]
 More content.`;
 
     const entries = parseTimestamps(content);
-    console.log("CLOSED entries:", entries);
 
     expect(entries).toHaveLength(1);
     expect(entries[0]).toMatchObject({
@@ -90,12 +88,7 @@ DEADLINE: <2025-09-02 Tue>
 **** DONE 完了済みタスク
 CLOSED: [2025-08-29 Thu 14:30]`;
 
-    console.log("=== Real Format Test ===");
-    console.log("Input content:");
-    console.log(JSON.stringify(content, null, 2));
-
     const entries = parseTimestamps(content);
-    console.log("Real format entries:", entries);
 
     expect(entries).toHaveLength(2);
     expect(entries[0].type).toBe("deadline");
@@ -113,7 +106,6 @@ describe("formatTimestamp", () => {
     };
 
     const formatted = formatTimestamp(entry);
-    console.log("Formatted date-only:", formatted);
 
     expect(formatted).toContain("2025");
     expect(formatted).toContain("09");
@@ -129,7 +121,6 @@ describe("formatTimestamp", () => {
     };
 
     const formatted = formatTimestamp(entry);
-    console.log("Formatted with time:", formatted);
 
     expect(formatted).toContain("14:30");
   });
