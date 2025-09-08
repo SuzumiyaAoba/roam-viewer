@@ -110,20 +110,23 @@ describe("rehype-org-enhancements", () => {
     test("should handle invalid tree gracefully in validation mode", async () => {
       const processor = unified().use(rehypeOrgEnhancements, { validate: true });
 
-      await expect(async () => {
-        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
-        await processor.run(null as any);
-      }).rejects.toThrow("Expected root node");
+      // Create invalid tree - has structure but wrong type
+      const invalidTree = { type: "paragraph", children: [] } as any;
+
+      await expect(
+        processor.run(invalidTree)
+      ).rejects.toThrow("Expected root node");
     });
 
     test("should handle invalid tree gracefully in non-validation mode", async () => {
       const processor = unified().use(rehypeOrgEnhancements, { validate: false });
 
-      await expect(async () => {
-        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
-        const result = await processor.run(null as any);
-        expect(result).toBe(null);
-      }).resolves.not.toThrow();
+      // Create invalid tree - has structure but wrong type
+      const invalidTree = { type: "paragraph", children: [] } as any;
+
+      // In non-validation mode, should return the tree as-is without throwing
+      const result = await processor.run(invalidTree);
+      expect(result).toEqual(invalidTree);
     });
 
     test("should process valid tree successfully", async () => {
@@ -464,9 +467,9 @@ describe("rehype-org-enhancements", () => {
       ]);
 
       // In validation mode with malformed input, expect a handled error
-      await expect(async () => {
+      await expect((async () => {
         await processor.run(tree);
-      }).rejects.toThrow(/Error transforming TODO keywords/); // Should wrap errors properly
+      })()).rejects.toThrow(/Error transforming TODO keywords/); // Should wrap errors properly
     });
 
     test("should continue processing in non-validation mode even with errors", async () => {
@@ -483,9 +486,7 @@ describe("rehype-org-enhancements", () => {
       ]);
 
       let result: unknown;
-      await expect(async () => {
-        result = await processor.run(tree);
-      }).resolves.not.toThrow();
+      result = await processor.run(tree);
 
       // First and third elements should still be processed
       expect(result).toBeTruthy();
@@ -564,10 +565,8 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("hr", {}, []), createElement("br", {}, [])]);
 
-      await expect(async () => {
-        const result = await processor.run(tree) as Root;
-        expect(result.children).toHaveLength(2);
-      }).resolves.not.toThrow();
+      const result = await processor.run(tree) as Root;
+      expect(result.children).toHaveLength(2);
     });
 
     test("should handle malformed class names", async () => {
@@ -585,13 +584,11 @@ describe("rehype-org-enhancements", () => {
 
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Test")])]);
 
-      await expect(async () => {
-        const result = await processor.run(tree) as Root;
-        // Should fall back to default classes
-        const header = result.children[0] as Element;
-        const todoSpan = header.children[0] as Element;
-        expect(todoSpan.properties?.className).toEqual(expect.arrayContaining(["bg-orange-100"]));
-      }).resolves.not.toThrow();
+      const result = await processor.run(tree) as Root;
+      // Should fall back to default classes
+      const header = result.children[0] as Element;
+      const todoSpan = header.children[0] as Element;
+      expect(todoSpan.properties?.className).toEqual(expect.arrayContaining(["bg-orange-100"]));
     });
 
     test("should handle deeply nested structures", async () => {
@@ -607,10 +604,8 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      await expect(async () => {
-        const result = await processor.run(tree) as Root;
-        expect(result).toBeTruthy();
-      }).resolves.not.toThrow();
+      const result = await processor.run(tree) as Root;
+      expect(result).toBeTruthy();
     });
   });
 });
