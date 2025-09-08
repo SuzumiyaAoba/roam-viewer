@@ -163,6 +163,7 @@ export const WithCustomIllustration: Story = {
 
 // Predefined variants
 export const NoResults: Story = {
+  args: { title: "" },
   render: () => (
     <EmptyStateNoResults
       searchQuery="react components"
@@ -183,6 +184,7 @@ export const NoResults: Story = {
 };
 
 export const NoNodes: Story = {
+  args: { title: "" },
   render: () => (
     <EmptyStateNoNodes
       action={{
@@ -201,6 +203,7 @@ export const NoNodes: Story = {
 };
 
 export const ErrorState: Story = {
+  args: { title: "" },
   render: () => (
     <EmptyStateError
       error="Failed to load data from the server."
@@ -221,6 +224,7 @@ export const ErrorState: Story = {
 };
 
 export const LoadingState: Story = {
+  args: { title: "" },
   render: () => <EmptyStateLoading />,
   parameters: {
     docs: {
@@ -232,6 +236,7 @@ export const LoadingState: Story = {
 };
 
 export const OfflineState: Story = {
+  args: { title: "" },
   render: () => (
     <EmptyStateOffline
       action={{
@@ -252,6 +257,7 @@ export const OfflineState: Story = {
 
 // Real-world examples
 export const RoamWebExamples: Story = {
+  args: { title: "" },
   render: () => (
     <div className="space-y-12">
       {/* No nodes scenario */}
@@ -309,6 +315,7 @@ export const RoamWebExamples: Story = {
 
 // Dashboard scenarios
 export const DashboardScenarios: Story = {
+  args: { title: "" },
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* Recent nodes */}
@@ -368,6 +375,7 @@ export const DashboardScenarios: Story = {
 
 // Custom content
 export const WithCustomContent: Story = {
+  args: { title: "" },
   render: () => (
     <EmptyState
       icon="🎨"
@@ -404,6 +412,7 @@ export const WithCustomContent: Story = {
 
 // All variants showcase
 export const AllVariants: Story = {
+  args: { title: "" },
   render: () => (
     <div className="space-y-8">
       <div>

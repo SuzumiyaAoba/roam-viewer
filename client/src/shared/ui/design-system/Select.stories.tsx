@@ -138,6 +138,15 @@ export const WithLabel: Story = {
 };
 
 export const WithHelperText: Story = {
+  args: {
+    options: [
+      { value: "low", label: "Low" },
+      { value: "medium", label: "Medium" },
+      { value: "high", label: "High" },
+      { value: "critical", label: "Critical" },
+    ],
+    placeholder: "Select priority..."
+  },
   render: () => (
     <div className="w-64">
       <SelectLabel htmlFor="select-with-helper">Priority Level</SelectLabel>
@@ -156,6 +165,16 @@ export const WithHelperText: Story = {
 };
 
 export const WithError: Story = {
+  args: {
+    variant: "error",
+    options: [
+      { value: "option1", label: "Option 1" },
+      { value: "option2", label: "Option 2" },
+      { value: "option3", label: "Option 3" },
+    ],
+    placeholder: "Select an option...",
+    required: true
+  },
   render: () => (
     <div className="w-64">
       <SelectLabel htmlFor="select-error">Required Field</SelectLabel>
@@ -176,6 +195,15 @@ export const WithError: Story = {
 
 // Interactive example
 export const Interactive: Story = {
+  args: {
+    options: [
+      { value: "react", label: "React" },
+      { value: "vue", label: "Vue.js" },
+      { value: "angular", label: "Angular" },
+      { value: "svelte", label: "Svelte" },
+    ],
+    placeholder: "Choose a framework..."
+  },
   render: () => {
     const [selectedValue, setSelectedValue] = React.useState("");
 

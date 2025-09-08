@@ -27,10 +27,5 @@
     }
   },
   "include": ["client/src"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.stories.tsx",
-    "client/src/test"
-  ]
+  "exclude": ["node_modules", "dist", "client/src/test"]
 }

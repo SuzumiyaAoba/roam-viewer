@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+// @ts-expect-error React is used in JSX within render functions
 import React from "react";
 import { LogbookDisplay } from "./LogbookDisplay";
 

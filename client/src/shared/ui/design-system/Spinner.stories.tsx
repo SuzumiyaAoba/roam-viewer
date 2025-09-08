@@ -244,7 +244,7 @@ export const LoadingButtonVariants: Story = {
 export const DataFetching: Story = {
   render: () => {
     const [loading, setLoading] = React.useState(true);
-    const [data, setData] = React.useState(null);
+    const [data, setData] = React.useState<Array<{ id: number; name: string; email: string }> | null>(null);
 
     const fetchData = React.useCallback(() => {
       setLoading(true);
@@ -289,7 +289,7 @@ export const DataFetching: Story = {
                     <span className="text-sm font-medium text-blue-600">
                       {user.name
                         .split(" ")
-                        .map((n) => n[0])
+                        .map((n: string) => n[0])
                         .join("")}
                     </span>
                   </div>

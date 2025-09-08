@@ -28,13 +28,8 @@ const meta = {
     },
     inputVariant: {
       control: { type: "select" },
-      options: ["default", "filled", "outlined", "minimal"],
+      options: ["default", "outline"],
       description: "The input field variant style",
-    },
-    size: {
-      control: { type: "select" },
-      options: ["sm", "default", "lg"],
-      description: "The size of the search form",
     },
     placeholder: {
       control: "text",
@@ -47,10 +42,6 @@ const meta = {
     showButton: {
       control: "boolean",
       description: "Whether to show the search button",
-    },
-    showClearButton: {
-      control: "boolean",
-      description: "Whether to show clear button when input has value",
     },
     loading: {
       control: "boolean",
@@ -152,7 +143,6 @@ export const Elevated: Story = {
 export const Prominent: Story = {
   args: {
     variant: "prominent",
-    size: "lg",
     placeholder: "Search everything...",
     buttonText: "Find",
     icon: (
@@ -179,7 +169,7 @@ export const Prominent: Story = {
 // Input variants
 export const FilledInput: Story = {
   args: {
-    inputVariant: "filled",
+    inputVariant: "default",
     placeholder: "Filled input style...",
     icon: (
       <svg
@@ -204,7 +194,7 @@ export const FilledInput: Story = {
 
 export const OutlinedInput: Story = {
   args: {
-    inputVariant: "outlined",
+    inputVariant: "outline",
     placeholder: "Outlined input style...",
     icon: (
       <svg
@@ -229,7 +219,7 @@ export const OutlinedInput: Story = {
 
 export const MinimalInput: Story = {
   args: {
-    inputVariant: "minimal",
+    inputVariant: "default",
     placeholder: "Minimal input style...",
     showButton: false,
     icon: (
@@ -256,7 +246,6 @@ export const MinimalInput: Story = {
 // Sizes
 export const Small: Story = {
   args: {
-    size: "sm",
     placeholder: "Small search...",
     icon: (
       <svg
@@ -281,7 +270,6 @@ export const Small: Story = {
 
 export const Large: Story = {
   args: {
-    size: "lg",
     placeholder: "Large search form...",
     icon: (
       <svg
@@ -513,8 +501,7 @@ export const NodeSearchExample: Story = {
         <h3 className="text-sm font-medium text-gray-700 mb-2">Header Search</h3>
         <QuickSearch
           placeholder="Search nodes..."
-          inputVariant="filled"
-          size="sm"
+          inputVariant="default"
           onSearch={(query) => alert(`Header search: ${query}`)}
         />
       </div>
@@ -552,7 +539,6 @@ export const NodeSearchExample: Story = {
         <h3 className="text-sm font-medium text-gray-700 mb-2">Hero Search</h3>
         <SearchForm
           variant="prominent"
-          size="lg"
           placeholder="What would you like to learn about?"
           buttonText="Explore"
           icon={
@@ -637,7 +623,7 @@ export const AllVariants: Story = {
           <div>
             <div className="block text-sm font-medium text-gray-700 mb-2">Filled Input</div>
             <SearchForm
-              inputVariant="filled"
+              inputVariant="default"
               placeholder="Filled input..."
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
@@ -646,7 +632,7 @@ export const AllVariants: Story = {
           <div>
             <div className="block text-sm font-medium text-gray-700 mb-2">Outlined Input</div>
             <SearchForm
-              inputVariant="outlined"
+              inputVariant="outline"
               placeholder="Outlined input..."
               onSubmit={(query) => alert(`Search: ${query}`)}
             />
@@ -655,7 +641,7 @@ export const AllVariants: Story = {
           <div>
             <div className="block text-sm font-medium text-gray-700 mb-2">Minimal Input</div>
             <SearchForm
-              inputVariant="minimal"
+              inputVariant="default"
               placeholder="Minimal input..."
               showButton={false}
               onSubmit={(query) => alert(`Search: ${query}`)}
@@ -695,7 +681,6 @@ export const HeightAlignmentTest: Story = {
                 Small (38px height)
               </div>
               <SearchForm
-                size="sm"
                 inputVariant="default"
                 placeholder="Small search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
@@ -707,7 +692,6 @@ export const HeightAlignmentTest: Story = {
                 Default (50px height)
               </div>
               <SearchForm
-                size="default"
                 inputVariant="default"
                 placeholder="Default search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
@@ -719,8 +703,7 @@ export const HeightAlignmentTest: Story = {
                 Large (62px height)
               </div>
               <SearchForm
-                size="lg"
-                inputVariant="default"
+                      inputVariant="default"
                 placeholder="Large search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -737,8 +720,7 @@ export const HeightAlignmentTest: Story = {
                 Small Outlined (38px height + 2px border)
               </div>
               <SearchForm
-                size="sm"
-                inputVariant="outlined"
+                inputVariant="outline"
                 placeholder="Small outlined search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -749,8 +731,7 @@ export const HeightAlignmentTest: Story = {
                 Default Outlined (50px height + 2px border)
               </div>
               <SearchForm
-                size="default"
-                inputVariant="outlined"
+                inputVariant="outline"
                 placeholder="Default outlined search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -761,8 +742,7 @@ export const HeightAlignmentTest: Story = {
                 Large Outlined (62px height + 2px border)
               </div>
               <SearchForm
-                size="lg"
-                inputVariant="outlined"
+                      inputVariant="outline"
                 placeholder="Large outlined search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -777,8 +757,7 @@ export const HeightAlignmentTest: Story = {
             <div>
               <div className="block text-sm font-medium text-gray-700 mb-2">Small Filled</div>
               <SearchForm
-                size="sm"
-                inputVariant="filled"
+                inputVariant="default"
                 placeholder="Small filled search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -787,8 +766,7 @@ export const HeightAlignmentTest: Story = {
             <div>
               <div className="block text-sm font-medium text-gray-700 mb-2">Default Filled</div>
               <SearchForm
-                size="default"
-                inputVariant="filled"
+                inputVariant="default"
                 placeholder="Default filled search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -797,8 +775,7 @@ export const HeightAlignmentTest: Story = {
             <div>
               <div className="block text-sm font-medium text-gray-700 mb-2">Large Filled</div>
               <SearchForm
-                size="lg"
-                inputVariant="filled"
+                      inputVariant="default"
                 placeholder="Large filled search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />

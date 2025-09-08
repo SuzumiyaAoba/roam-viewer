@@ -291,6 +291,7 @@ export const CustomActions: Story = {
 
 // Compact variant
 export const Compact: Story = {
+  args: { title: "" },
   render: () => (
     <div className="space-y-2">
       <NodeCardCompact
@@ -333,6 +334,7 @@ export const Compact: Story = {
 
 // Grid layout
 export const Grid: Story = {
+  args: { title: "" },
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <NodeCardGrid
@@ -403,6 +405,7 @@ export const Grid: Story = {
 
 // Real-world example
 export const RoamWebExample: Story = {
+  args: { title: "" },
   render: () => (
     <div className="space-y-6">
       <NodeCard
@@ -453,6 +456,7 @@ export const RoamWebExample: Story = {
 
 // Checkbox functionality showcase
 export const WithCheckboxes: Story = {
+  args: { title: "" },
   render: () => {
     const [selectedNodes, setSelectedNodes] = React.useState<Set<string>>(new Set());
 
@@ -522,6 +526,7 @@ export const WithCheckboxes: Story = {
 };
 
 export const CheckboxStates: Story = {
+  args: { title: "" },
   render: () => (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-4">Checkbox States</h3>
@@ -580,6 +585,7 @@ export const CheckboxStates: Story = {
 };
 
 export const BulkOperationsDemo: Story = {
+  args: { title: "" },
   render: () => {
     const [selectedNodes, setSelectedNodes] = React.useState<Set<string>>(
       new Set(["demo1", "demo3"]),
@@ -702,6 +708,7 @@ export const BulkOperationsDemo: Story = {
 
 // All variants showcase
 export const AllVariants: Story = {
+  args: { title: "" },
   render: () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <NodeCard
