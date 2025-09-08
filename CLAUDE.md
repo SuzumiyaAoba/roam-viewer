@@ -143,7 +143,25 @@ Test structure includes (16 test files total):
 - Watch out for infinite loops in regex patterns, especially when using `regex.exec()` in while loops
 - Avoid using non-null assertions (`!`) - prefer optional chaining and proper type guards
 
+**Git Commit Guidelines:**
+- **NEVER use `--no-verify` flag** when committing changes
+- Pre-commit hooks are essential for maintaining code quality and should not be bypassed
+- If pre-commit hooks fail, fix the underlying issues rather than skipping validation
+- Run quality checks manually before commit: `bun run typecheck && bun run lint && bun test`
+- If lint-staged or husky issues occur, fix the tooling configuration rather than bypassing it
+- Only commit when all quality gates pass: TypeScript compilation, linting, formatting, and tests
+
+**Proper Commit Workflow:**
+1. Make your code changes
+2. Run `bun run check:fix` to auto-fix formatting and linting issues
+3. Run `bun run typecheck` to ensure no TypeScript errors
+4. Run `bun test` to ensure all tests pass
+5. Stage changes with `git add .`
+6. Commit with `git commit -m "your message"` (without --no-verify)
+7. If pre-commit hooks fail, address the issues and retry
+8. Never bypass pre-commit validation - it protects code quality
+
 **Critical Areas:**
 - `client/src/shared/lib/footnote-utils.ts`: Contains regex processing that previously had infinite loop issues
 - `client/src/features/org-rendering/lib/rehype-org-enhancements.ts`: Core org-mode processing plugin
-- Pre-commit hooks may fail with lint-staged; use `--no-verify` if hooks are broken but ensure manual quality checks
+- All commits must pass pre-commit quality checks - no exceptions
