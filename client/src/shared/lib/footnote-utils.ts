@@ -84,7 +84,7 @@ export function replaceFootnoteReferencesWithLinks(content: string): {
         position: match.index,
       });
     }
-    
+
     match = referenceRegex.exec(content);
   }
 

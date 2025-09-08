@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../../shared/lib/api-client";
+import { apiClient } from "../../../shared/api";
 
 export function useTags(enabled: boolean = true) {
   return useQuery({
@@ -12,7 +12,7 @@ export function useTags(enabled: boolean = true) {
 export function useNodesByTag(tag: string, enabled: boolean = true) {
   return useQuery({
     queryKey: ["nodes", "by-tag", tag],
-    queryFn: () => apiClient.searchNodesByTag(tag),
+    queryFn: () => apiClient.tags.getNodesByTag(tag),
     enabled: enabled && !!tag,
   });
 }

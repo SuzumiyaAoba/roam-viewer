@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
-  parseTimestamps,
   formatTimestamp,
   getTimestampColor,
   getTimestampLabel,
+  parseTimestamps,
   type TimestampEntry,
 } from "./timestamp-utils";
 

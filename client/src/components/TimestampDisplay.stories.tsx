@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 // @ts-expect-error React is used in JSX within render functions
 import React from "react";
-import { TimestampsDisplay } from "./TimestampDisplay";
 import type { TimestampEntry } from "../shared/lib/timestamp-utils";
+import { TimestampsDisplay } from "./TimestampDisplay";
 
 const meta = {
   title: "Components/TimestampDisplay",
@@ -23,7 +23,7 @@ const meta = {
       description: "Array of timestamp entries to display",
     },
     className: {
-      control: "text", 
+      control: "text",
       description: "Additional CSS classes",
     },
   },
@@ -292,64 +292,74 @@ export const EdgeCases = {
       <div>
         <h3 className="text-lg font-semibold mb-4">Edge Cases and Variations</h3>
       </div>
-      
+
       <div>
         <h4 className="font-medium mb-2">Past Deadline (Overdue)</h4>
-        <TimestampsDisplay 
-          entries={[{
-            type: "deadline",
-            date: new Date("2023-12-01T17:00:00"), // Past date
-            originalText: "DEADLINE: <2023-12-01 Fri 17:00>",
-            lineNumber: 1,
-          }]}
+        <TimestampsDisplay
+          entries={[
+            {
+              type: "deadline",
+              date: new Date("2023-12-01T17:00:00"), // Past date
+              originalText: "DEADLINE: <2023-12-01 Fri 17:00>",
+              lineNumber: 1,
+            },
+          ]}
         />
       </div>
 
       <div>
         <h4 className="font-medium mb-2">Future Schedule</h4>
-        <TimestampsDisplay 
-          entries={[{
-            type: "scheduled",
-            date: new Date("2025-06-01T09:00:00"), // Future date
-            originalText: "SCHEDULED: <2025-06-01 Sun 09:00>",
-            lineNumber: 2,
-          }]}
+        <TimestampsDisplay
+          entries={[
+            {
+              type: "scheduled",
+              date: new Date("2025-06-01T09:00:00"), // Future date
+              originalText: "SCHEDULED: <2025-06-01 Sun 09:00>",
+              lineNumber: 2,
+            },
+          ]}
         />
       </div>
 
       <div>
         <h4 className="font-medium mb-2">All-Day Event (Multiple Days)</h4>
-        <TimestampsDisplay 
-          entries={[{
-            type: "scheduled",
-            date: new Date("2024-03-15T00:00:00"),
-            originalText: "SCHEDULED: <2024-03-15 Fri>--<2024-03-18 Mon>",
-            lineNumber: 3,
-          }]}
+        <TimestampsDisplay
+          entries={[
+            {
+              type: "scheduled",
+              date: new Date("2024-03-15T00:00:00"),
+              originalText: "SCHEDULED: <2024-03-15 Fri>--<2024-03-18 Mon>",
+              lineNumber: 3,
+            },
+          ]}
         />
       </div>
 
       <div>
         <h4 className="font-medium mb-2">Same Day Range</h4>
-        <TimestampsDisplay 
-          entries={[{
-            type: "scheduled",
-            date: new Date("2024-01-20T14:00:00"),
-            originalText: "SCHEDULED: <2024-01-20 Sat 14:00>--<2024-01-20 Sat 16:30>",
-            lineNumber: 4,
-          }]}
+        <TimestampsDisplay
+          entries={[
+            {
+              type: "scheduled",
+              date: new Date("2024-01-20T14:00:00"),
+              originalText: "SCHEDULED: <2024-01-20 Sat 14:00>--<2024-01-20 Sat 16:30>",
+              lineNumber: 4,
+            },
+          ]}
         />
       </div>
 
       <div>
         <h4 className="font-medium mb-2">Midnight Deadline</h4>
-        <TimestampsDisplay 
-          entries={[{
-            type: "deadline",
-            date: new Date("2024-01-25T00:00:00"),
-            originalText: "DEADLINE: <2024-01-25 Thu>",
-            lineNumber: 5,
-          }]}
+        <TimestampsDisplay
+          entries={[
+            {
+              type: "deadline",
+              date: new Date("2024-01-25T00:00:00"),
+              originalText: "DEADLINE: <2024-01-25 Thu>",
+              lineNumber: 5,
+            },
+          ]}
         />
       </div>
     </div>
@@ -357,7 +367,8 @@ export const EdgeCases = {
   parameters: {
     docs: {
       description: {
-        story: "Various edge cases including overdue items, future dates, multi-day events, and midnight timestamps",
+        story:
+          "Various edge cases including overdue items, future dates, multi-day events, and midnight timestamps",
       },
     },
   },
@@ -375,20 +386,22 @@ export const TaskManagementExample = {
       <div className="space-y-4">
         <div className="p-4 bg-white border rounded-lg">
           <h4 className="font-medium mb-2">📋 Project Kickoff Meeting</h4>
-          <TimestampsDisplay 
-            entries={[{
-              type: "scheduled",
-              date: new Date("2024-01-22T10:00:00"),
-              originalText: "SCHEDULED: <2024-01-22 Mon 10:00>--<2024-01-22 Mon 11:30>",
-              lineNumber: 1,
-            }]}
+          <TimestampsDisplay
+            entries={[
+              {
+                type: "scheduled",
+                date: new Date("2024-01-22T10:00:00"),
+                originalText: "SCHEDULED: <2024-01-22 Mon 10:00>--<2024-01-22 Mon 11:30>",
+                lineNumber: 1,
+              },
+            ]}
           />
           <p className="text-sm text-gray-600 mt-2">Team standup and project planning session</p>
         </div>
 
         <div className="p-4 bg-white border rounded-lg">
           <h4 className="font-medium mb-2">🚀 Feature Release</h4>
-          <TimestampsDisplay 
+          <TimestampsDisplay
             entries={[
               {
                 type: "deadline",
@@ -409,20 +422,22 @@ export const TaskManagementExample = {
 
         <div className="p-4 bg-white border rounded-lg">
           <h4 className="font-medium mb-2">📅 Conference Trip</h4>
-          <TimestampsDisplay 
-            entries={[{
-              type: "scheduled",
-              date: new Date("2024-03-10T00:00:00"),
-              originalText: "SCHEDULED: <2024-03-10 Sun>--<2024-03-13 Wed>",
-              lineNumber: 4,
-            }]}
+          <TimestampsDisplay
+            entries={[
+              {
+                type: "scheduled",
+                date: new Date("2024-03-10T00:00:00"),
+                originalText: "SCHEDULED: <2024-03-10 Sun>--<2024-03-13 Wed>",
+                lineNumber: 4,
+              },
+            ]}
           />
           <p className="text-sm text-gray-600 mt-2">Tech conference in San Francisco</p>
         </div>
 
         <div className="p-4 bg-white border rounded-lg">
           <h4 className="font-medium mb-2">⚠️ Urgent Bug Fix</h4>
-          <TimestampsDisplay 
+          <TimestampsDisplay
             entries={[
               {
                 type: "deadline",
@@ -431,14 +446,16 @@ export const TaskManagementExample = {
                 lineNumber: 5,
               },
               {
-                type: "scheduled", 
+                type: "scheduled",
                 date: new Date("2024-01-16T09:00:00"),
                 originalText: "SCHEDULED: <2024-01-16 Tue 09:00>",
                 lineNumber: 6,
               },
             ]}
           />
-          <p className="text-sm text-gray-600 mt-2">Critical production issue - needs immediate attention</p>
+          <p className="text-sm text-gray-600 mt-2">
+            Critical production issue - needs immediate attention
+          </p>
         </div>
       </div>
     </div>

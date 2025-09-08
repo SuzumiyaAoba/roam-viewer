@@ -267,7 +267,7 @@ export const InvalidContent = {
           These examples show how the component handles malformed or invalid content gracefully:
         </p>
       </div>
-      
+
       <div>
         <h4 className="font-medium mb-2">Empty Content</h4>
         <LogbookDisplay content="" />

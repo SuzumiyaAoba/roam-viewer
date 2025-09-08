@@ -1,10 +1,10 @@
-import React from "react";
 import { Icon } from "@iconify/react";
+import React from "react";
 import {
   calculateDuration,
   formatLogbookDate,
-  parseLogbook,
   type LogbookEntry,
+  parseLogbook,
 } from "../shared/lib/logbook-utils";
 
 interface LogbookDisplayProps {
@@ -184,8 +184,8 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
             icon={isExpanded ? "lucide:chevron-down" : "lucide:chevron-right"}
             className="text-slate-400 w-4 h-4"
           />
-          {latestEntry && (
-            latestEntry.type === "state-change" ? (
+          {latestEntry &&
+            (latestEntry.type === "state-change" ? (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-slate-600">最新状態:</span>
                 <span
@@ -198,8 +198,7 @@ export function LogbookDisplay({ content, className = "" }: LogbookDisplayProps)
               <span className="text-sm text-slate-600">
                 最新記録: {formatLogbookDate(latestEntry.startDate)}
               </span>
-            )
-          )}
+            ))}
         </div>
         <div className="flex items-center space-x-2 text-xs text-slate-500">
           <span>{entries.length}件</span>

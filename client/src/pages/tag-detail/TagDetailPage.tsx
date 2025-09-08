@@ -63,7 +63,7 @@ export function TagDetailPage() {
     );
   }
 
-  if (!nodes || nodes.length === 0) {
+  if (!nodes || !nodes.nodes || nodes.nodes.length === 0) {
     return (
       <Layout title={`Tag: #${tag}`}>
         <div className="mb-8">
@@ -98,7 +98,7 @@ export function TagDetailPage() {
             <h1 className="text-3xl font-bold text-gray-900">#{tag}</h1>
           </div>
           <p className="text-gray-600">
-            {nodes.length} node{nodes.length !== 1 ? "s" : ""} tagged with #{tag}
+            {nodes.nodes.length} node{nodes.nodes.length !== 1 ? "s" : ""} tagged with #{tag}
           </p>
         </div>
         <div className="flex items-center space-x-3">
@@ -120,7 +120,7 @@ export function TagDetailPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {nodes.map((node: Node) => (
+        {nodes.nodes.map((node: Node) => (
           <NodeCard
             key={node.id}
             title={node.title}

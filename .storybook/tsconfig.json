@@ -23,14 +23,6 @@
       "@/*": ["client/src/*"]
     }
   },
-  "include": [
-    "../client/src/**/*.stories.*",
-    "../client/src/**/*.tsx",
-    "../client/src/**/*.ts"
-  ],
-  "exclude": [
-    "../node_modules",
-    "../**/*.spec.*",
-    "../**/*.test.*"
-  ]
+  "include": ["../client/src/**/*.stories.*", "../client/src/**/*.tsx", "../client/src/**/*.ts"],
+  "exclude": ["../node_modules", "../**/*.spec.*", "../**/*.test.*"]
 }

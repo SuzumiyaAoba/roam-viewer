@@ -1,6 +1,6 @@
+import { Icon } from "@iconify/react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "./Input";
-import { Icon } from "@iconify/react";
 
 const meta = {
   title: "Design System/Input",
@@ -373,7 +373,8 @@ export const CompleteFormExample: Story = {
     layout: "padded",
     docs: {
       description: {
-        story: "Complete form example showing various input types and configurations working together",
+        story:
+          "Complete form example showing various input types and configurations working together",
       },
     },
   },

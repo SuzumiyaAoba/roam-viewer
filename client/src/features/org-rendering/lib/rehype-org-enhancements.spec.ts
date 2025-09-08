@@ -2,14 +2,14 @@
  * @fileoverview Tests for rehype-org-enhancements plugin
  */
 
-import { describe, expect, test } from "vitest";
+import type { Element, ElementContent, Properties, Root, Text } from "hast";
 import { unified } from "unified";
+import { describe, expect, test } from "vitest";
 import {
-  rehypeOrgEnhancements,
   type CustomClasses,
   type PluginOptions,
+  rehypeOrgEnhancements,
 } from "./rehype-org-enhancements";
-import type { Root, Element, Text, Properties, ElementContent } from "hast";
 
 // Helper function to create a mock hast tree
 function createMockTree(elements: Element[]): Root {
@@ -20,7 +20,11 @@ function createMockTree(elements: Element[]): Root {
 }
 
 // Helper function to create an element
-function createElement(tagName: string, properties: Properties = {}, children: ElementContent[] = []): Element {
+function createElement(
+  tagName: string,
+  properties: Properties = {},
+  children: ElementContent[] = [],
+): Element {
   return {
     type: "element",
     tagName,
@@ -113,9 +117,7 @@ describe("rehype-org-enhancements", () => {
       // Create invalid tree - has structure but wrong type
       const invalidTree = { type: "paragraph", children: [] } as any;
 
-      await expect(
-        processor.run(invalidTree)
-      ).rejects.toThrow("Expected root node");
+      await expect(processor.run(invalidTree)).rejects.toThrow("Expected root node");
     });
 
     test("should handle invalid tree gracefully in non-validation mode", async () => {
@@ -144,7 +146,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Fix the bug")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const header = result.children[0] as Element;
 
       expect(header.properties?.className).toEqual(
@@ -167,7 +169,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements, { customClasses });
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Fix the bug")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const header = result.children[0] as Element;
       const todoSpan = header.children[0] as Element;
 
@@ -181,7 +183,7 @@ describe("rehype-org-enhancements", () => {
 
       const tree = createMockTree([createElement("h1", {}, [createText("CUSTOM Fix the bug")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const header = result.children[0] as Element;
       const todoSpan = header.children[0] as Element;
 
@@ -194,7 +196,7 @@ describe("rehype-org-enhancements", () => {
         createElement("span", { className: ["todo-keyword", "TODO"] }, [createText("TODO")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -208,7 +210,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("p", {}, [createText("Task [#A] is important")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const paragraph = result.children[0] as Element;
 
       // Should have: "Task ", priority span, " is important"
@@ -232,7 +234,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements, { customClasses });
       const tree = createMockTree([createElement("p", {}, [createText("Task [#A] is important")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const paragraph = result.children[0] as Element;
       const prioritySpan = paragraph.children[1] as Element;
 
@@ -246,7 +248,7 @@ describe("rehype-org-enhancements", () => {
 
       const tree = createMockTree([createElement("p", {}, [createText("Task [#X] is important")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const paragraph = result.children[0] as Element;
       const prioritySpan = paragraph.children[1] as Element;
 
@@ -262,7 +264,7 @@ describe("rehype-org-enhancements", () => {
         createElement("p", {}, [createText("Task [#Z] is not recognized")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const paragraph = result.children[0] as Element;
 
       // Should remain as single text node since Z is not recognized
@@ -278,7 +280,7 @@ describe("rehype-org-enhancements", () => {
         createElement("span", { className: ["timestamp"] }, [createText("<2025-01-15 Wed>")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -297,7 +299,7 @@ describe("rehype-org-enhancements", () => {
         createElement("span", { className: ["timestamp"] }, [createText("[2025-01-15 Wed]")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -313,7 +315,7 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const span = result.children[0] as Element;
 
       expect(span.properties?.className).toEqual(
@@ -345,7 +347,7 @@ describe("rehype-org-enhancements", () => {
         createElement("span", { className: ["timestamp"] }, [createText("<2025-01-15 Wed>")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const span = result.children[0] as Element;
       const clockIcon = span.children[0] as Element;
 
@@ -363,7 +365,7 @@ describe("rehype-org-enhancements", () => {
         createElement("code", {}, [createText("code")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
 
       const paragraph = result.children[0] as Element;
       const list = result.children[1] as Element;
@@ -398,7 +400,7 @@ describe("rehype-org-enhancements", () => {
         createElement("code", {}, [createText("code")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
 
       expect((result.children[0] as Element).properties?.className).toEqual(["custom-paragraph"]);
       expect((result.children[1] as Element).properties?.className).toEqual(["custom-list"]);
@@ -412,7 +414,7 @@ describe("rehype-org-enhancements", () => {
         createElement("div", { className: ["existing-class"] }, [createText("Div")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
 
       expect((result.children[0] as Element).properties?.className).toEqual(["existing-class"]);
       expect((result.children[1] as Element).properties?.className).toEqual(["existing-class"]);
@@ -426,7 +428,7 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       const pre = result.children[0] as Element;
 
       expect(pre.properties?.className).toEqual(
@@ -442,7 +444,7 @@ describe("rehype-org-enhancements", () => {
         createElement("h6", {}, [createText("Header 6")]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
 
       expect((result.children[0] as Element).properties?.className).toEqual(
         expect.arrayContaining(["text-xl", "font-bold"]),
@@ -467,9 +469,11 @@ describe("rehype-org-enhancements", () => {
       ]);
 
       // In validation mode with malformed input, expect a handled error
-      await expect((async () => {
-        await processor.run(tree);
-      })()).rejects.toThrow(/Error transforming TODO keywords/); // Should wrap errors properly
+      await expect(
+        (async () => {
+          await processor.run(tree);
+        })(),
+      ).rejects.toThrow(/Error transforming TODO keywords/); // Should wrap errors properly
     });
 
     test("should continue processing in non-validation mode even with errors", async () => {
@@ -530,7 +534,7 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
 
       expect(result.children).toHaveLength(4);
 
@@ -557,7 +561,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       expect(result.children).toHaveLength(0);
     });
 
@@ -565,7 +569,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements);
       const tree = createMockTree([createElement("hr", {}, []), createElement("br", {}, [])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       expect(result.children).toHaveLength(2);
     });
 
@@ -584,7 +588,7 @@ describe("rehype-org-enhancements", () => {
 
       const tree = createMockTree([createElement("h1", {}, [createText("TODO Test")])]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       // Should fall back to default classes
       const header = result.children[0] as Element;
       const todoSpan = header.children[0] as Element;
@@ -604,7 +608,7 @@ describe("rehype-org-enhancements", () => {
         ]),
       ]);
 
-      const result = await processor.run(tree) as Root;
+      const result = (await processor.run(tree)) as Root;
       expect(result).toBeTruthy();
     });
   });

@@ -244,7 +244,11 @@ export const LoadingButtonVariants: Story = {
 export const DataFetching: Story = {
   render: () => {
     const [loading, setLoading] = React.useState(true);
-    const [data, setData] = React.useState<Array<{ id: number; name: string; email: string }> | null>(null);
+    const [data, setData] = React.useState<Array<{
+      id: number;
+      name: string;
+      email: string;
+    }> | null>(null);
 
     const fetchData = React.useCallback(() => {
       setLoading(true);

@@ -17,14 +17,7 @@ const meta = {
   argTypes: {
     variant: {
       control: { type: "select" },
-      options: [
-        "default",
-        "destructive",
-        "outline",
-        "secondary",
-        "ghost",
-        "link",
-      ],
+      options: ["default", "destructive", "outline", "secondary", "ghost", "link"],
       description: "The visual variant of the button",
     },
     size: {
@@ -88,7 +81,6 @@ export const Link: Story = {
   },
 };
 
-
 // Size variations
 export const Small: Story = {
   args: {
@@ -118,7 +110,6 @@ export const Disabled: Story = {
     children: "Disabled",
   },
 };
-
 
 // All variants showcase
 export const AllVariants: Story = {

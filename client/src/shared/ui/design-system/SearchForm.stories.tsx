@@ -703,7 +703,7 @@ export const HeightAlignmentTest: Story = {
                 Large (62px height)
               </div>
               <SearchForm
-                      inputVariant="default"
+                inputVariant="default"
                 placeholder="Large search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -742,7 +742,7 @@ export const HeightAlignmentTest: Story = {
                 Large Outlined (62px height + 2px border)
               </div>
               <SearchForm
-                      inputVariant="outline"
+                inputVariant="outline"
                 placeholder="Large outlined search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />
@@ -775,7 +775,7 @@ export const HeightAlignmentTest: Story = {
             <div>
               <div className="block text-sm font-medium text-gray-700 mb-2">Large Filled</div>
               <SearchForm
-                      inputVariant="default"
+                inputVariant="default"
                 placeholder="Large filled search..."
                 onSubmit={(query) => alert(`Search: ${query}`)}
               />

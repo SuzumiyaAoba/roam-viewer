@@ -601,7 +601,12 @@ function getClasses(
 
     for (const part of parts) {
       // biome-ignore lint/suspicious/noExplicitAny: Dynamic property access requires any
-      if (current && typeof current === "object" && part in current && (current as any)[part] !== undefined) {
+      if (
+        current &&
+        typeof current === "object" &&
+        part in current &&
+        (current as any)[part] !== undefined
+      ) {
         // biome-ignore lint/suspicious/noExplicitAny: Dynamic property access requires any
         current = (current as any)[part];
       } else {
@@ -628,7 +633,10 @@ function getClasses(
  */
 function createElement(
   tagName: string,
-  properties: Record<string, string | number | boolean | (string | number)[] | null | undefined> = {},
+  properties: Record<
+    string,
+    string | number | boolean | (string | number)[] | null | undefined
+  > = {},
   children: (Element | Text)[] = [],
 ): Element {
   return {
@@ -945,17 +953,21 @@ function isValidForPriorityTransform(
  */
 function transformPriorities(tree: Root, options: ResolvedOptions): void {
   try {
-    visit(tree, "text", (node: Text, index: number | undefined, parent: Element | Root | undefined) => {
-      if (!isValidForPriorityTransform(parent || null, index)) return;
-      if (parent && index !== undefined) {
-        const changes = processPriorityIndicators(node, options);
+    visit(
+      tree,
+      "text",
+      (node: Text, index: number | undefined, parent: Element | Root | undefined) => {
+        if (!isValidForPriorityTransform(parent || null, index)) return;
+        if (parent && index !== undefined) {
+          const changes = processPriorityIndicators(node, options);
 
-        // Apply changes (we know there's at most one change due to early break)
-        changes.forEach(({ replacement }) => {
-          parent.children.splice(index, 1, ...replacement);
-        });
-      }
-    });
+          // Apply changes (we know there's at most one change due to early break)
+          changes.forEach(({ replacement }) => {
+            parent.children.splice(index, 1, ...replacement);
+          });
+        }
+      },
+    );
   } catch (error) {
     if (options.validate) {
       throw new Error(`Error transforming priorities: ${error}`);

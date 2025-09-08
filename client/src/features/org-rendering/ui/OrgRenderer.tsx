@@ -12,7 +12,7 @@ import {
   formatOrgTimestamp,
   type OrgTimestamp,
 } from "../../../shared/lib/date-utils";
-import { rehypeOrgEnhancements, type CustomClasses } from "../lib/rehype-org-enhancements";
+import { type CustomClasses, rehypeOrgEnhancements } from "../lib/rehype-org-enhancements";
 
 interface UniorgNode {
   type: string;

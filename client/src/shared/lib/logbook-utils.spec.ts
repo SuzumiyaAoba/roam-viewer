@@ -18,7 +18,6 @@ More content here.
 
     const entries = parseLogbook(content);
 
-
     expect(entries).toHaveLength(2);
 
     // Most recent first (reversed order)
@@ -47,7 +46,6 @@ CLOCK: [2024-01-16 Tue 10:00]
 
     const entries = parseLogbook(content);
 
-
     expect(entries).toHaveLength(2);
 
     expect(entries[0].type).toBe("clock");
@@ -65,7 +63,6 @@ State "TODO" from "" 2025-08-29 Thu 09:15
 `;
 
     const entries = parseLogbook(content);
-
 
     expect(entries).toHaveLength(4);
 

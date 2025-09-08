@@ -12,13 +12,13 @@ import { TimestampsDisplay } from "../../components/TimestampDisplay";
 import type { BacklinkNode } from "../../entities/node";
 import { useBacklinks, useDeleteNode, useForwardLinks, useNode } from "../../entities/node";
 import { OrgRenderer } from "../../features/org-rendering";
+import {
+  getFootnoteDefId,
+  replaceFootnoteReferencesWithLinks,
+} from "../../shared/lib/footnote-utils";
 import { extractPriority, PriorityLabel } from "../../shared/lib/priority-utils";
 import { parseTimestamps } from "../../shared/lib/timestamp-utils";
 import { TodoIcon } from "../../shared/lib/todo-utils";
-import {
-  replaceFootnoteReferencesWithLinks,
-  getFootnoteDefId,
-} from "../../shared/lib/footnote-utils";
 
 import { Layout } from "../../widgets/layout";
 
@@ -595,7 +595,10 @@ export function NodeDetailPage() {
                             return renderContent(section.content, index);
                           } else if (section.type === "logbook") {
                             return (
-                              <div key={`logbook-${section.originalLineNumber || index}`} className="my-8">
+                              <div
+                                key={`logbook-${section.originalLineNumber || index}`}
+                                className="my-8"
+                              >
                                 <LogbookDisplay content={`:LOGBOOK:\n${section.content}\n:END:`} />
                               </div>
                             );

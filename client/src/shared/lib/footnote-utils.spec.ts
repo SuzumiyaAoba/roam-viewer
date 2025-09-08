@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  parseFootnoteReferences,
-  parseFootnoteDefinitions,
-  replaceFootnoteReferencesWithLinks,
-  getFootnoteRefId,
   getFootnoteDefId,
+  getFootnoteRefId,
+  parseFootnoteDefinitions,
+  parseFootnoteReferences,
+  replaceFootnoteReferencesWithLinks,
 } from "./footnote-utils";
 
 describe("parseFootnoteReferences", () => {

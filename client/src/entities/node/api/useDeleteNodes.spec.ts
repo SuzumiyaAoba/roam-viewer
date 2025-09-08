@@ -9,7 +9,11 @@ describe("Bulk delete logic", () => {
   });
 
   test("should filter out invalid node IDs", () => {
-    const nodeIds = ["valid-id", "", "another-valid-id", null as unknown, undefined as unknown] as (string | null | undefined)[];
+    const nodeIds = ["valid-id", "", "another-valid-id", null as unknown, undefined as unknown] as (
+      | string
+      | null
+      | undefined
+    )[];
     const result = filterValidNodeIds(nodeIds);
     expect(result).toEqual(["valid-id", "another-valid-id"]);
   });

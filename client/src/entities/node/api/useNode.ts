@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "../../../shared/lib/api-client";
+import { apiClient } from "../../../shared/api";
 import type { CreateNodeRequest, UpdateNodeRequest } from "../model/types";
 
 export const useNodes = () => {

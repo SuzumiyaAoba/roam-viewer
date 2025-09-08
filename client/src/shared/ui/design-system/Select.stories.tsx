@@ -145,7 +145,7 @@ export const WithHelperText: Story = {
       { value: "high", label: "High" },
       { value: "critical", label: "Critical" },
     ],
-    placeholder: "Select priority..."
+    placeholder: "Select priority...",
   },
   render: () => (
     <div className="w-64">
@@ -173,7 +173,7 @@ export const WithError: Story = {
       { value: "option3", label: "Option 3" },
     ],
     placeholder: "Select an option...",
-    required: true
+    required: true,
   },
   render: () => (
     <div className="w-64">
@@ -202,7 +202,7 @@ export const Interactive: Story = {
       { value: "angular", label: "Angular" },
       { value: "svelte", label: "Svelte" },
     ],
-    placeholder: "Choose a framework..."
+    placeholder: "Choose a framework...",
   },
   render: () => {
     const [selectedValue, setSelectedValue] = React.useState("");
