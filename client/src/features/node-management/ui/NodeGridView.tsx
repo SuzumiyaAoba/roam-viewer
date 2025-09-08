@@ -48,7 +48,7 @@ export function NodeGridView({
     return (
       <div className="text-center py-12">
         <div className="text-gray-400 mb-4">
-          <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="No nodes found icon">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

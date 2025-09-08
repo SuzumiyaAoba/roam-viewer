@@ -45,6 +45,7 @@ describe("rehype-org-enhancements", () => {
   describe("Plugin Configuration", () => {
     test("should accept default options", () => {
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing plugin interface
         const plugin = (rehypeOrgEnhancements as any)();
         expect(typeof plugin).toBe("function");
       }).not.toThrow();
@@ -52,30 +53,35 @@ describe("rehype-org-enhancements", () => {
 
     test("should validate options correctly", () => {
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid options
         (rehypeOrgEnhancements as any)({
           enableSyntaxHighlight: "invalid" as unknown,
         });
       }).toThrow("enableSyntaxHighlight must be a boolean");
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid options
         (rehypeOrgEnhancements as any)({
           customClasses: "invalid" as unknown,
         });
       }).toThrow("customClasses must be an object");
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid options
         (rehypeOrgEnhancements as any)({
           validate: "invalid" as unknown,
         });
       }).toThrow("validate must be a boolean");
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid options
         (rehypeOrgEnhancements as any)({
           todoKeywords: "invalid" as unknown,
         });
       }).toThrow("todoKeywords must be an array");
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing invalid options
         (rehypeOrgEnhancements as any)({
           priorityLevels: [123] as unknown,
         });
@@ -84,6 +90,7 @@ describe("rehype-org-enhancements", () => {
 
     test("should disable validation when requested", () => {
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing plugin interface with disabled validation
         const plugin = (rehypeOrgEnhancements as any)({
           validate: false,
           // biome-ignore lint/suspicious/noExplicitAny: Testing invalid input
@@ -100,6 +107,7 @@ describe("rehype-org-enhancements", () => {
       };
 
       expect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: Testing plugin interface with valid options
         (rehypeOrgEnhancements as any)(customOptions);
       }).not.toThrow();
     });
@@ -107,6 +115,7 @@ describe("rehype-org-enhancements", () => {
 
   describe("Plugin Execution", () => {
     test("should return transformer function", () => {
+      // biome-ignore lint/suspicious/noExplicitAny: Testing plugin interface
       const plugin = (rehypeOrgEnhancements as any)();
       expect(typeof plugin).toBe("function");
     });
@@ -115,6 +124,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements, { validate: true });
 
       // Create invalid tree - has structure but wrong type
+      // biome-ignore lint/suspicious/noExplicitAny: Testing with intentionally invalid tree structure
       const invalidTree = { type: "paragraph", children: [] } as any;
 
       await expect(processor.run(invalidTree)).rejects.toThrow("Expected root node");
@@ -124,6 +134,7 @@ describe("rehype-org-enhancements", () => {
       const processor = unified().use(rehypeOrgEnhancements, { validate: false });
 
       // Create invalid tree - has structure but wrong type
+      // biome-ignore lint/suspicious/noExplicitAny: Testing with intentionally invalid tree structure
       const invalidTree = { type: "paragraph", children: [] } as any;
 
       // In non-validation mode, should return the tree as-is without throwing
@@ -489,8 +500,7 @@ describe("rehype-org-enhancements", () => {
         createElement("p", {}, [createText("This should still be processed")]),
       ]);
 
-      let result: unknown;
-      result = await processor.run(tree);
+      const result = await processor.run(tree);
 
       // First and third elements should still be processed
       expect(result).toBeTruthy();

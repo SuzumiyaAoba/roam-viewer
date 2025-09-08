@@ -600,15 +600,13 @@ function getClasses(
     let current: unknown = customClasses;
 
     for (const part of parts) {
-      // biome-ignore lint/suspicious/noExplicitAny: Dynamic property access requires any
       if (
         current &&
         typeof current === "object" &&
         part in current &&
-        (current as any)[part] !== undefined
+        (current as Record<string, unknown>)[part] !== undefined
       ) {
-        // biome-ignore lint/suspicious/noExplicitAny: Dynamic property access requires any
-        current = (current as any)[part];
+        current = (current as Record<string, unknown>)[part];
       } else {
         return [...defaultClasses];
       }
