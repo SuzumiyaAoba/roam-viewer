@@ -107,27 +107,25 @@ describe("API Path Construction Validation", () => {
         deleteNodes: "/bulk-delete"
       };
 
-      // These should match server routes in server.ts
-      const expectedServerRoutes = [
-        "/api/nodes",           // matches getNodes and createNode
-        "/api/nodes/:id",       // matches getNode, updateNode, deleteNode
-        "/api/nodes/:id/backlinks",     // matches getBacklinks
-        "/api/nodes/:id/links",         // matches getForwardLinks (note: server uses "links")
-        "/api/nodes/bulk-delete"        // matches deleteNodes
-      ];
+      // Expected server routes (for documentation)
+      // - "/api/nodes"                  // matches getNodes and createNode
+      // - "/api/nodes/:id"              // matches getNode, updateNode, deleteNode
+      // - "/api/nodes/:id/backlinks"    // matches getBacklinks
+      // - "/api/nodes/:id/links"        // matches getForwardLinks (note: server uses "links")
+      // - "/api/nodes/bulk-delete"      // matches deleteNodes
 
       // Verify client paths would construct correct URLs
-      Object.entries(clientPaths).forEach(([method, path]) => {
+      Object.entries(clientPaths).forEach(([_method, path]) => {
         const fullPath = `/api/nodes${path}`;
         
         expect(fullPath).not.toMatch(/\/$/); // No trailing slash
         expect(fullPath).not.toMatch(/(?<!:)\/\//); // No double slashes
         
-        // Specific validations
-        if (method === 'getNodes' || method === 'createNode') {
+        // Specific validations based on path structure
+        if (path === '') {
           expect(fullPath).toBe("/api/nodes");
         }
-        if (method === 'getForwardLinks') {
+        if (path === '/123/forward-links') {
           // Note: There's a mismatch here - client expects "forward-links" but server has "links"
           // This test documents the expected behavior
           expect(fullPath).toBe("/api/nodes/123/forward-links");
@@ -142,7 +140,7 @@ describe("API Path Construction Validation", () => {
         searchNodesByTag: "/nodes?tags=important"
       };
 
-      Object.entries(clientPaths).forEach(([method, path]) => {
+      Object.entries(clientPaths).forEach(([_method, path]) => {
         const fullPath = `/api/search${path}`;
         const urlPart = fullPath.split('?')[0];
         

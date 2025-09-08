@@ -231,7 +231,7 @@ describe("API Endpoint Integration", () => {
               });
             }
           }
-        } catch (error) {
+        } catch (_error) {
           // Skip if server not available
         }
       }
@@ -256,7 +256,7 @@ describe("Client-Server Endpoint Mapping", () => {
       { client: "deleteNodes(ids)", serverRoute: "POST /api/nodes/bulk-delete", clientUrl: "/api/nodes/bulk-delete" }
     ];
 
-    mappings.forEach(({ client, clientUrl }) => {
+    mappings.forEach(({ clientUrl }) => {
       // Validate URL construction
       expect(clientUrl).not.toMatch(/\/$/); // No trailing slashes
       expect(clientUrl).not.toMatch(/(?<!:)\/\//); // No double slashes
@@ -271,7 +271,7 @@ describe("Client-Server Endpoint Mapping", () => {
       { client: "searchNodesByTag(tag)", serverRoute: "GET /api/search/nodes", clientUrl: "/api/search/nodes?tags=important" }
     ];
 
-    mappings.forEach(({ client, clientUrl }) => {
+    mappings.forEach(({ clientUrl }) => {
       const urlPart = clientUrl.split('?')[0];
       expect(urlPart).not.toMatch(/\/$/);
       expect(urlPart).not.toMatch(/(?<!:)\/\//);
