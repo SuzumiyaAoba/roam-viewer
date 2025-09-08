@@ -13,7 +13,7 @@ export class NodesApiClient extends BaseApiClient {
    * Get all nodes
    */
   async getNodes(): Promise<Node[]> {
-    return this.get<Node[]>("/");
+    return this.get<Node[]>("");
   }
 
   /**
@@ -27,7 +27,7 @@ export class NodesApiClient extends BaseApiClient {
    * Create a new node
    */
   async createNode(node: CreateNodeRequest): Promise<NodeDetail> {
-    return this.post<NodeDetail>("/", node);
+    return this.post<NodeDetail>("", node);
   }
 
   /**

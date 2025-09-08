@@ -188,14 +188,14 @@ class MdRoamApiClient {
     const result = await this.request<{
       status: string;
       query?: string;
-      nodes?: unknown[];
+      results?: unknown[];
       count?: number;
     }>(`/search/${encodeURIComponent(query)}`);
-    // New API format: {"status":"success", "query":"...", "nodes":[...], "count":N}
-    if (result && result.status === "success" && Array.isArray(result.nodes)) {
+    // New API format: {"status":"success", "query":"...", "results":[...], "count":N}
+    if (result && result.status === "success" && Array.isArray(result.results)) {
       return {
-        nodes: result.nodes,
-        total: result.count,
+        nodes: result.results,
+        total: result.count || 0,
       };
     }
     // Return as-is for backward compatibility
@@ -494,7 +494,23 @@ app.get("/api/nodes/:id/links", async (c) => {
   }
 });
 
-// Search nodes
+// Search nodes (query parameter format for new API client)
+app.get("/api/search/nodes", async (c) => {
+  try {
+    const query = c.req.query("q") || "";
+    if (!query.trim()) {
+      return c.json({ nodes: [], total: 0 });
+    }
+    
+    const results = await apiClient.searchNodes(query);
+    return c.json(results);
+  } catch (error) {
+    console.error("Error searching nodes:", error);
+    return c.json({ error: "Search failed" }, 500);
+  }
+});
+
+// Search nodes (legacy path parameter format)
 app.get("/api/search/:query", async (c) => {
   try {
     const query = c.req.param("query");
