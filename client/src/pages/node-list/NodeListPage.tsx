@@ -4,6 +4,8 @@ import { useNodes, useSearchNodes } from "../../entities/node";
 import {
   BulkOperationsBar,
   NodeGridView,
+  NodeListView,
+  NodeTableView,
   NodeListHeader,
   useNodeFiltering,
   useNodeSelection,
@@ -111,13 +113,31 @@ export function NodeListPage() {
           </div>
         )}
 
-        {/* Node Grid View */}
-        <NodeGridView
-          nodes={filteredNodes}
-          selectedNodes={selectedNodes}
-          onToggleSelection={toggleNodeSelection}
-          showCheckboxes={showCheckboxes}
-        />
+        {/* Node View - switches based on viewMode */}
+        {viewMode === "grid" && (
+          <NodeGridView
+            nodes={filteredNodes}
+            selectedNodes={selectedNodes}
+            onToggleSelection={toggleNodeSelection}
+            showCheckboxes={showCheckboxes}
+          />
+        )}
+        {viewMode === "list" && (
+          <NodeListView
+            nodes={filteredNodes}
+            selectedNodes={selectedNodes}
+            onToggleSelection={toggleNodeSelection}
+            showCheckboxes={showCheckboxes}
+          />
+        )}
+        {viewMode === "table" && (
+          <NodeTableView
+            nodes={filteredNodes}
+            selectedNodes={selectedNodes}
+            onToggleSelection={toggleNodeSelection}
+            showCheckboxes={showCheckboxes}
+          />
+        )}
       </div>
     </Layout>
   );
