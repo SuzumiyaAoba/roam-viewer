@@ -25,12 +25,10 @@ export class ApiClient {
   constructor(baseUrl: string = "http://localhost:3002", timeout: number = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.timeout = timeout;
-    console.log(`📡 ApiClient initialized with baseUrl: ${this.baseUrl}`);
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    console.log(`🔍 API Request: ${options.method || 'GET'} ${url}`);
 
     // Use longer timeout for POST/PUT operations (updates can be slow with Japanese text)
     const requestTimeout =

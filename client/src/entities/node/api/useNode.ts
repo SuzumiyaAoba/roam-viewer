@@ -18,13 +18,9 @@ export const useNode = (id: string) => {
 };
 
 export const useSearchNodes = (query: string) => {
-  console.log("useSearchNodes called with query:", query, "enabled:", !!query && query.trim().length > 0);
   return useQuery({
     queryKey: ["search", query],
-    queryFn: () => {
-      console.log("Executing search query:", query);
-      return apiClient.searchNodes(query);
-    },
+    queryFn: () => apiClient.searchNodes(query),
     enabled: !!query && query.trim().length > 0,
   });
 };

@@ -28,7 +28,6 @@ export function NodeListPage() {
 
   // Feature hooks - each manages its own domain
   const { searchQuery, debouncedQuery, updateSearchQuery } = useSearch();
-  console.log("NodeListPage debouncedQuery:", debouncedQuery);
   const { selectedTag, selectedTags } = useTagFiltering();
   const { selectedNodes, toggleNodeSelection, clearSelection } = useNodeSelection();
 

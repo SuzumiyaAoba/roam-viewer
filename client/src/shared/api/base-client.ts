@@ -22,12 +22,10 @@ export abstract class BaseApiClient {
   constructor(baseUrl: string = "http://localhost:3001", timeout: number = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.timeout = timeout;
-    console.log(`📡 BaseApiClient initialized with baseUrl: ${this.baseUrl}`);
   }
 
   protected async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${this.basePath}${endpoint}`;
-    console.log(`🔍 BaseAPI Request: ${options.method || 'GET'} ${url}`);
 
     // Use longer timeout for POST/PUT operations (updates can be slow with Japanese text)
     const requestTimeout =

@@ -9,9 +9,7 @@ export function useSearch() {
 
   // Debounce search query
   useEffect(() => {
-    console.log("🔍 useSearch: searchQuery changed to:", searchQuery);
     const timer = setTimeout(() => {
-      console.log("🔍 useSearch: setting debouncedQuery to:", searchQuery);
       setDebouncedQuery(searchQuery);
     }, 300);
 
@@ -19,7 +17,6 @@ export function useSearch() {
   }, [searchQuery]);
 
   const updateSearchQuery = useCallback((query: string) => {
-    console.log("🔍 useSearch.updateSearchQuery called with:", query);
     setSearchQuery(query);
   }, []);
 
