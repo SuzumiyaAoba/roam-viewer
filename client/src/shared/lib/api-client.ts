@@ -22,13 +22,15 @@ export class ApiClient {
   private baseUrl: string;
   private timeout: number;
 
-  constructor(baseUrl: string = "http://localhost:3001", timeout: number = 30000) {
+  constructor(baseUrl: string = "http://localhost:3002", timeout: number = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.timeout = timeout;
+    console.log(`📡 ApiClient initialized with baseUrl: ${this.baseUrl}`);
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    console.log(`🔍 API Request: ${options.method || 'GET'} ${url}`);
 
     // Use longer timeout for POST/PUT operations (updates can be slow with Japanese text)
     const requestTimeout =
@@ -150,7 +152,7 @@ export class ApiClient {
   async searchNodes(query: string): Promise<SearchResult> {
     const result = await this.request<
       { nodes: Node[]; count: number } | { nodes: Node[]; total: number }
-    >(`/api/search/${encodeURIComponent(query)}`);
+    >(`/api/search/nodes?q=${encodeURIComponent(query)}`);
 
     // Handle new API response format
     if (result && result.nodes !== undefined) {
@@ -213,4 +215,4 @@ export class ApiClient {
 }
 
 // Default instance
-export const apiClient = new ApiClient(import.meta.env.VITE_API_URL || "http://localhost:3001");
+export const apiClient = new ApiClient(import.meta.env.VITE_API_URL || "http://localhost:3002");

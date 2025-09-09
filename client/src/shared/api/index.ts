@@ -12,7 +12,7 @@ import { SearchApiClient } from "./search/search-client";
 import { TagsApiClient } from "./tags/tags-client";
 
 // Create singleton instances for convenience
-const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3002";
 
 export const nodesApi = new NodesApiClient(baseUrl);
 export const searchApi = new SearchApiClient(baseUrl);

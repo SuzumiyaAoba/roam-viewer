@@ -94,6 +94,7 @@ const SearchForm = forwardRef<HTMLFormElement, SearchFormProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
+      console.log("🔍 SearchForm.handleInputChange:", newValue, "onChange callback:", !!onChange);
       if (!isControlled) {
         setInternalValue(newValue);
       }

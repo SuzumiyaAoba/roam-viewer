@@ -27,13 +27,15 @@ export function NodeListPage() {
   const [viewMode, setViewMode] = useLocalStorage<ViewMode>("node-list-view-mode", "grid");
 
   // Feature hooks - each manages its own domain
-  const { debouncedQuery } = useSearch();
+  const { searchQuery, debouncedQuery, updateSearchQuery } = useSearch();
+  console.log("NodeListPage debouncedQuery:", debouncedQuery);
   const { selectedTag, selectedTags } = useTagFiltering();
   const { selectedNodes, toggleNodeSelection, clearSelection } = useNodeSelection();
 
   // Data fetching
   const { data: nodes, isLoading: nodesLoading, error: nodesError } = useNodes();
   const { data: searchResults, isLoading: searchLoading } = useSearchNodes(debouncedQuery);
+
 
   // Determine which nodes to use (search results or all nodes)
   const currentNodes: Node[] | undefined = debouncedQuery.trim() ? searchResults?.nodes : nodes;
@@ -97,7 +99,10 @@ export function NodeListPage() {
         />
 
         {/* Search Panel */}
-        <SearchPanel />
+        <SearchPanel 
+          searchQuery={searchQuery}
+          onSearchChange={updateSearchQuery}
+        />
 
         {/* Tag Selector */}
         <TagSelector />
